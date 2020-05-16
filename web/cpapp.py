@@ -44,6 +44,20 @@ class Root():
         return mode
     get_file.exposed = True
 
+    def start_video_engine(self, engine):
+        # stop them both
+        os.system("sudo systemctl stop eyesy-oflua.service")
+        os.system("sudo systemctl stop eyesy-python.service")
+        if engine == 'oflua' :
+            os.system("sudo systemctl start eyesy-oflua.service")
+            return 'started oflua'
+        elif engine == 'python' :
+            os.system("sudo systemctl start eyesy-python.service")
+            return 'started python'
+        else :
+            return 'no video engine specified'
+    start_video_engine.exposed = True
+
     def save_new(self, name, contents):
 #        p = name
  #       mode_dir = MODES_PATH+p

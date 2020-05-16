@@ -391,6 +391,19 @@ $(function () {
 		e.preventDefault();
 	});
 
+    $("#start-oflua").click(function(){
+        $.get(ajaxURL + '/start_video_engine/?engine=oflua', function(data) {
+            console.log(data);
+        });
+    });
+
+    $("#start-python").click(function(){
+        $.get(ajaxURL + '/start_video_engine/?engine=python', function(data) {
+            console.log(data);
+        });
+    });
+
+
     $("#usb-sel-but").click(function(){
         baseDirLabel = 'USB Drive';
         workingDir = '/usbdrive/';

@@ -175,6 +175,8 @@ while 1:
     except :
         etc.error = "Mode " + etc.mode  + " not loaded, probably has errors."
         print etc.error
+        # no use spitting these errors out at 30 fps
+        pygame.time.wait(200)
 
     # save a screen shot before drawing stuff
     if (etc.screengrab_flag):
@@ -206,7 +208,7 @@ while 1:
         etc.error = traceback.format_exc()
         print "error with draw: " + etc.error
         # no use spitting these errors out at 30 fps
-        pygame.time.wait(500)
+        pygame.time.wait(200)
         
     
     #draw the main screen, limit fps 30

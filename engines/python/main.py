@@ -89,7 +89,7 @@ if not (etc.load_modes()) :
 
 # run setup functions if modes have them
 print "running setup..."
-for i in range(0, len(etc.mode_names)-1) :
+for i in range(0, len(etc.mode_names)) :
     print etc.mode_root
     try :
         etc.set_mode_by_index(i)
@@ -99,6 +99,7 @@ for i in range(0, len(etc.mode_names)-1) :
         continue 
     try : 
         osd.loading_banner(hwscreen,"Loading " + str(etc.mode) )
+        print "setup " + str(etc.mode)
         mode.setup(screen, etc)
         etc.memory_used = psutil.virtual_memory()[2]
     except :
@@ -172,8 +173,8 @@ while 1:
     try : 
         mode = sys.modules[etc.mode]
     except :
-        #print "mode not loaded, probably has errors"
-        etc.error = "Mode " + etc.mode  + " not loaded."
+        etc.error = "Mode " + etc.mode  + " not loaded, probably has errors."
+        print etc.error
 
     # save a screen shot before drawing stuff
     if (etc.screengrab_flag):
@@ -201,9 +202,13 @@ while 1:
     # draw it
     try :
         mode.draw(screen, etc)
-    except Exception, e:
+    except Exception, e:   
         etc.error = traceback.format_exc()
- 
+        print "error with draw: " + etc.error
+        # no use spitting these errors out at 30 fps
+        pygame.time.wait(500)
+        
+    
     #draw the main screen, limit fps 30
     clocker.tick(30)
     hwscreen.blit(screen, (0,0))

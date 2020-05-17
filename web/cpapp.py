@@ -72,11 +72,10 @@ class Root():
         pass
     save_new.exposed = True
 
-    def send_reload(self, name):
-#        liblo.send(osc_target, "/reload", 1)
- #       return "TEST"
-        pass
-    send_reload.exposed = True
+    def reload_mode(self, name):
+        liblo.send(osc_target, "/reload", 1)
+        return "reloaded mode"
+    reload_mode.exposed = True
  
     def save(self, fpath, contents):
         #save the mode

@@ -403,6 +403,12 @@ $(function () {
         });
     });
 
+    $("#reload-mode").click(function(){
+        $.post(ajaxURL + "/reload_mode", {name: currentmode })
+        .done(function(data) {
+            console.log(data);
+        });
+    });
 
     $("#usb-sel-but").click(function(){
         baseDirLabel = 'USB Drive';

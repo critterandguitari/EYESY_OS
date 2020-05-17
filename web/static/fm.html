@@ -38,7 +38,6 @@
             width: 236px;
             /*border:1px solid #00F; */
             background-color: #222;
-            overflow: auto;
             height: calc(100% - 4px);
         }
         #right-col { 
@@ -50,7 +49,7 @@
         #vconsole-container { 
            /* border:1px solid #F00; */
             overflow:auto;
-            height: 25%;
+            height: calc(25% - 28px);
             background-color: #222;
         }
         #editor-container { 
@@ -92,11 +91,12 @@
             float:left;
             padding-top: 2px;
             padding-left: 4px;
+            margin-right: 6px;
         }
         .fname-name {
-            float:left;
             padding-top: 4px;
             padding-left: 8px;
+            white-space: nowrap;
         }
         .fsfilename {
             width:100%;
@@ -132,6 +132,13 @@
         
         #files-table {
             margin-top:6px;
+            overflow: auto;
+            height: calc(100% - 255px);
+        }
+        #title-bar{
+            background-color: #222;
+            height: 20px;
+            padding: 4px;
         }
 
         /* Start by setting display:none to make this hidden.
@@ -216,10 +223,6 @@
     
 
 	<div id="left-col">
-        Editing: <br/>
-        <span id="title">None</span>
-        <br/>
-        <br/>
         <div id="save" class="side-button">Save</div>
         <div style="clear:left;"></div>
         <br/>
@@ -273,7 +276,9 @@
         </div>
     </div>
 
-    <div id="right-col">
+    <div id="right-col">        
+        <div id="title-bar"><span id="title">...</span></div>
+
         <div id="editor-container">
             <div id="editor">
             </div>

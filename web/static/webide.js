@@ -45,6 +45,11 @@ function sendReload() {
     });
 }
 
+function editorSetSyntax(syntax){
+   if (syntax == "py") editor.getSession().setMode("ace/mode/python");
+   if (syntax == "lua") editor.getSession().setMode("ace/mode/lua");
+}
+
 $(document).ready(function() {
 
     // this disables page while loading things 

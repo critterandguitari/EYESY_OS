@@ -1,4 +1,4 @@
-#wget http://www.thepeacetreaty.org/ping/ping.php
+#!/bin/bash
 
 # make sure the log file exists 
 touch /tmp/video.log

@@ -1,0 +1,12 @@
+[Unit] 
+Description=Cherrypy Web Server
+
+[Service] 
+Type=simple 
+WorkingDirectory=/home/music/EYESY_OS/web
+ExecStart=/home/music/EYESY_OS/web/run.sh
+User=music
+Group=music
+
+[Install] 
+WantedBy=multi-user.target

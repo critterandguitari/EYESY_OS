@@ -39,7 +39,7 @@ def loading_banner(screen, stuff) :
     screen.fill((0,0,0)) 
         
     font = pygame.font.Font("./font.ttf", 150)
-    text = font.render("ETC", True, (255,255,255))
+    text = font.render("EYESY", True, (255,255,255))
     textpos = text.get_rect()
     textpos.centerx = screen.get_width() / 2
     textpos.centery = screen.get_height() /2

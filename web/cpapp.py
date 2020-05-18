@@ -58,6 +58,12 @@ class Root():
             return 'no video engine specified'
     start_video_engine.exposed = True
 
+    def stop_video_engine(self, engine):
+        # stop them both
+        os.system("sudo systemctl stop eyesy-oflua.service")
+        os.system("sudo systemctl stop eyesy-python.service")
+    stop_video_engine.exposed = True
+
     def save_new(self, name, contents):
 #        p = name
  #       mode_dir = MODES_PATH+p

@@ -341,12 +341,14 @@ function newFolderDialog() {
 }
 
 function openFileDialog(path) {
+    var extension=path.split(".").pop();
     newModal('Open File');
     addModalBody('Are you sure you want to open this file? Unsaved changes to the current file will be lost!');
     addModalButton('Cancel', hideModal);
     addModalButton('Open', function () {
         hideModal();
         console.log('going to get file: ' + path);
+        editorSetSyntax(extension);
         getFile(path);
     });
     showModal();
@@ -399,6 +401,12 @@ $(function () {
 
     $("#start-python").click(function(){
         $.get(ajaxURL + '/start_video_engine/?engine=python', function(data) {
+            console.log(data);
+        });
+    });
+
+    $("#stop-video").click(function(){
+        $.get(ajaxURL + '/stop_video_engine/?engine=all', function(data) {
             console.log(data);
         });
     });

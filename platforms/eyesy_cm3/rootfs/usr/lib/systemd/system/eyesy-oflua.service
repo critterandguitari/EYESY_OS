@@ -1,0 +1,12 @@
+[Unit] 
+Description=oFLua Video Engine
+
+[Service] 
+Type=simple 
+WorkingDirectory=/home/music/EYESY_OS/engines/oflua
+ExecStart=/home/music/EYESY_OS/engines/oflua/run.sh
+User=music
+Group=music
+
+[Install] 
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+[Unit] 
+Description=Python Pygame Video Engine
+
+[Service] 
+Type=simple 
+WorkingDirectory=/home/music/EYESY_OS/engines/python
+ExecStart=/home/music/EYESY_OS/engines/python/run.sh
+#User=music
+#Group=music
+
+[Install] 
+WantedBy=multi-user.target

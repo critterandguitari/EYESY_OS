@@ -181,12 +181,12 @@ def render_overlay(screen) :
     screen.blit(text, text_rect)
     
     # fps
-   # mode_str = " FPS:  "   + str(int(etc.fps)) + " "
-   # text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
-   # text_rect = text.get_rect()
-   # text_rect.x = 790
-   # text_rect.centery = 588
-   # screen.blit(text, text_rect)
+    mode_str = " FPS:  "   + str(int(etc.fps)) + " "
+    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 790
+    text_rect.centery = 588
+    screen.blit(text, text_rect)
     
     # version
     mode_str = " v1.0 "

@@ -210,9 +210,6 @@ while 1:
         # no use spitting these errors out at 30 fps
         pygame.time.wait(200)
         
-    
-    #draw the main screen, limit fps 30
-    clocker.tick(30)
     hwscreen.blit(screen, (0,0))
     
     # osd
@@ -227,6 +224,9 @@ while 1:
     # clear all the events
     etc.clear_flags()
     osc_msgs_recv = 0
+    
+    #draw the main screen, limit fps 30
+    clocker.tick(25)
 
 time.sleep(1)
 

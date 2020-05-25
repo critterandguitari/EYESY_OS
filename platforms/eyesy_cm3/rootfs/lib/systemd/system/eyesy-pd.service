@@ -1,0 +1,12 @@
+[Unit] 
+Description=Pd OSC hardware bridge for Eyesy
+
+[Service] 
+Type=simple 
+WorkingDirectory=/home/music/EYESY_OS/pd
+ExecStart=/home/music/EYESY_OS/pd/run.sh
+User=music
+Group=music
+
+[Install] 
+WantedBy=multi-user.target

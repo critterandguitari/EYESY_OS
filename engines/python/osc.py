@@ -72,26 +72,26 @@ def knobs_callback(path, args):
     global etc
     k1, k2, k3, k4, k5, k6 = args
     #print "received message: " + str(args)
-    etc.knob_hardware[0] = float(k4) / 1023
-    etc.knob_hardware[1] = float(k1) / 1023
-    etc.knob_hardware[2] = float(k2) / 1023
-    etc.knob_hardware[3] = float(k5) / 1023
-    etc.knob_hardware[4] = float(k3) / 1023
+    etc.knob_hardware[0] = float(k1) / 1023
+    etc.knob_hardware[1] = float(k2) / 1023
+    etc.knob_hardware[2] = float(k3) / 1023
+    etc.knob_hardware[3] = float(k4) / 1023
+    etc.knob_hardware[4] = float(k5) / 1023
 
 def keys_callback(path, args) :
     global etc
     k, v = args
-    if (k == 2 and v > 0) : etc.next_mode()
+    if (k == 5 and v > 0) : etc.next_mode()
     if (k == 4 and v > 0) : etc.prev_mode()
-    if (k == 7) : etc.update_trig_button(v)
-    if (k == 5 and v > 0) : etc.screengrab_flag = True
+    if (k == 10) : etc.update_trig_button(v)
+    if (k == 9 and v > 0) : etc.screengrab_flag = True
     if (k == 6 and v > 0) : etc.prev_scene()
-    if (k == 3) : etc.save_or_delete_scene(v)
-    if (k == 1 and v > 0) : etc.next_scene()
-    if (k == 0 and v > 0) : 
+    if (k == 8) : etc.save_or_delete_scene(v)
+    if (k == 7 and v > 0) : etc.next_scene()
+    if (k == 1 and v > 0) : 
         if (etc.osd) : etc.set_osd(False)
         else : etc.set_osd(True)
-    if (k == 8 and v > 0) : 
+    if (k == 3 and v > 0) : 
         if (etc.auto_clear) : etc.auto_clear = False
         else : etc.auto_clear = True
 
@@ -116,7 +116,7 @@ def init (etc_object) :
     osc_server.add_method("/key", 'ii', keys_callback)
     osc_server.add_method("/mblob", 'b', mblob_callback)
     osc_server.add_method("/reload", 'i', reload_callback)
-  #  osc_server.add_method("/new", 's', reload_callback)
+    # osc_server.add_method("/new", 's', reload_callback)
     osc_server.add_method("/set", 's', set_callback)
     osc_server.add_method("/new", 's', new_callback)
     osc_server.add_method("/fs", 'i', fs_callback)

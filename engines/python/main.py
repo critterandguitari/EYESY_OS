@@ -31,6 +31,8 @@ sound.init(etc)
 pygame.init()
 clocker = pygame.time.Clock() # for locking fps
 
+print "pygame version " + pygame.version.ver
+
 # on screen display and other screen helpers
 osd.init(etc)
 osc.send("/led", 7) # set led to running
@@ -59,8 +61,13 @@ midi.init(etc)
 
 # init fb and main surfaces
 print "opening frame buffer..."
+#hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED, 32)
+#hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE, 32)
 hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF, 32)
 screen = pygame.Surface(hwscreen.get_size())
+etc.xres=hwscreen.get_width()
+etc.yres=hwscreen.get_height()
+print "opened screen at: " + str(hwscreen.get_size())
 screen.fill((0,0,0)) 
 hwscreen.blit(screen, (0,0))
 pygame.display.flip()

@@ -6,5 +6,5 @@ killall node
 cd node
 node websockettailer.js &
 cd ..
-cherryd -i cpapp -c prod.conf 
+/home/music/.local/bin/cherryd -i cpapp -c prod.conf 
 

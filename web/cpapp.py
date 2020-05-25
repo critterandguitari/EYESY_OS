@@ -92,7 +92,7 @@ class Root():
         print contents
         #then send reload command
         #liblo.send(osc_target, "/reload", 1)
-        return "SAVED " + name
+        return "SAVED " + fpath
     save.exposed = True
    
     def get_grabs(self):

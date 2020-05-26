@@ -1,14 +1,14 @@
-#N canvas 47 53 951 635 10;
+#N canvas 48 50 1174 614 10;
 #X obj 484 269 route 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15;
 #X obj 554 243 pack;
 #X text 737 169 pins are SR LOAD \, CLOCK and DATA 4th argument is
 number bits to shift, f 27;
 #X obj 58 171 rpi_gpio_mcp3008, f 36;
-#X floatatom 225 220 5 0 0 0 - - -;
-#X floatatom 174 220 5 0 0 0 - - -;
-#X floatatom 129 220 5 0 0 0 - - -;
-#X floatatom 81 216 5 0 0 0 - - -;
-#X floatatom 39 216 5 0 0 0 - - -;
+#X floatatom 225 220 5 0 0 0 - - -, f 5;
+#X floatatom 174 220 5 0 0 0 - - -, f 5;
+#X floatatom 129 220 5 0 0 0 - - -, f 5;
+#X floatatom 81 216 5 0 0 0 - - -, f 5;
+#X floatatom 39 216 5 0 0 0 - - -, f 5;
 #X obj 60 138 metro 50;
 #X obj 197 103 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
@@ -105,11 +105,11 @@ number bits to shift, f 27;
 #X connect 3 2 6 0;
 #X connect 3 3 5 0;
 #X connect 3 4 4 0;
-#X connect 4 0 16 4;
-#X connect 5 0 16 3;
-#X connect 6 0 16 2;
-#X connect 7 0 16 1;
-#X connect 8 0 16 0;
+#X connect 4 0 16 0;
+#X connect 5 0 16 4;
+#X connect 6 0 16 1;
+#X connect 7 0 16 3;
+#X connect 8 0 16 2;
 #X connect 9 0 3 0;
 #X connect 11 0 12 0;
 #X connect 12 0 10 0;

@@ -184,8 +184,8 @@ def render_overlay(screen) :
     mode_str = " FPS:  "   + str(int(etc.fps)) + " "
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 790
-    text_rect.centery = 588
+    text_rect.x = 10
+    text_rect.centery = 10
     screen.blit(text, text_rect)
     
     # version

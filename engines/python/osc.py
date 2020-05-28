@@ -104,13 +104,11 @@ def init (etc_object) :
         osc_target = liblo.Address(4001)
     except liblo.AddressError as err:
         print(err)
-        sys.exit()
 
     try:
         osc_server = liblo.Server(4000)
     except liblo.ServerError, err:
         print str(err)
-        sys.exit()
 
     osc_server.add_method("/knobs", 'iiiiii', knobs_callback)
     osc_server.add_method("/key", 'ii', keys_callback)

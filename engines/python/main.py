@@ -10,6 +10,7 @@ import sound
 import osd
 import liblo
 import midi
+import os
 print "starting..."
 
 # create etc object
@@ -61,9 +62,10 @@ midi.init(etc)
 
 # init fb and main surfaces
 print "opening frame buffer..."
+#os.putenv('SDL_VIDEODRIVER', "directfb")
 #hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED, 32)
-#hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE, 32)
-hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF, 32)
+hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.HWSURFACE, 32)
+#hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF, 32)
 screen = pygame.Surface(hwscreen.get_size())
 etc.xres=hwscreen.get_width()
 etc.yres=hwscreen.get_height()
@@ -88,10 +90,10 @@ if not (etc.load_modes()) :
         # quit on esc
         for event in pygame.event.get():
             if event.type == QUIT:
-                exit()
+                exitexit()
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    exit()
+                    exitexit()
         time.sleep(1)
 
 # run setup functions if modes have them
@@ -133,6 +135,12 @@ mode = sys.modules[etc.mode]
 
 midi_led_flashing = False
 
+def exitexit() :
+    print "EXIT exiting\n"
+    pygame.display.quit()
+    pygame.quit()
+    sys.exit()
+
 while 1:
     
     # check for OSC
@@ -161,10 +169,10 @@ while 1:
     # quit on esc
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            exit()
+            exitexit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                exit()
+                exitexit()
 
     # measure fps
     etc.frame_count += 1
@@ -226,14 +234,14 @@ while 1:
     pygame.display.flip()
 
     if etc.quit :
-        sys.exit()
+        exitexit()
     
     # clear all the events
     etc.clear_flags()
     osc_msgs_recv = 0
     
     #draw the main screen, limit fps 30
-    clocker.tick(25)
+    clocker.tick(30)
 
 time.sleep(1)
 

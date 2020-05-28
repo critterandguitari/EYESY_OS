@@ -1,0 +1,24 @@
+#N canvas 162 170 1014 347 10;
+#X obj 41 81 adc~;
+#N canvas 5 50 628 353 audioblock 1;
+#X obj 178 54 switch~ 256 1 1;
+#X obj 178 22 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#N canvas 4 50 450 250 (subpatch) 0;
+#X array array1 256 float 2;
+#X coords 0 1 256 -1 200 140 1 0 0;
+#X restore 328 132 graph;
+#X obj 10 50 tabsend~ array1;
+#X obj 11 19 inlet~;
+#X obj 162 195 bang~;
+#X obj 159 265 timer;
+#X floatatom 159 287 5 0 0 0 - - -, f 5;
+#X obj 152 223 t b b;
+#X connect 1 0 0 0;
+#X connect 4 0 3 0;
+#X connect 5 0 8 0;
+#X connect 6 0 7 0;
+#X connect 8 0 6 0;
+#X connect 8 1 6 1;
+#X restore 44 161 pd audioblock;
+#X connect 0 0 1 0;

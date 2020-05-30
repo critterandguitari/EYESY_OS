@@ -229,7 +229,7 @@ while 1:
     
     # osd
     if etc.osd :
-        osd.render_overlay(hwscreen)
+        osd.render_overlay_480(hwscreen)
 
     pygame.display.flip()
 

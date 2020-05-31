@@ -78,6 +78,19 @@ def knobs_callback(path, args):
     etc.knob_hardware[3] = float(k4) / 1023
     etc.knob_hardware[4] = float(k5) / 1023
 
+def shift_callback(path, args) :
+    global etc
+    stat = args
+    if stat[0] == 1 : 
+        etc.shift = True
+        etc.set_osd(False)
+    else : etc.shift = False
+
+def shift_line_callback(path, args) :
+    global etc
+    k,v = args
+    etc.shift_line[k] = v
+
 def keys_callback(path, args) :
     global etc
     k, v = args
@@ -118,6 +131,8 @@ def init (etc_object) :
     osc_server.add_method("/set", 's', set_callback)
     osc_server.add_method("/new", 's', new_callback)
     osc_server.add_method("/fs", 'i', fs_callback)
+    osc_server.add_method("/shift", 'i', shift_callback)
+    osc_server.add_method("/sline", 'is', shift_line_callback)
     osc_server.add_method(None, None, fallback)
 
 def recv() :

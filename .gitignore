@@ -1,3 +1,4 @@
 .DS_Store
 web/node/node_modules/
 tmp/
+*.pyc

@@ -96,8 +96,10 @@ class System:
     bg_color = (0, 0, 0)
     quit = False
     osd = False
+    shift = False
     osd_first = False # when osd is first turned on this is used to gather info
     trig_button = False # if the button is held down or not
+    shift_line = ["","",""]
 
     def update_trig_button(self, stat) :
         if (stat > 0 ):

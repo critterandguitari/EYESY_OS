@@ -231,6 +231,9 @@ while 1:
     if etc.osd :
         osd.render_overlay_480(hwscreen)
 
+    if etc.shift :
+        osd.render_shift_overlay(hwscreen)
+    
     pygame.display.flip()
 
     if etc.quit :

@@ -1,7 +1,10 @@
 import pygame
 import socket
+import imp
 
 etc = None
+
+wifi = imp.load_source('wifi_control', '/home/music/EYESY_OS/system/wifi_control.py')
 
 def init(etc_obj) :
     global etc
@@ -259,6 +262,7 @@ def render_overlay_480(screen) :
     # first time through, gather some info
     if etc.osd_first :
         etc.ip = socket.gethostbyname(socket.gethostname())
+        wifi.wifi_connected() # get the ip and ssid
         etc.osd_first = False
 
     # mode
@@ -342,14 +346,6 @@ def render_overlay_480(screen) :
     text_rect.centery = 252
     screen.blit(text, text_rect)
     
-    # ip    
-    mode_str = " IP Address:  "   + str(etc.ip) + " "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 20
-    text_rect.centery = 279
-    screen.blit(text, text_rect)
-    
     # mem
     mode_str = " Memory Used:  "   + str(int(etc.memory_used) + 1) + "% "
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
@@ -376,7 +372,23 @@ def render_overlay_480(screen) :
     text_rect.x = 20
     text_rect.centery = 362
     screen.blit(text, text_rect)
+      
+    # ip    
+    mode_str = " IP Address:  "   + wifi.ip_address + " "
+    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 20
+    text_rect.centery = 390
+    screen.blit(text, text_rect)
     
+    # SSID    
+    mode_str = " Network:  "   + wifi.current_net + " "
+    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 20
+    text_rect.centery = 418
+    screen.blit(text, text_rect)
+
     # fps
     #mode_str = " FPS:  "   + str(int(etc.fps)) + " "
     #text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
@@ -415,4 +427,28 @@ def render_overlay_480(screen) :
         text_rect.y = 60 + (i * 20)
         screen.blit(errormsg, text_rect)
         i += 1
+
+def render_shift_overlay(screen) :
+    global etc
+
+    font = pygame.font.Font("font.ttf", 16)
+
+    # shift lines
+    text = font.render(etc.shift_line[0], True, etc.WHITE, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 40
+    text_rect.centery = 100
+    screen.blit(text, text_rect)
+
+    text = font.render(etc.shift_line[1], True, etc.WHITE, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 40
+    text_rect.centery = 150
+    screen.blit(text, text_rect)
+    
+    text = font.render(etc.shift_line[2], True, etc.WHITE, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 40
+    text_rect.centery = 200
+    screen.blit(text, text_rect)
 

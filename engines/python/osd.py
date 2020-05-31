@@ -66,18 +66,18 @@ def loading_banner(screen, stuff) :
     global etc
     screen.fill((0,0,0)) 
         
-    font = pygame.font.Font("./font.ttf", 150)
+    font = pygame.font.Font("./font.ttf", 80)
     text = font.render("EYESY", True, (255,255,255))
     textpos = text.get_rect()
     textpos.centerx = screen.get_width() / 2
     textpos.centery = screen.get_height() /2
     screen.blit(text, textpos)
 
-    font = pygame.font.Font("./font.ttf", 32)
+    font = pygame.font.Font("./font.ttf", 16)
     text = font.render(stuff, True, (255,255,255))
     text_rect = text.get_rect()
     text_rect.x = 20
-    text_rect.y = 650
+    text_rect.y = screen.get_height() - 100
     screen.blit(text, text_rect)
     pygame.display.flip()
 

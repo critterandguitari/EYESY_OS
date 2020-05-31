@@ -253,6 +253,9 @@ def render_overlay_480(screen) :
 
     font = pygame.font.Font("font.ttf", 16)
 
+    #pygame.draw.line(screen, etc.WHITE, [0,480], [720,480], 1)
+    #pygame.draw.line(screen, etc.WHITE, [720,480], [720,0], 1)
+    
     # first time through, gather some info
     if etc.osd_first :
         etc.ip = socket.gethostbyname(socket.gethostname())
@@ -319,13 +322,14 @@ def render_overlay_480(screen) :
         pygame.draw.rect(screen, (255,255,0), (98, 169, 24, 24))
     
     # input level 
-    mode_str = " Input Level:                         "
+    pygame.draw.rect(screen, etc.BLACK, (20, 205, 220, 30))
+    mode_str = " Input Level:"
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 220
     screen.blit(text, text_rect)
-    draw_vu_480(screen, etc, 240, 484)
+    draw_vu_480(screen, etc, 115, 210)
     
     # Auto Clear   
     if etc.auto_clear :
@@ -334,24 +338,24 @@ def render_overlay_480(screen) :
         mode_str = " Clear BG: No "         
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 50
-    text_rect.centery = 555
+    text_rect.x = 20
+    text_rect.centery = 252
     screen.blit(text, text_rect)
     
     # ip    
     mode_str = " IP Address:  "   + str(etc.ip) + " "
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 790
-    text_rect.centery = 480
+    text_rect.x = 20
+    text_rect.centery = 279
     screen.blit(text, text_rect)
     
     # mem
     mode_str = " Memory Used:  "   + str(int(etc.memory_used) + 1) + "% "
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 790
-    text_rect.centery = 535
+    text_rect.x = 20
+    text_rect.centery = 306
     screen.blit(text, text_rect)
  
     # midi usb dev
@@ -361,56 +365,54 @@ def render_overlay_480(screen) :
         mode_str = " USB MIDI:  None "
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 790
-    text_rect.centery = 588
+    text_rect.x = 20
+    text_rect.centery = 334
     screen.blit(text, text_rect)
  
     # midi ch
     mode_str = " MIDI CH:  "   + str(etc.midi_ch) + " "
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 790
-    text_rect.centery = 643
+    text_rect.x = 20
+    text_rect.centery = 362
     screen.blit(text, text_rect)
     
     # fps
-    mode_str = " FPS:  "   + str(int(etc.fps)) + " "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 10
-    text_rect.centery = 10
+    #mode_str = " FPS:  "   + str(int(etc.fps)) + " "
+    #text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    #text_rect = text.get_rect()
+    #text_rect.x = 10
+    #text_rect.centery = 10
     #screen.blit(text, text_rect)
     
     # version
-    mode_str = " v1.1 "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 1180
-    text_rect.centery = 680
-    screen.blit(text, text_rect)
+    #mode_str = " v1.1 "
+    #text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    #text_rect = text.get_rect()
+    #text_rect.x = 1180
+    #text_rect.centery = 680
+    #screen.blit(text, text_rect)
     
     # grabs
-    pygame.draw.rect(screen, etc.BLACK, (790, 150, 418, 295))
+    pygame.draw.rect(screen, etc.BLACK, (486, 20, 155, 435))
     text = font.render(" Recent Grabs", True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 790
-    text_rect.centery = 175
+    text_rect.x = 500
+    text_rect.centery = 37
     screen.blit(text, text_rect)
-    for i in range(0,3) :
-        screen.blit(etc.tengrabs_thumbs[i], (135 * i + 800,200))
-    for i in range(0,3) :
-        screen.blit(etc.tengrabs_thumbs[i + 3], (135 * i + 800,280))
-    for i in range(0,3) :
-        screen.blit(etc.tengrabs_thumbs[i + 6], (135 * i + 800,360))
-   
-
+    screen.blit(etc.tengrabs_thumbs[0], (500, 78 * 0 + 50))
+    screen.blit(etc.tengrabs_thumbs[1], (500, 78 * 1 + 50))
+    screen.blit(etc.tengrabs_thumbs[2], (500, 78 * 2 + 50))
+    screen.blit(etc.tengrabs_thumbs[3], (500, 78 * 3 + 50))
+    screen.blit(etc.tengrabs_thumbs[4], (500, 78 * 4 + 50))
+    
     # osd, errors
     i = 0
-    font = pygame.font.Font("font.ttf", 24)
+    font = pygame.font.Font("font.ttf", 16)
     for errorline in etc.error.splitlines() :
         errormsg = font.render(errorline, True, etc.WHITE, etc.RED) 
         text_rect.x = 50
-        text_rect.y = 100 + (i * 32)
+        text_rect.y = 60 + (i * 20)
         screen.blit(errormsg, text_rect)
         i += 1
 

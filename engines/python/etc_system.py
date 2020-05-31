@@ -202,7 +202,7 @@ class System:
         pygame.image.save(self.screen,imagepath)
         # add to the grabs array
         self.grabindex += 1
-        self.grabindex %= 10
+        self.grabindex %= 5
         pygame.transform.scale(self.screen, (128, 72), self.tengrabs_thumbs[self.grabindex] )
         self.lastgrab = self.screen.copy()
         self.lastgrab_thumb = self.tengrabs_thumbs[self.grabindex]

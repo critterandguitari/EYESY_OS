@@ -1,0 +1,10 @@
+[Unit] 
+Description=Create AP Daemon
+
+[Service] 
+Type=simple 
+WorkingDirectory=/home/music/EYESY_OS/system
+ExecStart=/home/music/EYESY_OS/system/start-ap.sh
+
+[Install] 
+WantedBy=multi-user.target

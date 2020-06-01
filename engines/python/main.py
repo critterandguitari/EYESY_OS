@@ -147,7 +147,7 @@ while 1:
     osc.recv()
 
     # send get midi and knobs for next time
-    osc.send("/nf", 1) 
+    #osc.send("/nf", 1) 
 
     # stop a midi led flash if one is hapenning
     if (midi_led_flashing):
@@ -195,7 +195,7 @@ while 1:
 
     # save a screen shot before drawing stuff
     if (etc.screengrab_flag):
-        osc.send("/led", 6) # flash led yellow
+        osc.send("/led", 3) # flash led yellow
         etc.screengrab()
         osc.send("/led", 7)
         

@@ -9,7 +9,6 @@ import osc
 import sound
 import osd
 import liblo
-import midi
 import os
 print "starting..."
 
@@ -37,28 +36,6 @@ print "pygame version " + pygame.version.ver
 # on screen display and other screen helpers
 osd.init(etc)
 osc.send("/led", 7) # set led to running
-
-# set midi ch, check for file, default to 1
-ch = 1
-try :
-    file = open("/usbdrive/MIDI-Channel.txt", "r")
-    line = file.readline()
-    ch = int(line.strip())
-except IOError as (errno, strerror):
-    print "MIDI ch file I/O error({0}): {1}".format(errno, strerror)
-except ValueError:
-    print "Could not convert data to an integer."
-except:
-    print "Unexpected error:", sys.exc_info()[0]
-    raise
-
-# force midi to 17 (0 is omni)
-etc.midi_ch = ch % 17
-print "set MIDI to ch " + str(etc.midi_ch)
-osc.send("/midich", int(etc.midi_ch))
-
-# setup midi input from USB
-midi.init(etc)
 
 # init fb and main surfaces
 print "opening frame buffer..."
@@ -154,8 +131,6 @@ while 1:
         midi_led_flashing = False
         osc.send("/led", 7)
 
-    # check for midi from USB
-    midi.poll() 
     if (etc.new_midi) :
         osc.send("/led", 2)
         midi_led_flashing = True

@@ -88,8 +88,11 @@ def shift_callback(path, args) :
 
 def shift_line_callback(path, args) :
     global etc
-    k,v = args
-    etc.shift_line[k] = v
+    k = args[0]
+    etc.shift_line[k] = " " + str(k + 1) + ": "
+    for item in args[1:] :
+        etc.shift_line[k] += " " + str(item)
+    etc.shift_line[k] += " "
 
 def keys_callback(path, args) :
     global etc
@@ -132,7 +135,7 @@ def init (etc_object) :
     osc_server.add_method("/new", 's', new_callback)
     osc_server.add_method("/fs", 'i', fs_callback)
     osc_server.add_method("/shift", 'i', shift_callback)
-    osc_server.add_method("/sline", 'is', shift_line_callback)
+    osc_server.add_method("/sline", None, shift_line_callback)
     osc_server.add_method(None, None, fallback)
 
 def recv() :

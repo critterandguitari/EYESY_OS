@@ -393,6 +393,17 @@ $(function () {
 		e.preventDefault();
 	});
 
+    $("#show-settings").click(function(){
+	if ( $("#settings-container").is(":hidden") ){
+    	    $("#editor-container").hide();
+    	    $("#settings-container").show();
+	} else {
+    	    $("#editor-container").show();
+    	    $("#settings-container").hide();
+	}
+
+    });
+
     $("#start-oflua").click(function(){
         $.get(ajaxURL + '/start_video_engine/?engine=oflua', function(data) {
             console.log(data);

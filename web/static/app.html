@@ -3,20 +3,19 @@
   <head>
     <meta charset="utf-8">
     <title>EYESY Editor</title>
-    <link rel="icon" type="image/png" href="fav.png">
+    <link rel="icon" type="image/png" href="assets/fav.png">
 
-    <!--script src="jquery-1.8.0.min.js" type="text/javascript"></script-->
     <!--script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script-->
 
-    <script src="./assets/jquery.min.js"></script>
+    <script src="assets/jquery.min.js"></script>
     <script src="ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="webide.js"></script>
-    <script src="browser.js"></script>
+    <script src="app.js"></script>
 
     <!-- The container for the uploaded files -->
-    <script src="./assets/jquery.ui.widget.js"></script>
+    <script src="assets/jquery.ui.widget.js"></script>
     <!--script src="assets/jquery.iframe-transport.js"></script-->
-    <script src="./assets/jquery.fileupload.js"></script>
+    <script src="assets/jquery.fileupload.js"></script>
 
 <style type="text/css" media="screen">
         .ace_scrollbar-inner {
@@ -58,7 +57,13 @@
             /*border:1px solid #0F0; */
             height: 75%;
         }
-        #editor {
+        #settings-container { 
+            /*border:1px solid #0F0; */
+            height: 75%;
+	    display:none;
+        }
+
+  	#editor {
             overflow:auto;
             height: calc(100% - 10px); 
         }
@@ -157,7 +162,7 @@
             height:     100%;
             width:      100%;
             background: rgba( 255, 255, 255, .25 ) 
-                        url('loading.gif') 
+                        url('assets/loading.gif') 
                         50% 50% 
                         no-repeat;
         }
@@ -225,8 +230,8 @@
     
 
 	<div id="left-col">
-        <div id="save" class="side-button">Save</div>
-        <div style="clear:left;"></div>
+        <div id="show-settings" class="side-button" style="">Settings</div>
+        <div style="clear:both;"></div>
         <br/>
         <!--div id="start-oflua" class="side-button">Start oFLua</div-->
         <div id="start-python" class="side-button">Start Video</div>
@@ -235,6 +240,7 @@
         <div style="clear:left;"></div>
         <br/>
 
+        <div id="save" class="side-button">Save</div>
         <div id="reload-mode" class="side-button">Reload Mode</div>
         <div style="clear:left;"></div>
         <br/>
@@ -283,6 +289,10 @@
     <div id="right-col">        
         <div id="title-bar"><span id="title">...</span></div>
 
+        <div id="settings-container">
+        	stuff
+	</div>
+
         <div id="editor-container">
             <div id="editor">
             </div>
@@ -293,11 +303,11 @@
     <div class="modal"><!-- Place at bottom of page --></div>
     <div class="modal-dialog">
         <div id="modal-dialog-contents">
-            <div id="modal-dialog-title">TITLE Goes HERE</div>
-            <div id="modal-dialog-body">Body COCOCOCOCO fofodoodofo</div>
+            <div id="modal-dialog-title">title</div>
+            <div id="modal-dialog-body">body</div>
             <div  id="modal-close-but" class="modal-button">Cancel</div>
-            <div  id="" class="modal-button">Yup!</div>
-            <div  id="" class="modal-button">U Decide</div>
+            <div  id="" class="modal-button"></div>
+            <div  id="" class="modal-button"></div>
             <div style="clear:both"></div>
         </div>
     </div>

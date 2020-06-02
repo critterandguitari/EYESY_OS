@@ -4,6 +4,23 @@ var workingDir = '/sdcard/';
 var baseDirLabel = 'Home';
 var clipboard = {};
 
+var editor = null
+var currentEditorFile = ''
+
+function getFile(fpath) {
+    $.get(appBaseURL + '/get_file/?fpath='+encodeURIComponent(fpath), function(data) {
+        editor.setValue(data)
+        editor.gotoLine(1)
+        currentEditorFile = fpath
+        $("#title").html(fpath)
+    });
+}
+
+function editorSetSyntax(syntax){
+   if (syntax == "py") editor.getSession().setMode("ace/mode/python");
+   if (syntax == "lua") editor.getSession().setMode("ace/mode/lua");
+}
+
 function refreshWorkingDir(){
     $.get(fsurl+'?operation=get_node', { 'path' : workingDir})
     .done(function (d) {
@@ -355,6 +372,25 @@ function openFileDialog(path) {
 }
 
 $(function () {
+ 
+    // this disables page while loading things 
+    $(document).ajaxStart (function() { 
+            $('body').addClass("loading");
+            console.log("ajax start")
+    });
+        // When ajaxStop is fired, rmeove 'loading' from body class
+    $(document).ajaxStop (function() { 
+            $('body').removeClass("loading"); 
+            console.log("ajax stop");        
+    });
+        
+    editor = ace.edit("editor");
+    editor.setTheme("ace/theme/merbivore_soft");
+    //editor.getSession().setMode("ace/mode/lua");
+    editor.getSession().setMode("ace/mode/python");
+    //$("#editor").style.fontSize='16px';
+    document.getElementById('editor').style.fontSize='14px';
+
 
     $('#fileupload').fileupload({
 		// DISABLE drag and drop uploading
@@ -405,28 +441,35 @@ $(function () {
     });
 
     $("#start-oflua").click(function(){
-        $.get(ajaxURL + '/start_video_engine/?engine=oflua', function(data) {
+        $.get(appBaseURL + '/start_video_engine/?engine=oflua', function(data) {
             console.log(data);
         });
     });
 
     $("#start-python").click(function(){
-        $.get(ajaxURL + '/start_video_engine/?engine=python', function(data) {
+        $.get(appBaseURL + '/start_video_engine/?engine=python', function(data) {
             console.log(data);
         });
     });
 
     $("#stop-video").click(function(){
-        $.get(ajaxURL + '/stop_video_engine/?engine=all', function(data) {
+        $.get(appBaseURL + '/stop_video_engine/?engine=all', function(data) {
             console.log(data);
         });
     });
 
     $("#reload-mode").click(function(){
-        $.post(ajaxURL + "/reload_mode", {name: currentmode })
+        $.post(appBaseURL + "/reload_mode", {name: currentEditorFile })
         .done(function(data) {
             console.log(data);
         });
+    });
+
+    $("#save").click(function() {	 
+	$.post(appBaseURL + "/save", { fpath: currentEditorFile, contents: editor.getValue() })
+	.done(function(data) {
+            console.log(data);
+	});
     });
 
     $("#usb-sel-but").click(function(){

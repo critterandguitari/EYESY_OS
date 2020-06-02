@@ -5,7 +5,7 @@ var baseDirLabel = 'Home';
 var clipboard = {};
 
 var editor = null
-var currentEditorFile = ''
+var currentEditorFile = '...'
 
 function getFile(fpath) {
     $.get(appBaseURL + '/get_file/?fpath='+encodeURIComponent(fpath), function(data) {
@@ -433,11 +433,14 @@ $(function () {
 	if ( $("#settings-container").is(":hidden") ){
     	    $("#editor-container").hide();
     	    $("#settings-container").show();
+            $("#title").html("EYESY Settings")
+            $("#show-settings").html("Editor")
 	} else {
     	    $("#editor-container").show();
     	    $("#settings-container").hide();
+            $("#title").html(currentEditorFile)
+            $("#show-settings").html("Settings")
 	}
-
     });
 
     $("#start-oflua").click(function(){

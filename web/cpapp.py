@@ -23,6 +23,7 @@ file_operations = imp.load_source('file_operations', current_dir + '/file_operat
 
 GRABS_PATH = "/usbdrive/Grabs/"
 MODES_PATH = "/"
+USER_DIR = "/sdcard/"
 
 try:
 	osc_target = liblo.Address(4000)
@@ -44,6 +45,34 @@ class Root():
         return mode
     get_file.exposed = True
 
+    def wifi_save_ap(self, name, pw):
+        # check for wifi file, create one if not found
+        ap_file = USER_DIR + "/ap.txt"
+        if os.path.exists(ap_file):
+            f = open(USER_DIR + "/ap.txt", "r")
+        else :
+            print "wifi file not found, creating"
+            f = open(USER_DIR + "/ap.txt", "w")
+            f.close()
+
+        ap_file = USER_DIR + "/ap.txt"
+        with open(ap_file, "w") as wf:
+            wf.write(name + "\n")
+            wf.write(pw + "\n")
+        return '{"ok":"ok"}'
+    wifi_save_ap.exposed = True
+
+    def wifi_get_ap(self):
+        # check for wifi file
+        ap_file = USER_DIR + "/ap.txt"
+        if os.path.exists(ap_file):
+            f = open(USER_DIR + "/ap.txt", "r")
+        else :
+            return json.dumps({'name':'EYESY', 'pw':'coolmusic'})
+        lines = f.read().splitlines()
+        return json.dumps({'name':lines[0], 'pw':lines[1]})
+    wifi_get_ap.exposed = True
+    
     def start_video_engine(self, engine):
         # stop them both
         os.system("sudo systemctl stop eyesy-oflua.service")
@@ -65,16 +94,6 @@ class Root():
     stop_video_engine.exposed = True
 
     def save_new(self, name, contents):
-#        p = name
- #       mode_dir = MODES_PATH+p
- #       mode_path = MODES_PATH+p+'/main.py'
- #       if not os.path.exists(mode_dir): os.makedirs(mode_dir)
- #       with open(mode_path, "w") as text_file:
- #           text_file.write(contents)
- #       #then send reload command
- #       print "sending new: " + str(name)
- #       liblo.send(osc_target, "/new", name)
- #       return "SAVED " + name
         pass
     save_new.exposed = True
 
@@ -84,19 +103,15 @@ class Root():
     reload_mode.exposed = True
  
     def save(self, fpath, contents):
-        #save the mode
         p = fpath
         mode_path = MODES_PATH+p
         with open(mode_path, "w") as text_file:
             text_file.write(contents)
         print contents
-        #then send reload command
-        #liblo.send(osc_target, "/reload", 1)
         return "SAVED " + fpath
     save.exposed = True
    
     def get_grabs(self):
-        
         images = []
         for filepath in sorted(glob.glob(GRABS_PATH+'*.jpg')):
             filename = os.path.basename(filepath)
@@ -111,40 +126,10 @@ class Root():
         return grab
     get_grab.exposed = True
 
-
-    # returns list of all the modees
-    def index(self):
-        
-        print "loading modees..."
-        modees = []
-        mode_folders = get_immediate_subdirectories(MODES_PATH)
-
-        files = [f for f in listdir(MODES_PATH) if isfile(join(MODES_PATH, f))]
-
-        for mode in files :
-            mode_name = str(mode)
-            mode_path = MODES_PATH+mode_name
-            #modees.append(urllib.quote(mode_name))
-            modees.append(mode_name)
-
-        return json.dumps(modees)
-
-    index.exposed = True
-
     def tester(self, name):
         return "TESTdf"
         print "cool"
     tester.exposed = True
-
-    def flash(self):
-        os.system("oscsend localhost 4001 /led/flash i 4")
-        return "done"
-    flash.exposed = True
-
-    def resync(self):
-        os.system("oscsend localhost 4001 /reload i 1")
-        return "done"
-    resync.exposed = True
 
     def media(self, fpath, cb):
         cherrypy.response.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
@@ -208,7 +193,6 @@ class Root():
                 return file_operations.download(data['path'])
             if data['operation'] == 'zip_node' :
                 return file_operations.zip(data['path'])
-              
         else :
             cherrypy.response.headers['Content-Type'] = "application/json"
             return "no operation specified"

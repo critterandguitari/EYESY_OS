@@ -52,6 +52,9 @@
             height: calc(25% - 28px);
             background-color: #222;
         }
+	#vconsole {
+            padding-left:4px;
+	}
         #editor-container { 
             /*border:1px solid #0F0; */
             height: 75%;
@@ -61,6 +64,9 @@
             height: 75%;
 	    display:none;
         }
+	#settings {
+	    padding: 8px;
+	}
 
   	#editor {
             overflow:auto;
@@ -244,12 +250,6 @@
         <div style="clear:left;"></div>
         <br/>
 
-        <!--br/>
-        Modes: 
-        <br/>
-        <br/>
-        <div id="modees"> </div-->
-    
         <div id="control-panel">
             <!--div id="sd-sel-but" class="side-button">SD Card</div>
             <div id="usb-sel-but" class="side-button">USB Drive</div>
@@ -289,7 +289,28 @@
         <div id="title-bar"><span id="title">...</span></div>
 
         <div id="settings-container">
-		<div id="settings">stuff</div>
+		<div id="settings">
+		    <p><h4>WiFi Network</h4></p>
+		    <p>Enter network details. When it boots up the EYESY will attempt to join this network.</p>
+		    <p><input type="text" id="wifi-net-name" value="Name"></input></p>
+		    <p><input type="text" id="wifi-net-pw" value="Password"></input></p>
+		    <div id="wifi-save-net" class="side-button">Save</div>
+	           
+		    <br/> 
+		    <br/> 
+		    <p><h4>WiFi Access Point</h4></p>
+		    <p>Hold down the shift button while the EYESY boots up to enable access point mode.</p>
+		    <p>In access point mode the EYESY will create a WiFi network that you can join from your computer.</p>
+		    <p>By default the network name is 'EYESY' and the password is 'coolmusic'. This can be changed below.</p>
+		    <p><input type="text" id="wifi-ap-name" value="Name"></input></p>
+		    <p><input type="text" id="wifi-ap-pw" value="Password"></input></p>
+		    <div id="wifi-save-ap" class="side-button">Save</div>
+
+		    <br/>
+		    <br/>
+		    <p>WiFi settings take effect after restarting the EYESY.</p>
+	
+		</div>
 	</div>
 
         <div id="editor-container">
@@ -311,8 +332,8 @@
         </div>
     </div>
 		
-	<script>
-	const ws = new WebSocket('ws://eyesy.local:9898/');
+    <script>
+	const ws = new WebSocket('ws://'+location.host+':9898/');
 	ws.onopen = function() {
 		console.log('WebSocket Client Connected');
 		ws.send('Hi this is web client.');
@@ -323,7 +344,7 @@
 	  $("#vconsole").append("\n");
 	  $('#vconsole-container').scrollTop($('#vconsole-container')[0].scrollHeight);
 	};
-	</script>
+    </script>
 
 
     </body>

@@ -443,6 +443,13 @@ $(function () {
 	}
     });
 
+    $("#wifi-save-ap").click(function() {	 
+	$.post(appBaseURL + "/wifi_save_ap", { name: $('#wifi-ap-name').val(), pw: $('#wifi-ap-pw').val() })
+	.done(function(data) {
+            console.log(data);
+	});
+    });
+
     $("#start-oflua").click(function(){
         $.get(appBaseURL + '/start_video_engine/?engine=oflua', function(data) {
             console.log(data);
@@ -538,12 +545,22 @@ $(function () {
 
     $.get(fsurl+'?operation=get_node', { 'path' : workingDir})
     .done(function (d) {
+	console.log(d)
         renderFilesTable(d);
         renderBreadcrumb();
     })
     .fail(function () {
         console.log('oops');
     });    
+    
+    $.get(appBaseURL + '/wifi_get_ap', function(data) {
+	ap = JSON.parse(data);
+    	console.log(ap);
+	$('#wifi-ap-name').val(ap.name)
+	$('#wifi-ap-pw').val(ap.pw)
+    })
+
+
 });
 
 

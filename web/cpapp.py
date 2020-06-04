@@ -45,6 +45,25 @@ class Root():
         return mode
     get_file.exposed = True
 
+    def wifi_save_net(self, name, pw):
+        # Save network
+        return '{"ok":"ok"}'
+    wifi_save_net.exposed = True
+
+    def wifi_get_net(self) :
+        f = open("/etc/wpa_supplicant/wpa_supplicant.conf", "r")
+        lines = f.read().splitlines()
+        ssid = ""
+        pw = ""
+        for l in lines :
+            if l.strip().startswith("ssid"):
+                ssid = l.strip().replace("ssid=", "").replace("\"", "")
+            if l.strip().startswith("psk"):
+                for c in l.strip().replace("psk=", "").replace("\"", "") :
+                    pw += "*"
+        return json.dumps({'name':ssid, 'pw':pw})
+    wifi_get_net.exposed = True
+
     def wifi_save_ap(self, name, pw):
         # check for wifi file, create one if not found
         ap_file = USER_DIR + "/ap.txt"

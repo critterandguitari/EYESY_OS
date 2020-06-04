@@ -559,6 +559,14 @@ $(function () {
 	$('#wifi-ap-name').val(ap.name)
 	$('#wifi-ap-pw').val(ap.pw)
     })
+ 
+    $.get(appBaseURL + '/wifi_get_net', function(data) {
+	ap = JSON.parse(data);
+    	console.log(ap);
+	$('#wifi-net-name').val(ap.name)
+	$('#wifi-net-pw').val(ap.pw)
+    })
+
 
 
 });

@@ -7,7 +7,7 @@ Wants=network.target
 [Service]
 Type=dbus
 BusName=fi.w1.wpa_supplicant1
-ExecStart=/sbin/wpa_supplicant -c/sdcard/wpa_supplicant.conf -u -s -O /run/wpa_supplicant
+ExecStart=/sbin/wpa_supplicant -c/sdcard/System/wpa_supplicant.conf -u -s -O /run/wpa_supplicant
 
 [Install]
 WantedBy=multi-user.target

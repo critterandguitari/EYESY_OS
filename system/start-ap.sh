@@ -2,7 +2,7 @@
 systemctl stop wpa_supplicant
 systemctl stop dhcpcd
 
-AP_FILE="/sdcard/ap.txt"
+AP_FILE="/sdcard/System/ap.txt"
 
 if [ -f "$AP_FILE" ]; then
     echo "$AP_FILE exists"

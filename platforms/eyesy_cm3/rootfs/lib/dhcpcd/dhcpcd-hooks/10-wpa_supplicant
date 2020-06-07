@@ -5,7 +5,7 @@
 
 if [ -z "$wpa_supplicant_conf" ]; then
 	for x in \
-		/sdcard/wpa_supplicant.conf \
+		/sdcard/System/wpa_supplicant.conf \
 		/etc/wpa_supplicant/wpa_supplicant-"$interface".conf \
 		/etc/wpa_supplicant/wpa_supplicant.conf \
 		/etc/wpa_supplicant-"$interface".conf \

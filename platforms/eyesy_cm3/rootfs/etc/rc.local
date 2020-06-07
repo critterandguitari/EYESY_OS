@@ -24,9 +24,6 @@ echo -n performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 # disable status led after bootup
 echo none > /sys/class/leds/led0/trigger
 
-# set organelle fw dir
-#export FW_DIR=/home/music/fw_dir
-
 # start ttymidi
 #$FW_DIR/scripts/ttymidi -s /dev/ttyAMA0 -b 38400 &
 

@@ -450,6 +450,18 @@ $(function () {
 	});
     });
 
+    $("#wifi-save-net").click(function() {	 
+	$.post(appBaseURL + "/wifi_save_net", { name: $('#wifi-net-name').val(), pw: $('#wifi-net-pw').val() })
+	.done(function(data) {
+	    $.get(appBaseURL + '/wifi_get_net', function(data) {
+		ap = JSON.parse(data);
+		$('#wifi-net-name').val(ap.name)
+		$('#wifi-net-pw').val(ap.pw)
+	    })
+            console.log(data);
+	});
+    });
+
     $("#start-oflua").click(function(){
         $.get(appBaseURL + '/start_video_engine/?engine=oflua', function(data) {
             console.log(data);
@@ -566,8 +578,6 @@ $(function () {
 	$('#wifi-net-name').val(ap.name)
 	$('#wifi-net-pw').val(ap.pw)
     })
-
-
 
 });
 

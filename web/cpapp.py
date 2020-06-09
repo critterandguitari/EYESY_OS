@@ -11,8 +11,16 @@ import socket
 from os import listdir
 from os.path import isfile, join
 import imp
-
 import sys
+import subprocess
+
+def run_cmd(cmd) :
+    ret = False
+    try:
+        ret = subprocess.check_output(['bash', '-c', cmd], close_fds=True)
+    except: pass
+    return ret
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -21,7 +29,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 file_operations = imp.load_source('file_operations', current_dir + '/file_operations.py')
 
 
-GRABS_PATH = "/usbdrive/Grabs/"
+GRABS_PATH = "/sdcard/Grabs/"
 MODES_PATH = "/"
 USER_DIR = "/sdcard/"
 
@@ -46,35 +54,44 @@ class Root():
     get_file.exposed = True
 
     def wifi_save_net(self, name, pw):
-        # Save network
+        lines = run_cmd('wpa_passphrase ' + name + ' ' + pw).splitlines()
+        
+        # from standard rpi wpa_supplicant.conf
+        out = "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nupdate_config=1\ncountry=US\n\n"
+        for l in lines :
+            # remove plain text pw
+            if not l.strip().startswith("#psk"):
+                out += l + "\n"
+        
+        f = open(USER_DIR + "/System/wpa_supplicant.conf", "w")
+        f.write(out)
+        f.close()
         return '{"ok":"ok"}'
     wifi_save_net.exposed = True
 
     def wifi_get_net(self) :
-        f = open("/etc/wpa_supplicant/wpa_supplicant.conf", "r")
+        f = open(USER_DIR + "/System/wpa_supplicant.conf", "r")
         lines = f.read().splitlines()
         ssid = ""
-        pw = ""
         for l in lines :
             if l.strip().startswith("ssid"):
                 ssid = l.strip().replace("ssid=", "").replace("\"", "")
-            if l.strip().startswith("psk"):
-                for c in l.strip().replace("psk=", "").replace("\"", "") :
-                    pw += "*"
+            #if l.strip().startswith("psk"):
+            #    for c in l.strip().replace("psk=", "").replace("\"", "") :
+            #        pw += "*"
+        pw = "********"
         return json.dumps({'name':ssid, 'pw':pw})
     wifi_get_net.exposed = True
 
     def wifi_save_ap(self, name, pw):
         # check for wifi file, create one if not found
-        ap_file = USER_DIR + "/ap.txt"
+        ap_file = USER_DIR + "/System/ap.txt"
         if os.path.exists(ap_file):
-            f = open(USER_DIR + "/ap.txt", "r")
+            f = open(ap_file, "r")
         else :
             print "wifi file not found, creating"
-            f = open(USER_DIR + "/ap.txt", "w")
+            f = open(ap_file, "w")
             f.close()
-
-        ap_file = USER_DIR + "/ap.txt"
         with open(ap_file, "w") as wf:
             wf.write(name + "\n")
             wf.write(pw + "\n")

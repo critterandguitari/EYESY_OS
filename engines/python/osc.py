@@ -20,6 +20,18 @@ def fs_callback(path, args):
     if (v[0] > 0):
         etc.foot_pressed()
 
+def midicc_callback(path, args):
+    ##global etc, cc_last, pgm_last, notes_last, clk_last
+    num, val = args
+    print "midi cc: " + str(num) + " " + str(val)
+
+
+def midinote_callback(path, args):
+    ##global etc, cc_last, pgm_last, notes_last, clk_last
+    num, val = args
+    print "midi note: " + str(num) + " " + str(val)
+
+
 def mblob_callback(path, args):
     global etc, cc_last, pgm_last, notes_last, clk_last
     midi_blob = args[0]
@@ -129,6 +141,8 @@ def init (etc_object) :
     osc_server.add_method("/knobs", 'iiiiii', knobs_callback)
     osc_server.add_method("/key", 'ii', keys_callback)
     osc_server.add_method("/mblob", 'b', mblob_callback)
+    osc_server.add_method("/midicc", 'ii', midicc_callback)
+    osc_server.add_method("/midinote", 'ii', midinote_callback)
     osc_server.add_method("/reload", 'i', reload_callback)
     # osc_server.add_method("/new", 's', reload_callback)
     osc_server.add_method("/set", 's', set_callback)

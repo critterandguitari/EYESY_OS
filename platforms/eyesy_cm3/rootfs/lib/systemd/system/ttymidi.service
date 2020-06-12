@@ -1,0 +1,10 @@
+[Unit] 
+Description=ttymidi
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+ExecStart=/home/music/EYESY_OS/system/ttymidi -s /dev/ttyAMA0 -b 38400 &
+
+[Install]
+WantedBy=sysinit.target

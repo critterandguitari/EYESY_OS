@@ -15,6 +15,7 @@ systemctl enable cherrypy.service
 systemctl enable eyesy-pd.service  
 systemctl enable eyesy-python.service  
 systemctl enable splashscreen.service  
+systemctl enable ttymidi.service  
 
 # networking started by eyesy-pd
 systemctl disable dhcpcd.service

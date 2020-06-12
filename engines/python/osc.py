@@ -30,10 +30,13 @@ def midicc_callback(path, args):
         cc_last[i] = val
 
 def midinote_callback(path, args):
-    ##global etc, cc_last, pgm_last, notes_last, clk_last
+    global etc
     num, val = args
-    print "midi note: " + str(num) + " " + str(val)
-
+    #print "midi note: " + str(num) + " " + str(val)
+    if val > 0 :
+        etc.midi_notes[num] = 1
+    else :
+        etc.midi_notes[num] = 0
 
 def mblob_callback(path, args):
     global etc, cc_last, pgm_last, notes_last, clk_last

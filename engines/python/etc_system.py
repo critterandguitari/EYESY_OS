@@ -63,6 +63,7 @@ class System:
     audio_in = [0] * 100
     audio_peak = 0
     audio_trig = False
+    audio_scale = 1.0
     
     # knobs a used by mode 
     knob1 = .200

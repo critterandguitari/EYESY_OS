@@ -202,6 +202,8 @@ class System:
             filenum += 1
             imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
         pygame.image.save(self.screen,imagepath)
+        # make sure it is saved as 'music' user, uid=gid=1000
+        os.chown(imagepath, 1000, 1000)
         # add to the grabs array
         self.grabindex += 1
         self.grabindex %= 5
@@ -259,6 +261,8 @@ class System:
         if not(os.path.isdir(self.GRABS_PATH)) :
             print 'No grab folder, creating...'
             os.system('mkdir ' + self.GRABS_PATH)
+        # make sure it is saved as 'music' user, uid=gid=1000
+        os.chown(self.GRABS_PATH, 1000, 1000)
         print 'loading recent grabs...'
         self.lastgrab = None
         self.lastgrab_thumb = None
@@ -323,12 +327,16 @@ class System:
     	    writer = csv.writer(f,quoting=csv.QUOTE_MINIMAL)
     	    writer.writerows(self.scenes) 
         #print "saved scenes: " + str(self.scenes)
+        # make sure it is saved as 'music' user, uid=gid=1000
+        os.chown(self.SCENES_PATH, 1000, 1000)
 
     def load_scenes(self):
         # create scene file if doesn't exits
         if not os.path.exists(self.SCENES_PATH):
             f = file(self.SCENES_PATH, "w")
             f.close()
+        # make sure it is saved as 'music' user, uid=gid=1000
+        os.chown(self.SCENES_PATH, 1000, 1000)
         # open it
         with open(self.SCENES_PATH, 'rb') as f:
             reader = csv.reader(f)

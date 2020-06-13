@@ -166,9 +166,9 @@ def render_overlay(screen) :
     
     # Auto Clear   
     if etc.auto_clear :
-        mode_str = " Clear BG: Yes " 
+        mode_str = " Persist: No " 
     else :
-        mode_str = " Clear BG: No "         
+        mode_str = " Persist: Yes "         
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 50
@@ -337,9 +337,9 @@ def render_overlay_480(screen) :
     
     # Auto Clear   
     if etc.auto_clear :
-        mode_str = " Clear BG: Yes " 
+        mode_str = " Persist: No " 
     else :
-        mode_str = " Clear BG: No "         
+        mode_str = " Persist: Yes "         
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20

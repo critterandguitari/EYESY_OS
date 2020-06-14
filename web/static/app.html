@@ -116,7 +116,20 @@
         .fsdirname{
             width:100%;
         }
-        .breadcrumb {
+        .dl-but {
+	    float: right;
+	    padding-top: 4px;
+            padding-right: 8px;
+	}    
+      	.dl-but a {
+	    color: white;
+	    text-decoration: none;
+            font-weight: bold;
+	}
+	.dl-but a:hover{
+	   /* color: grey;*/
+	}	
+	.breadcrumb {
             list-style-type: none;
             padding: 0;
         }
@@ -141,12 +154,13 @@
             overflow: hidden;
         }
         .mode-button:hover {color:#FF00FF;}
-        
-        #files-table {
+ 	
+	#files-table {
             margin-top:6px;
             overflow: auto;
             height: calc(100% - 285px);
         }
+
         #title-bar{
             background-color: #222;
             height: 20px;

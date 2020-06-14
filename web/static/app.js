@@ -80,7 +80,7 @@ function nodeNameWithIcon(path, type){
     } else {
         img = "./assets/folder.png";
     }
-    return $('<div class="fname-icon"><img src="'+img+'" width=20/></div><div class="fname-name">' + basename + '</div><div style="clear:left;"/>');
+    return $('<div class="fname-icon"><img src="'+img+'" width=20/></div><div class="fname-name">' + basename + '</div><div style="clear:both;"/>');
 }
 
 function renderFilesTable(d){
@@ -98,7 +98,7 @@ function renderFilesTable(d){
             sizeType = c.size;
             var trow = $('<tr class="fsfile">');
             var tdata = $('<td class="fsfilename">');
-            var dlButton = $('<a class="dl-but" href="'+appBaseURL+'/download?fpath='+encodeURIComponent(c.path)+'&cb=cool"><span class="glyphicon glyphicon-download-alt"></span></a>');
+            var dlButton = $('<div class="dl-but"><a href="'+appBaseURL+'/download?fpath='+encodeURIComponent(c.path)+'&cb=cool">\u2B07</a></div>');
             tdata.append(dlButton);
             tdata.append(nodeNameWithIcon(c.path, c.type));
         }
@@ -549,7 +549,7 @@ $(function () {
     // click on file row, excluding input elements
     $('body').on('click', '.fsfile', function(event) {
         var target = $(event.target);
-        if (!target.is("input")) {
+        if (!target.is("input") && !target.is("a")) {
             var path=$(this).data("path");
             openFileDialog(path);
         }

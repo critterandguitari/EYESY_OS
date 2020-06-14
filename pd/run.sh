@@ -1,4 +1,4 @@
 #!/bin/bash
 
-/usr/bin/pd -nogui -alsamidi eyesy.pd &> /dev/null  
+/usr/bin/pd -nogui -alsamidi -noaudio eyesy.pd &> /dev/null  
 

@@ -40,7 +40,7 @@ def recv() :
                 if (avg > 20000) :
                     trig_this_time = time.time()
                     if (trig_this_time - trig_last_time) > .05:
-                        #etc.audio_trig = True
+                        if etc.audio_trig_enable: etc.audio_trig = True
                         trig_last_time = trig_this_time
                 if avg > peak :
                     etc.audio_peak = avg

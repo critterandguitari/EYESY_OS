@@ -61,7 +61,7 @@ def draw_vu_480(screen, etc, offx, offy):
         if i > 8 : color = (255,255,0)
         if i == 14 : color = etc.RED
         x = offx + 8 * i
-        pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 19))
+        if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 19))
 
 
 # loading banner helper

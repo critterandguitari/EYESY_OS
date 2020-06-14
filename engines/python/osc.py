@@ -47,6 +47,12 @@ def audio_scale_callback(path, args):
     val = args[0]
     etc.audio_scale = val
 
+def audio_trig_enable_callback(path, args):
+    global etc
+    val = args[0]
+    if val == 1 : etc.audio_trig_enable = True
+    else : etc.audio_trig_enable = False
+
 def mblob_callback(path, args):
     global etc, cc_last, pgm_last, notes_last, clk_last
     midi_blob = args[0]
@@ -166,6 +172,7 @@ def init (etc_object) :
     osc_server.add_method("/shift", 'i', shift_callback)
     osc_server.add_method("/ascale", 'f', audio_scale_callback)
     osc_server.add_method("/trig", 'i', trig_callback)
+    osc_server.add_method("/atrigen", 'i', audio_trig_enable_callback)
     osc_server.add_method("/sline", None, shift_line_callback)
     osc_server.add_method(None, None, fallback)
 

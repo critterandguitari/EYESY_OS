@@ -38,6 +38,10 @@ def midinote_callback(path, args):
     else :
         etc.midi_notes[num] = 0
 
+def trig_callback(path, args) :
+    global etc
+    etc.audio_trig = True
+
 def audio_scale_callback(path, args):
     global etc
     val = args[0]
@@ -161,6 +165,7 @@ def init (etc_object) :
     osc_server.add_method("/fs", 'i', fs_callback)
     osc_server.add_method("/shift", 'i', shift_callback)
     osc_server.add_method("/ascale", 'f', audio_scale_callback)
+    osc_server.add_method("/trig", 'i', trig_callback)
     osc_server.add_method("/sline", None, shift_line_callback)
     osc_server.add_method(None, None, fallback)
 

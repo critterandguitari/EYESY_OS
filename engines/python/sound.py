@@ -36,11 +36,11 @@ def recv() :
                 avg += audioop.getsample(data, 2, (i * 3) + 2)
                 avg = avg / 3
                 # scale it
-                avg = avg * etc.audio_scale
+                avg = int(avg * etc.audio_scale)
                 if (avg > 20000) :
                     trig_this_time = time.time()
                     if (trig_this_time - trig_last_time) > .05:
-                        etc.audio_trig = True
+                        #etc.audio_trig = True
                         trig_last_time = trig_this_time
                 if avg > peak :
                     etc.audio_peak = avg

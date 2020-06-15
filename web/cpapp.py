@@ -109,6 +109,14 @@ class Root():
         return json.dumps({'name':lines[0], 'pw':lines[1]})
     wifi_get_ap.exposed = True
  
+    def compvid_save_format(self, val):
+        if (val == 'ntsc') :
+            os.system("sudo sed -i 's/sdtv_mode=2/#sdtv_mode=2/g' /boot/config.txt")
+        if (val == 'pal') :
+            os.system("sudo sed -i 's/#*sdtv_mode=2/sdtv_mode=2/g' /boot/config.txt")
+        return '{"ok":"ok"}'
+    compvid_save_format.exposed = True
+
     def compvid_get_format(self):
         v = os.system("grep '#sdtv_mode=2' /boot/config.txt")
         if (v == 0) : return json.dumps({'format':'ntsc'})

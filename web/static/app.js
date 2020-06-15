@@ -120,7 +120,7 @@ function renderBreadcrumb () {
     //var breadelement = $('<li class="fsdir"><a href="#">'+baseDirLabel+'</a></li>');
     //breadelement.data("path", absPath);
    // $("#fsbreadcrumb").append(breadelement);
-    path = workingDir.split('/');
+    var path = workingDir.split('/');
     var count = 0;
     path.forEach(function(p) {
         if (p) {
@@ -458,6 +458,15 @@ $(function () {
 		$('#wifi-net-name').val(ap.name)
 		$('#wifi-net-pw').val(ap.pw)
 	    })
+            console.log(data);
+	});
+    });
+
+    $("#compvid-save-format").click(function() {	 
+	var fmt = 'ntsc'
+    	if ($('input:radio[name=compvid]')[1].checked) { fmt = 'pal' }
+	$.post(appBaseURL + "/compvid_save_format", { val: fmt })
+	.done(function(data) {
             console.log(data);
 	});
     });

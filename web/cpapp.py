@@ -108,6 +108,12 @@ class Root():
         lines = f.read().splitlines()
         return json.dumps({'name':lines[0], 'pw':lines[1]})
     wifi_get_ap.exposed = True
+ 
+    def compvid_get_format(self):
+        v = os.system("grep '#sdtv_mode=2' /boot/config.txt")
+        if (v == 0) : return json.dumps({'format':'ntsc'})
+        else : return json.dumps({'format':'pal'})
+    compvid_get_format.exposed = True
     
     def start_video_engine(self, engine):
         # stop them both

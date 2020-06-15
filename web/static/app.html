@@ -66,6 +66,8 @@
         }
 	#settings {
 	    padding: 8px;
+            overflow:auto;
+            height: calc(100% - 30px); 
 	}
 
   	#editor {
@@ -304,25 +306,40 @@
 
         <div id="settings-container">
 		<div id="settings">
-		    <p><h4>WiFi Network</h4></p>
+		    <h4>WiFi Network</h4>
 		    <p>Enter network details. When it boots up the EYESY will attempt to join this network.</p>
-		    <p>Network Name <input type="text" id="wifi-net-name" value="Name"></input></p>
-		    <p>Password <input type="text" id="wifi-net-pw" value=""></input></p>
+		    <p>Network Name <input type="text" id="wifi-net-name" value="Name"></p>
+		    <p>Password <input type="text" id="wifi-net-pw" value=""></p>
 		    <div id="wifi-save-net" class="side-button">Save</div>
 	           
 		    <br/> 
 		    <br/> 
-		    <p><h4>WiFi Access Point</h4></p>
+		    <h4>WiFi Access Point</h4>
 		    <p>Hold down the shift button while the EYESY boots up to enable access point mode.</p>
 		    <p>In access point mode the EYESY will create a WiFi network that you can join from your computer.</p>
 		    <p>By default the network name is 'EYESY' and the password is 'coolmusic'. This can be changed below.</p>
-		    <p>Network Name <input type="text" id="wifi-ap-name" value="Name"></input></p>
-		    <p>Password <input type="text" id="wifi-ap-pw" value="Password"></input></p>
+		    <p>Network Name <input type="text" id="wifi-ap-name" value="Name"></p>
+		    <p>Password <input type="text" id="wifi-ap-pw" value="Password"></p>
 		    <div id="wifi-save-ap" class="side-button">Save</div>
 
 		    <br/>
 		    <br/>
 		    <p>WiFi settings take effect after restarting the EYESY.</p>
+			    
+		    <h4>Composite Video Format</h4>
+		    <p>When the EYESY is not connected to a HDMI monitor it will output composite video.</p>
+		    <p>Select NTSC or PAL depending on the type of television you are using.</p>
+		    <p> 
+		     <input type="radio" id="compvid-selection" name="compvid" value="ntsc">
+		     <label for="ntsc">NTSC</label><br>
+		     <input type="radio" id="compvid-selection" name="compvid" value="pal">
+		     <label for="pal">PAL</label><br> 
+		    </p>
+		    <div id="wifi-save-compvid-format" class="side-button">Save</div>
+
+		    <br/>
+		    <br/>
+		    <p>Video settings take effect after restarting the EYESY.</p>
 	
 		</div>
 	</div>

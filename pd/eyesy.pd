@@ -1,4 +1,4 @@
-#N canvas 97 50 1123 660 10;
+#N canvas 98 50 1123 660 10;
 #X obj 108 350 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X obj 108 278 packOSC;
@@ -529,7 +529,7 @@ number bits to shift, f 27;
 #X obj 497 167 s recallShiftParams;
 #X floatatom 995 174 5 0 0 0 - - -, f 5;
 #X obj 995 152 r inputGain;
-#N canvas 5 50 735 474 metro-and-trig 1;
+#N canvas 6 50 735 474 metro-and-trig 0;
 #N canvas 8 50 1216 609 metronome 0;
 #X floatatom 393 117 5 0 0 1 tempo - -, f 5;
 #X obj 165 127 * 360;

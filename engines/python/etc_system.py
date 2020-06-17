@@ -394,9 +394,9 @@ class System:
         except :
             print "probably no scenes"
 
-    def color_picker( self ):
+    def color_picker( self, val ):
         # convert knob to 0-1
-        c = float(self.knob4)
+        c = float(val)
 
         # all the way down random bw
         rando = random.randrange(0, 2)
@@ -449,8 +449,8 @@ class System:
         color2 = (color[0], color[1], color[2])
         return color2
  
-    def color_picker_bg( self ):
-        c = self.knob5
+    def color_picker_bg( self, val):
+        c = float(val)
         r = (1 - (math.cos(c * 3 * math.pi) * .5 + .5)) * c
         g = (1 - (math.cos(c * 7 * math.pi) * .5 + .5)) * c
         b = (1 - (math.cos(c * 11 * math.pi) * .5 + .5)) * c

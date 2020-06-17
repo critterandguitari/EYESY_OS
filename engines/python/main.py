@@ -178,7 +178,6 @@ while 1:
     etc.update_scene_save_key()
 
     # clear it with bg color if auto clear enabled
-    etc.bg_color =  etc.color_picker_bg()
     if etc.auto_clear :
         screen.fill(etc.bg_color) 
     

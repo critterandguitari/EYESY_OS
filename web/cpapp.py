@@ -110,10 +110,12 @@ class Root():
     wifi_get_ap.exposed = True
  
     def compvid_save_format(self, val):
+        os.system("sudo mount /boot -o remount,rw")
         if (val == 'ntsc') :
             os.system("sudo sed -i 's/sdtv_mode=2/#sdtv_mode=2/g' /boot/config.txt")
         if (val == 'pal') :
             os.system("sudo sed -i 's/#*sdtv_mode=2/sdtv_mode=2/g' /boot/config.txt")
+        os.system("sudo mount /boot -o remount,ro")
         return '{"ok":"ok"}'
     compvid_save_format.exposed = True
 
@@ -193,6 +195,7 @@ class Root():
         src = file_operations.BASE_DIR + fpath
         dl = open(src, 'r').read()
         fname = os.path.basename(fpath)
+        fname = urllib.quote(fname)
         cherrypy.response.headers['content-type']        = 'application/octet-stream'
         cherrypy.response.headers['content-disposition'] = 'attachment; filename={}'.format(fname)
         return dl

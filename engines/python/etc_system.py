@@ -65,7 +65,10 @@ class System:
     audio_trig = False
     audio_scale = 1.0
     audio_trig_enable = True
-    
+   
+    # LINK
+    link_connected = False
+
     # knobs a used by mode 
     knob1 = .200
     knob2 = .200

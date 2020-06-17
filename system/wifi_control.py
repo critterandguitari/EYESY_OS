@@ -83,11 +83,13 @@ def stop_ap_server():
 def wifi_connected():
     global ap_state,ip_address, current_net
     ret = False
+    ap_name = run_cmd('/home/music/EYESY_OS/system/get_ap_ssid.sh')
+    if (run_cmd_check('systemctl status createap')) : ap_state =  AP_RUNNING
+    else : ap_state = AP_STOPPED
     if ap_state == AP_RUNNING :
         ip_address = "192.168.12.1"
-        current_net = "AP Mode"
+        current_net = str(ap_name) + " AP Mode"
         return True
-
     try :
         wifi_info = run_cmd('wpa_cli -i wlan0 status').splitlines()
         if (any("ip_address" in s for s in wifi_info)):

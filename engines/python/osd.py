@@ -355,23 +355,23 @@ def render_overlay_480(screen) :
     screen.blit(text, text_rect)
  
     # midi usb dev
-    if (etc.usb_midi_present) :
-        mode_str = " USB MIDI:  "   + str(etc.usb_midi_name) + " "
-    else :
-        mode_str = " USB MIDI:  None "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 20
-    text_rect.centery = 334
-    screen.blit(text, text_rect)
+#    if (etc.usb_midi_present) :
+#        mode_str = " USB MIDI:  "   + str(etc.usb_midi_name) + " "
+#    else :
+#        mode_str = " USB MIDI:  None "
+#    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+#    text_rect = text.get_rect()
+#    text_rect.x = 20
+#    text_rect.centery = 334
+#    screen.blit(text, text_rect)
  
     # midi ch
-    mode_str = " MIDI CH:  "   + str(etc.midi_ch) + " "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 20
-    text_rect.centery = 362
-    screen.blit(text, text_rect)
+#    mode_str = " MIDI CH:  "   + str(etc.midi_ch) + " "
+#    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+#    text_rect = text.get_rect()
+#    text_rect.x = 20
+#    text_rect.centery = 362
+#    screen.blit(text, text_rect)
       
     # ip    
     mode_str = " IP Address:  "   + wifi.ip_address + " "

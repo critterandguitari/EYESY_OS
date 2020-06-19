@@ -5,4 +5,4 @@ export LUA_PATH="/home/music/EYESY_OS/engines/oflua/?.lua;;"
 sudo chown music:music /tmp/video.log
 
 cd /home/music/EYESY_OS/engines/oflua/eyesy
-stdbuf -o0 make run &> /tmp/video.log
+stdbuf -o0 bin/eyesy &> /tmp/video.log

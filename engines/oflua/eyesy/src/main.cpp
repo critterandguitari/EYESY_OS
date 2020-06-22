@@ -11,7 +11,7 @@
 #include "ofApp.h"
 
 int main() {
-	ofSetupOpenGL(1920, 1080, OF_FULLSCREEN);
-//	ofSetupOpenGL(1280, 720, OF_FULLSCREEN);
-	ofRunApp(new ofApp());
+    ofSetupOpenGL(1920, 1080, OF_FULLSCREEN);
+    //ofSetupOpenGL(1280, 720, OF_FULLSCREEN);
+    ofRunApp(new ofApp());
 }

@@ -371,6 +371,20 @@ function openFileDialog(path) {
     showModal();
 }
 
+function saveMode() {
+  $.post(appBaseURL + "/save", { fpath: currentEditorFile, contents: editor.getValue() })
+	.done(function(data) {
+    console.log(data);
+	});
+}
+
+function reloadMode() {
+  $.post(appBaseURL + "/reload_mode", { name: currentEditorFile })
+  .done(function(data) {
+    console.log(data);
+  });
+}
+
 $(function () {
  
     // this disables page while loading things 
@@ -489,18 +503,23 @@ $(function () {
         });
     });
 
-    $("#reload-mode").click(function(){
-        $.post(appBaseURL + "/reload_mode", {name: currentEditorFile })
-        .done(function(data) {
-            console.log(data);
-        });
-    });
+    $("#reload-mode").click(reloadMode);
 
-    $("#save").click(function() {	 
-	$.post(appBaseURL + "/save", { fpath: currentEditorFile, contents: editor.getValue() })
-	.done(function(data) {
-            console.log(data);
-	});
+    $("#save").click(saveMode);
+
+    $(".ace_text-input").keydown(function(e) {
+      // save & reload on cmd + p
+      if (e.metaKey && e.which === 80) {
+        e.preventDefault();
+        saveMode();
+        reloadMode();
+      }
+
+      // save on cmd + s
+      if (e.metaKey && e.which === 83) {
+        e.preventDefault();
+        saveMode();
+      }
     });
 
     $("#usb-sel-but").click(function(){

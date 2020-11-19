@@ -117,6 +117,33 @@ def knobs_callback(path, args):
     etc.knob_hardware[3] = float(k4) / 1023
     etc.knob_hardware[4] = float(k5) / 1023
 
+# for TouchOSC control
+def knob1_callback(path, args):
+    global etc
+    k1 = args[0]
+    #print "received message: k1 " + str(args)
+    etc.knob_hardware[0] = float(k1) / 1023
+def knob2_callback(path, args):
+    global etc
+    k2 = args[0]
+    #print "received message: k2 " + str(args)
+    etc.knob_hardware[1] = k2 / 1023
+def knob3_callback(path, args):
+    global etc
+    k3 = args[0]
+    #print "received message: k3 " + str(args)
+    etc.knob_hardware[2] = k3 / 1023
+def knob4_callback(path, args):
+    global etc
+    k4 = args[0]
+    #print "received message: k4 " + str(args)
+    etc.knob_hardware[3] = k4 / 1023
+def knob5_callback(path, args):
+    global etc
+    k5 = args[0]
+    #print "received message: k5 " + str(args)
+    etc.knob_hardware[4] = k5 / 1023
+
 def shift_callback(path, args) :
     global etc
     stat = args
@@ -150,6 +177,13 @@ def keys_callback(path, args) :
         if (etc.auto_clear) : etc.auto_clear = False
         else : etc.auto_clear = True
 
+# for TouchOSC control
+def singlekey_callback(path, args) :
+    splitpath = path.split("/")
+    k = int(splitpath[2])
+    v = int(args[0])
+    keys_callback(path, [k,v])
+
 def init (etc_object) :
     global osc_server, osc_target, etc
     etc = etc_object
@@ -164,6 +198,22 @@ def init (etc_object) :
         osc_server = liblo.Server(4000)
     except liblo.ServerError, err:
         print str(err)
+    # add methods for TouchOSC control
+    osc_server.add_method("/knobs/1", 'f', knob1_callback)
+    osc_server.add_method("/knobs/2", 'f', knob2_callback)
+    osc_server.add_method("/knobs/3", 'f', knob3_callback)
+    osc_server.add_method("/knobs/4", 'f', knob4_callback)
+    osc_server.add_method("/knobs/5", 'f', knob5_callback)
+    osc_server.add_method("/key/1", 'f', singlekey_callback)
+    osc_server.add_method("/key/2", 'f', singlekey_callback)
+    osc_server.add_method("/key/3", 'f', singlekey_callback)
+    osc_server.add_method("/key/4", 'f', singlekey_callback)
+    osc_server.add_method("/key/5", 'f', singlekey_callback)
+    osc_server.add_method("/key/6", 'f', singlekey_callback)
+    osc_server.add_method("/key/7", 'f', singlekey_callback)
+    osc_server.add_method("/key/8", 'f', singlekey_callback)
+    osc_server.add_method("/key/9", 'f', singlekey_callback)
+    osc_server.add_method("/key/10", 'f', singlekey_callback)
 
     osc_server.add_method("/knobs", 'iiiiii', knobs_callback)
     osc_server.add_method("/key", 'ii', keys_callback)

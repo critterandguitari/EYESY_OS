@@ -191,6 +191,7 @@ class System:
 
     def check_pgm_change(self):
         if (self.midi_pgm != self.midi_pgm_last):
+            print "got pgm " + str(self.midi_pgm)
             self.midi_pgm_last = self.midi_pgm
             if (len(self.scenes) > 0) :
                 self.scene_index = self.midi_pgm % len(self.scenes)

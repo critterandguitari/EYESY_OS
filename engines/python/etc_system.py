@@ -282,16 +282,22 @@ class System:
         self.lastgrab_thumb = pygame.Surface((128,72) )
 
         for filepath in sorted(glob.glob(self.GRABS_PATH + '*.jpg')):
-            filename = os.path.basename(filepath)
-            print 'loading grab: ' + filename
-            img = pygame.image.load(filepath)
-            img = img.convert()
-            thumb = pygame.transform.scale(img, (128, 72) )
-            self.lastgrab = img
-            self.lastgrab_thumb = thumb
-            self.tengrabs_thumbs[self.grabcount] = thumb
-            self.grabcount += 1
+            try :
+                filename = os.path.basename(filepath)
+                print 'loading grab: ' + filename
+                img = pygame.image.load(filepath)
+                img = img.convert()
+                thumb = pygame.transform.scale(img, (128, 72) )
+                self.lastgrab = img
+                self.lastgrab_thumb = thumb
+                self.tengrabs_thumbs[self.grabcount] = thumb
+                self.grabcount += 1
+            except Exception, e:
+                self.error = traceback.format_exc()
+                print "error loading grab: " + self.error
             if self.grabcount > 10: break
+
+
 
     # called from main loop
     def update_scene_save_key(self):

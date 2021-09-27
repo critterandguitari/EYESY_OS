@@ -242,7 +242,7 @@ def render_overlay_480(screen) :
     #screen.blit(text, text_rect)
     
     # version
-    mode_str = " v2.1 "
+    mode_str = " v2.3 "
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20

@@ -9,6 +9,9 @@ cp -fr --preserve=mode,ownership tmp/rootfs/* /
 rm -fr tmp
 sync
 
+# make System folder
+mkdir /sdcard/System
+
 # configure systemd stuff
 systemctl disable eyesy-oflua.service  
 systemctl enable cherrypy.service  

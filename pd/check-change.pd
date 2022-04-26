@@ -1,4 +1,4 @@
-#N canvas 4 53 829 513 10;
+#N canvas 483 271 829 513 10;
 #X obj 204 18 inlet;
 #X obj 17 19 inlet;
 #X text 52 20 knob value;
@@ -25,6 +25,9 @@
 #X obj 204 41 t b b b, f 21;
 #X obj 17 42 t a a a, f 11;
 #X obj 180 81 i;
+#X obj 545 54 inlet;
+#X text 583 51 open;
+#X obj 545 77 t b;
 #X connect 0 0 23 0;
 #X connect 1 0 24 0;
 #X connect 5 0 4 0;
@@ -53,3 +56,5 @@
 #X connect 24 1 15 0;
 #X connect 24 2 25 1;
 #X connect 25 0 8 0;
+#X connect 26 0 28 0;
+#X connect 28 0 17 0;

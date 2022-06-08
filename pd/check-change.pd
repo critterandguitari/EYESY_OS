@@ -17,8 +17,8 @@
 #X obj 80 79 spigot 0;
 #X obj 80 109 t a b;
 #X obj 80 267 t b b, f 11;
-#X obj 143 299 0;
-#X obj 143 322 s \$0-valve;
+#X obj 181 346 0;
+#X obj 181 369 s \$0-valve;
 #X obj 123 50 r \$0-valve;
 #X obj 327 110 s \$0-valve;
 #X obj 327 83 1;

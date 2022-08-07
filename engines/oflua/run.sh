@@ -6,6 +6,7 @@ sudo chown music:music /tmp/video.log
 
 sudo killall eyesy
 sudo killall pd
+sudo killall selector
 
 cd /home/music/EYESY_OS/engines/oflua/pd
 /usr/bin/pd -nogui -alsamidi -midiindev 1 -midioutdev 1 -noaudio eyesy.pd &> /dev/null &

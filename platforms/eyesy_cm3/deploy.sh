@@ -15,10 +15,12 @@ mkdir /sdcard/System
 # configure systemd stuff
 systemctl disable eyesy-oflua.service  
 systemctl enable cherrypy.service  
-systemctl enable eyesy-pd.service  
-systemctl enable eyesy-python.service  
 systemctl enable splashscreen.service  
 systemctl enable ttymidi.service  
+
+# disable old way of starting things
+systemctl disable eyesy-pd.service  
+systemctl disable eyesy-python.service  
 
 # networking started by eyesy-pd
 systemctl disable dhcpcd.service

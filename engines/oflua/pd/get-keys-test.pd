@@ -1,0 +1,26 @@
+#N canvas 63 88 1303 697 12;
+#X obj 184 285 pack;
+#X text 379 226 pins are SR LOAD \, CLOCK and DATA 4th argument is
+number bits to shift, f 27;
+#X obj 171 234 rpi_gpio_shiftin 34 32 33 16;
+#X obj 273 186 rpi_gpio 35 0 1;
+#X msg 273 159 0;
+#X text 342 163 have to pull clock en low;
+#X obj 183 361 route 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15, f 93;
+#X obj 167 49 loadbang;
+#X obj 171 149 delay 10;
+#X obj 171 185 t b;
+#X obj 171 96 t b b;
+#X obj 171 73 delay 10;
+#X obj 290 328 print;
+#X connect 0 0 6 0;
+#X connect 0 0 12 0;
+#X connect 2 0 0 0;
+#X connect 2 1 0 1;
+#X connect 4 0 3 0;
+#X connect 7 0 11 0;
+#X connect 8 0 9 0;
+#X connect 9 0 2 0;
+#X connect 10 0 8 0;
+#X connect 10 1 4 0;
+#X connect 11 0 10 0;

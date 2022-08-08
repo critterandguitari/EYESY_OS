@@ -11,5 +11,5 @@ cd /home/music/EYESY_OS/engines/python/pd
 /usr/bin/pd -nogui -alsamidi -midiindev 1 -midioutdev 1 -noaudio eyesy.pd &> /dev/null &
 
 cd /home/music/EYESY_OS/engines/python 
-stdbuf -o0 python main.py &> /tmp/video.log
+sudo stdbuf -o0 python main.py &> /tmp/video.log
 

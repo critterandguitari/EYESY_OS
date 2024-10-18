@@ -4,8 +4,8 @@ import time
 import glob
 import json
 import cherrypy
-import urllib
-import liblo
+import urllib.request, urllib.parse, urllib.error
+import pyliblo3 as liblo
 import time
 import socket
 from os import listdir
@@ -21,8 +21,8 @@ def run_cmd(cmd) :
     except: pass
     return ret
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+imp.reload(sys)
+#sys.setdefaultencoding('utf-8')
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,7 +31,7 @@ file_operations = imp.load_source('file_operations', current_dir + '/file_operat
 
 GRABS_PATH = "/sdcard/Grabs/"
 MODES_PATH = "/"
-USER_DIR = "/sdcard/"
+USER_DIR =   "/sdcard/"
 
 try:
 	osc_target = liblo.Address(4000)
@@ -46,6 +46,7 @@ def get_immediate_subdirectories(dir) :
 class Root():
 
     # loads a file
+    @cherrypy.tools.encode('utf-8')
     def get_file(self, fpath):
         mode_path = MODES_PATH+fpath
         mode = open(mode_path, 'r').read()
@@ -53,6 +54,7 @@ class Root():
         return mode
     get_file.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def wifi_save_net(self, name, pw):
         cmd = 'wpa_passphrase "' + name + '" "' + pw + '"'
         #print cmd
@@ -71,6 +73,7 @@ class Root():
         return '{"ok":"ok"}'
     wifi_save_net.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def wifi_get_net(self) :
         f = open(USER_DIR + "/System/wpa_supplicant.conf", "r")
         lines = f.read().splitlines()
@@ -85,13 +88,14 @@ class Root():
         return json.dumps({'name':ssid, 'pw':pw})
     wifi_get_net.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def wifi_save_ap(self, name, pw):
         # check for wifi file, create one if not found
         ap_file = USER_DIR + "/System/ap.txt"
         if os.path.exists(ap_file):
             f = open(ap_file, "r")
         else :
-            print "wifi file not found, creating"
+            print("wifi file not found, creating")
             f = open(ap_file, "w")
             f.close()
         with open(ap_file, "w") as wf:
@@ -100,6 +104,7 @@ class Root():
         return '{"ok":"ok"}'
     wifi_save_ap.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def wifi_get_ap(self):
         # check for wifi file
         ap_file = USER_DIR + "/ap.txt"
@@ -111,6 +116,7 @@ class Root():
         return json.dumps({'name':lines[0], 'pw':lines[1]})
     wifi_get_ap.exposed = True
  
+    @cherrypy.tools.encode('utf-8')
     def compvid_save_format(self, val):
         os.system("sudo mount /boot -o remount,rw")
         if (val == 'ntsc') :
@@ -121,12 +127,14 @@ class Root():
         return '{"ok":"ok"}'
     compvid_save_format.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def compvid_get_format(self):
         v = os.system("grep '#sdtv_mode=2' /boot/config.txt")
         if (v == 0) : return json.dumps({'format':'ntsc'})
         else : return json.dumps({'format':'pal'})
     compvid_get_format.exposed = True
     
+    @cherrypy.tools.encode('utf-8')
     def start_video_engine(self, engine):
         # stop them both
         os.system("sudo systemctl stop eyesy-oflua.service")
@@ -141,30 +149,35 @@ class Root():
             return 'no video engine specified'
     start_video_engine.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def stop_video_engine(self, engine):
         # stop them both
         os.system("sudo systemctl stop eyesy-oflua.service")
         os.system("sudo systemctl stop eyesy-python.service")
     stop_video_engine.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def save_new(self, name, contents):
         pass
     save_new.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def reload_mode(self, name):
         liblo.send(osc_target, "/reload", 1)
         return "reloaded mode"
     reload_mode.exposed = True
  
+    @cherrypy.tools.encode('utf-8')
     def save(self, fpath, contents):
         p = fpath
         mode_path = MODES_PATH+p
         with open(mode_path, "w") as text_file:
             text_file.write(contents)
-        print contents
+        print(contents)
         return "SAVED " + fpath
     save.exposed = True
    
+    @cherrypy.tools.encode('utf-8')
     def get_grabs(self):
         images = []
         for filepath in sorted(glob.glob(GRABS_PATH+'*.jpg')):
@@ -173,6 +186,7 @@ class Root():
         return json.dumps(images)
     get_grabs.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def get_grab(self, name):
         grab_path = GRABS_PATH+name
         grab = open(grab_path, 'r').read()
@@ -180,9 +194,10 @@ class Root():
         return grab
     get_grab.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     def tester(self, name):
         return "TESTdf"
-        print "cool"
+        print("cool")
     tester.exposed = True
 
     def media(self, fpath, cb):
@@ -197,12 +212,13 @@ class Root():
         src = file_operations.BASE_DIR + fpath
         dl = open(src, 'r').read()
         fname = os.path.basename(fpath)
-        fname = urllib.quote(fname)
+        fname = urllib.parse.quote(fname)
         cherrypy.response.headers['content-type']        = 'application/octet-stream'
         cherrypy.response.headers['content-disposition'] = 'attachment; filename={}'.format(fname)
         return dl
     download.exposed = True
 
+    @cherrypy.tools.encode('utf-8')
     @cherrypy.config(**{'response.timeout': 3600}) # for large file
     def upload(self, dst, **fdata):
         upload = fdata['files[]']
@@ -218,15 +234,16 @@ class Root():
                     break
                 size += len(data)
                 newfile.write(data)
-        print "saved file, size: " + str(size)
+        print("saved file, size: " + str(size))
         p, ext = os.path.splitext(filepath)
         cherrypy.response.headers['Content-Type'] = "application/json"
         return '{"files":[{"name":"x","size":'+str(size)+',"url":"na","thumbnailUrl":"na","deleteUrl":"na","deleteType":"DELETE"}]}'
         
     upload.exposed = True
   
+    @cherrypy.tools.encode('utf-8')
     def fmdata(self, **data):
-        print "data op request" 
+        print("data op request") 
         ret = ''
         if 'operation' in data :
             cherrypy.response.headers['Content-Type'] = "application/json"
@@ -253,6 +270,7 @@ class Root():
             return "no operation specified"
 
     fmdata.exposed = True
+
 
 
 

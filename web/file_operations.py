@@ -8,7 +8,7 @@ BASE_DIR = "/"
 #TODO check all the paths here 
 def check_path(path) :
     path = os.path.normpath(path)
-    print path
+    print(path)
     if path.startswith("/usbdrive") or path.startswith("/sdcard") : return True
     else : return False
 
@@ -108,7 +108,7 @@ def folder_to_dict(fpath):
         }
 
 def get_files(rootpath):
-    root, folders, files = os.walk(rootpath).next()
+    root, folders, files = next(os.walk(rootpath))
     contents = []
 
     # some reason root is // when rootpath is /, fix it
@@ -130,6 +130,8 @@ def get_files(rootpath):
             contents += [file_to_dict(path)]
 
     #print json.dumps(contents, indent=4, encoding='utf-8')
-    return json.dumps(contents, indent=4, encoding='utf-8')
+    return json.dumps(contents, indent=4)
+
+
 
 

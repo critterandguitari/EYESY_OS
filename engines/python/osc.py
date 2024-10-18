@@ -99,7 +99,7 @@ def set_callback(path, args):
     global etc
     name = args[0]
     etc.set_mode_by_name(name)
-    print "set patch to: " + str(etc.mode) + " with index " + str(etc.mode_index)
+    print("set patch to: " + str(etc.mode) + " with index " + str(etc.mode_index))
  
 def new_callback(path, args):
     global etc
@@ -108,13 +108,13 @@ def new_callback(path, args):
    
 def reload_callback(path, args):
     global etc
-    print "reloading: " + str(etc.mode)
+    print("reloading: " + str(etc.mode))
     etc.reload_mode()
 
 def knobs_callback(path, args):
     global etc
     k1, k2, k3, k4, k5, k6 = args
-    #print "received message: " + str(args)
+    print ("received message: " + str(args))
     etc.knob_hardware[0] = float(k1) / 1023
     etc.knob_hardware[1] = float(k2) / 1023
     etc.knob_hardware[2] = float(k3) / 1023
@@ -200,8 +200,8 @@ def init (etc_object) :
 
     try:
         osc_server = liblo.Server(4000)
-    except liblo.ServerError, err:
-        print str(err)
+    except liblo.ServerError as err:
+        print(str(err))
     # add methods for TouchOSC control
     osc_server.add_method("/knobs/1", 'f', knob1_callback)
     osc_server.add_method("/knobs/2", 'f', knob2_callback)
@@ -245,4 +245,5 @@ def recv() :
 
 def send(addr, args) :
     global osc_target
-    liblo.send(osc_target, addr, args) 
+    liblo.send(osc_target, addr, args)
+

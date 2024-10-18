@@ -12,7 +12,8 @@ const wsServer = new WebSocketServer({
 });
 
 Tail = require('tail').Tail;
-tail = new Tail("/tmp/video.log");
+//tail = new Tail("/tmp/video.log");
+tail = new Tail("/home/music/testlog");
 
 wsServer.on('request', function(request) {
     const connection = request.accept(null, request.origin);

@@ -4,6 +4,8 @@ import imp
 from flask import Flask, request, make_response, jsonify, send_from_directory, send_file
 from flask_socketio import SocketIO, emit
 import subprocess
+import urllib.parse
+import werkzeug
 
 GRABS_PATH = "/sdcard/Grabs/"
 MODES_PATH = "/"
@@ -35,6 +37,44 @@ def get_file():
     mode_path = os.path.join(MODES_PATH, fpath)
     return send_file(mode_path, mimetype='text/plain')
 
+@app.route('/download')
+def download():
+    fpath = request.args.get('fpath')
+    src = os.path.join(file_operations.BASE_DIR, urllib.parse.unquote(fpath))
+    fname = os.path.basename(src)
+    fname = urllib.parse.quote(fname)
+    return send_file(src, mimetype='application/octet-stream', as_attachment=True, download_name=fname)
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    upload = request.files['files[]']
+    dst = request.form['dst']
+    folder = dst
+    filename = werkzeug.utils.secure_filename(upload.filename)
+    size = 0
+    filepath = os.path.join(file_operations.BASE_DIR, folder, filename)
+    filepath = file_operations.check_and_inc_name(filepath)  # As per your function
+
+    with open(filepath, 'wb') as newfile:
+        data = upload.read()
+        size += len(data)
+        newfile.write(data)
+
+    print(f"Saved file, size: {size}")
+
+    response = {
+        "files": [
+            {
+                "name": "x",
+                "size": size,
+                "url": "na",
+                "thumbnailUrl": "na",
+                "deleteUrl": "na",
+                "deleteType": "DELETE"
+            }
+        ]
+    }
+    return jsonify(response)
 
 @app.route('/fmdata', methods=['GET', 'POST'])
 def fmdata():

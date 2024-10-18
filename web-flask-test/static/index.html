@@ -163,11 +163,51 @@
             height: calc(100% - 285px);
         }
 
-        #title-bar{
-            background-color: #222;
-            height: 20px;
-            padding: 4px;
-        }
+
+	#title-bar {
+	    background-color: #222;
+	    height: 28px;
+	    padding: 4px;
+	    overflow-x: auto;
+	    white-space: nowrap;
+	}
+
+	#tabs-container {
+	    height: 100%;
+	}
+
+	.tab {
+	    display: inline-block;
+	    background-color: #333;
+	    padding: 4px 8px;
+	    margin-right: 2px;
+	    cursor: pointer;
+	    position: relative;
+	    color: #fff;
+	}
+
+	.tab.active {
+	    background-color: #444;
+	}
+
+	.tab:hover {
+	    background-color: #555;
+	}
+
+	.tab .close-tab {
+	    position: absolute;
+	    top: 2px;
+	    right: 4px;
+	    color: #ccc;
+	    font-weight: bold;
+	    cursor: pointer;
+	}
+
+	.tab .close-tab:hover {
+	    color: #fff;
+	}
+
+
 
         /* Start by setting display:none to make this hidden.
            Then we position it in relation to the viewport window
@@ -302,7 +342,14 @@
     </div>
 
     <div id="right-col">        
-        <div id="title-bar"><span id="title">...</span></div>
+
+	<div id="title-bar">
+	    <div id="tabs-container">
+		<div class="tab active" data-filepath="path/to/file1.lua">file1.lua <span class="close-tab">&times;</span></div>
+		<div class="tab" data-filepath="path/to/file2.lua">file2.lua <span class="close-tab">&times;</span></div>
+	    </div>
+	</div>
+
 
         <div id="settings-container">
 		<div id="settings">

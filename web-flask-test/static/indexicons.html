@@ -15,6 +15,8 @@
     <script src="/static/assets/jquery.ui.widget.js"></script>
     <!--script src="assets/jquery.iframe-transport.js"></script-->
     <script src="/static/assets/jquery.fileupload.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
 <style type="text/css" media="screen">
 	/* Scrollbar styling for WebKit browsers */
@@ -309,6 +311,30 @@
         body.dialog {overflow: hidden;}
         body.dialog .modal-dialog { display: block;}
 
+	.icon-button {
+	    display: inline-block;
+	    cursor: pointer;
+	    text-decoration: none;
+	    background-color: #444;
+	    padding: 8px;
+	    margin: 2px;
+	    color: #fff;
+	    font-size: 18px; /* Adjust icon size */
+	    text-align: center;
+	    /*border-radius: 4px;*/
+	}
+
+	.icon-button:hover {
+	    background-color: #666;
+	}
+
+	.icon-button i {
+	    pointer-events: none; /* Allows clicking anywhere on the button */
+	}
+
+	.icon-button input[type="file"] {
+	    display: none;
+	}
 </style>
 
   </head>
@@ -330,9 +356,14 @@
         <div id="stop-video" class="side-button">Stop Video</div>
         <div style="clear:left;"></div>
         <br/>
+	
+		<div id="save" class="icon-button" title="Save">
+		    <i class="fas fa-save"></i>
+		</div>
+		<div id="reload-mode" class="icon-button" title="Reload Mode">
+		    <i class="fas fa-sync"></i>
+		</div>
 
-        <div id="save" class="side-button">Save</div>
-        <div id="reload-mode" class="side-button">Reload Mode</div>
         <div style="clear:left;"></div>
         <br/>
 
@@ -340,7 +371,7 @@
             <!--div id="sd-sel-but" class="side-button">SD Card</div>
             <div id="usb-sel-but" class="side-button">USB Drive</div>
             <div style="clear:left;"></div-->
-            <div id="cut-but"  class="side-button">Cut</div>
+            <!--div id="cut-but"  class="side-button">Cut</div>
             <div id="copy-but" class="side-button">Copy</div>
             <div  id="paste-but" class="side-button">Paste</div>
             <div style="clear:left;"></div>
@@ -352,7 +383,37 @@
             <label class="side-button">Upload<input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
             <div id="new-folder-but" class="side-button">New Folder</div>
             <div style="clear:left;"></div>
-            <ul class="breadcrumb" id="fsbreadcrumb"></ul>
+            <ul class="breadcrumb" id="fsbreadcrumb"></ul-->
+            <div id="cut-but" class="icon-button" title="Cut">
+                <i class="fas fa-cut"></i>
+            </div>
+            <div id="copy-but" class="icon-button" title="Copy">
+                <i class="fas fa-copy"></i>
+            </div>
+            <div id="paste-but" class="icon-button" title="Paste">
+                <i class="fas fa-paste"></i>
+            </div>
+            <div id="rename-but" class="icon-button" title="Rename">
+                <i class="fas fa-edit"></i>
+            </div>
+            <div id="zip-but" class="icon-button" title="Zip">
+                <i class="fas fa-file-archive"></i>
+            </div>
+            <div id="unzip-but" class="icon-button" title="Unzip">
+                <i class="fas fa-file-archive"></i>
+            </div>
+            <div id="delete-but" class="icon-button" title="Delete">
+                <i class="fas fa-trash"></i>
+            </div>
+            <label class="icon-button" title="Upload">
+                <i class="fas fa-upload"></i>
+                <input id="fileupload" type="file" name="files[]" style="display: none;" multiple>
+            </label>
+            <div id="new-folder-but" class="icon-button" title="New Folder">
+                <i class="fas fa-folder-plus"></i>
+            </div>
+	        <div style="clear:left;"></div>
+            <ul class="breadcrumb" id="fsbreadcrumb">
         </div>
 
         <div style="clear:left;"></div>

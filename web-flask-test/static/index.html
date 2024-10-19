@@ -17,10 +17,30 @@
     <script src="/static/assets/jquery.fileupload.js"></script>
 
 <style type="text/css" media="screen">
-        .ace_scrollbar-inner {
+	/* Scrollbar styling for WebKit browsers */
+	::-webkit-scrollbar {
+	    width: 12px;
+	}
+
+	::-webkit-scrollbar-track {
+	    background: #222;
+	}
+
+	::-webkit-scrollbar-thumb {
+	    background-color: #444;
+	    border-radius: 6px;
+	    border: 3px solid #222;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+	    background-color: #555;
+	}        
+
+/*
+.ace_scrollbar-inner {
               background-color: white;
                 opacity: 0.01;
-        }
+        }*/
         #menu { 
             top:  0px;
         }
@@ -80,8 +100,11 @@
             background-color: black;
             color : white;
             font-family: 'Avenir', Arial, sans-serif;
-            font-size: 12px; 
-        }
+            font-size: 14px; 
+            scrollbar-width: thin;
+            scrollbar-color: #444 #222;
+
+	}
          .side-button {
             float:left;
             cursor: pointer;
@@ -163,7 +186,6 @@
             height: calc(100% - 285px);
         }
 
-
 	#title-bar {
 	    background-color: #222;
 	    height: 28px;
@@ -184,6 +206,10 @@
 	    cursor: pointer;
 	    position: relative;
 	    color: #fff;
+	    /*max-width: 150px; 
+    	    overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;*/
 	}
 
 	.tab.active {
@@ -205,6 +231,10 @@
 
 	.tab .close-tab:hover {
 	    color: #fff;
+	}
+
+	.tab.unsaved {
+	    font-style: italic;
 	}
 
 
@@ -345,8 +375,8 @@
 
 	<div id="title-bar">
 	    <div id="tabs-container">
-		<div class="tab active" data-filepath="path/to/file1.lua">file1.lua <span class="close-tab">&times;</span></div>
-		<div class="tab" data-filepath="path/to/file2.lua">file2.lua <span class="close-tab">&times;</span></div>
+		<!--div class="tab active" data-filepath="path/to/file1.lua">file1.lua <span class="close-tab">&times;</span></div>
+		<div class="tab" data-filepath="path/to/file2.lua">file2.lua <span class="close-tab">&times;</span></div-->
 	    </div>
 	</div>
 

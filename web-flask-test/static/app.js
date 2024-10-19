@@ -545,10 +545,10 @@ function saveMode() {
             currentFile.unsaved = false;
             currentFile.tabElement.removeClass('unsaved');
             currentFile.editorSession.setValue(content);
-            alert('File saved successfully.');
+            console.log('File saved successfully.');
         });
     } else {
-        alert('No file to save.');
+        alertDialog('No file to save.');
     }
 }
 /*

@@ -16,7 +16,7 @@
     <!--script src="assets/jquery.iframe-transport.js"></script-->
     <script src="/static/assets/jquery.fileupload.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <style type="text/css" media="screen">
 	/* Scrollbar styling for WebKit browsers */
@@ -106,7 +106,7 @@
             scrollbar-width: thin;
             scrollbar-color: #444 #222;
 
-	}
+	    }
          .side-button {
             float:left;
             cursor: pointer;
@@ -310,7 +310,7 @@
 
         body.dialog {overflow: hidden;}
         body.dialog .modal-dialog { display: block;}
-
+/* fa stuyle
 	.icon-button {
 	    display: inline-block;
 	    cursor: pointer;
@@ -319,22 +319,51 @@
 	    padding: 8px;
 	    margin: 2px;
 	    color: #fff;
-	    font-size: 18px; /* Adjust icon size */
+	    font-size: 18px;
 	    text-align: center;
-	    /*border-radius: 4px;*/
 	}
+
 
 	.icon-button:hover {
 	    background-color: #666;
 	}
 
 	.icon-button i {
-	    pointer-events: none; /* Allows clicking anywhere on the button */
+	    pointer-events: none; 
 	}
 
 	.icon-button input[type="file"] {
 	    display: none;
-	}
+	}*/
+        .icon-button {
+            display: inline-block;
+            cursor: pointer;
+            text-decoration: none;
+            background-color: #444;
+            padding: 8px;
+            margin: 2px;
+            color: #fff;
+            text-align: center;
+            /*border-radius: 4px;*/
+        }
+
+        .icon-button:hover {
+            background-color: #666;
+        }
+
+        .icon-button .material-icons {
+            font-size: 24px; /* Adjust icon size */
+            vertical-align: middle;
+        }
+
+        .icon-button input[type="file"] {
+            display: none;
+        }
+       
+        * {
+            /*border-radius: 4px;*/
+        }
+ 
 </style>
 
   </head>
@@ -357,12 +386,18 @@
         <div style="clear:left;"></div>
         <br/>
 	
-		<div id="save" class="icon-button" title="Save">
+		<!--div id="save" class="icon-button" title="Save">
 		    <i class="fas fa-save"></i>
 		</div>
 		<div id="reload-mode" class="icon-button" title="Reload Mode">
 		    <i class="fas fa-sync"></i>
-		</div>
+		</div-->
+        <div id="save" class="icon-button" title="Save">
+            <span class="material-icons">save</span>
+        </div>
+        <div id="reload-mode" class="icon-button" title="Reload Mode">
+            <span class="material-icons">refresh</span>
+        </div>
 
         <div style="clear:left;"></div>
         <br/>
@@ -384,7 +419,7 @@
             <div id="new-folder-but" class="side-button">New Folder</div>
             <div style="clear:left;"></div>
             <ul class="breadcrumb" id="fsbreadcrumb"></ul-->
-            <div id="cut-but" class="icon-button" title="Cut">
+            <!--div id="cut-but" class="icon-button" title="Cut">
                 <i class="fas fa-cut"></i>
             </div>
             <div id="copy-but" class="icon-button" title="Copy">
@@ -411,7 +446,39 @@
             </label>
             <div id="new-folder-but" class="icon-button" title="New Folder">
                 <i class="fas fa-folder-plus"></i>
+            </divi-->
+
+            <div id="cut-but" class="icon-button" title="Cut">
+                <span class="material-icons">content_cut</span>
             </div>
+            <div id="copy-but" class="icon-button" title="Copy">
+                <span class="material-icons">content_copy</span>
+            </div>
+            <div id="paste-but" class="icon-button" title="Paste">
+                <span class="material-icons">content_paste</span>
+            </div>
+            <div style="clear:left;"></div>
+            <div id="rename-but" class="icon-button" title="Rename">
+                <span class="material-icons">drive_file_rename_outline</span>
+            </div>
+            <div id="zip-but" class="icon-button" title="Zip">
+                <span class="material-icons">folder_zip</span>
+            </div>
+            <div id="unzip-but" class="icon-button" title="Unzip">
+                <span class="material-icons">unarchive</span>
+            </div>
+            <div id="delete-but" class="icon-button" title="Delete">
+                <span class="material-icons">delete</span>
+            </div>
+            <div style="clear:left;"></div>
+            <label class="icon-button" title="Upload">
+                <span class="material-icons">upload_file</span>
+                <input id="fileupload" type="file" name="files[]" style="display: none;" multiple>
+            </label>
+            <div id="new-folder-but" class="icon-button" title="New Folder">
+                <span class="material-icons">create_new_folder</span>
+            </div>
+
 	        <div style="clear:left;"></div>
             <ul class="breadcrumb" id="fsbreadcrumb">
         </div>

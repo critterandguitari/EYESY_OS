@@ -15,8 +15,6 @@
     <script src="/static/assets/jquery.ui.widget.js"></script>
     <!--script src="assets/jquery.iframe-transport.js"></script-->
     <script src="/static/assets/jquery.fileupload.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <style type="text/css" media="screen">
 	/* Scrollbar styling for WebKit browsers */
@@ -106,7 +104,7 @@
             scrollbar-width: thin;
             scrollbar-color: #444 #222;
 
-	    }
+	}
          .side-button {
             float:left;
             cursor: pointer;
@@ -283,7 +281,8 @@
             padding:4px;
         }
         #modal-dialog-body {
-            margin-bottom: 10px;
+            margin-bottom: 10px;;
+	        padding-left: 10px;
         }
         .modal-button {
             cursor: pointer;
@@ -310,60 +309,7 @@
 
         body.dialog {overflow: hidden;}
         body.dialog .modal-dialog { display: block;}
-/* fa stuyle
-	.icon-button {
-	    display: inline-block;
-	    cursor: pointer;
-	    text-decoration: none;
-	    background-color: #444;
-	    padding: 8px;
-	    margin: 2px;
-	    color: #fff;
-	    font-size: 18px;
-	    text-align: center;
-	}
 
-
-	.icon-button:hover {
-	    background-color: #666;
-	}
-
-	.icon-button i {
-	    pointer-events: none; 
-	}
-
-	.icon-button input[type="file"] {
-	    display: none;
-	}*/
-        .icon-button {
-            display: inline-block;
-            cursor: pointer;
-            text-decoration: none;
-            background-color: #444;
-            padding: 8px;
-            margin: 2px;
-            color: #fff;
-            text-align: center;
-            /*border-radius: 4px;*/
-        }
-
-        .icon-button:hover {
-            background-color: #666;
-        }
-
-        .icon-button .material-icons {
-            font-size: 24px; /* Adjust icon size */
-            vertical-align: middle;
-        }
-
-        .icon-button input[type="file"] {
-            display: none;
-        }
-       
-        * {
-            /*border-radius: 4px;*/
-        }
- 
 </style>
 
   </head>
@@ -385,20 +331,9 @@
         <div id="stop-video" class="side-button">Stop Video</div>
         <div style="clear:left;"></div>
         <br/>
-	
-		<!--div id="save" class="icon-button" title="Save">
-		    <i class="fas fa-save"></i>
-		</div>
-		<div id="reload-mode" class="icon-button" title="Reload Mode">
-		    <i class="fas fa-sync"></i>
-		</div-->
-        <div id="save" class="icon-button" title="Save">
-            <span class="material-icons">save</span>
-        </div>
-        <div id="reload-mode" class="icon-button" title="Reload Mode">
-            <span class="material-icons">refresh</span>
-        </div>
 
+        <div id="save" class="side-button">Save</div>
+        <div id="reload-mode" class="side-button">Reload Mode</div>
         <div style="clear:left;"></div>
         <br/>
 
@@ -406,7 +341,7 @@
             <!--div id="sd-sel-but" class="side-button">SD Card</div>
             <div id="usb-sel-but" class="side-button">USB Drive</div>
             <div style="clear:left;"></div-->
-            <!--div id="cut-but"  class="side-button">Cut</div>
+            <div id="cut-but"  class="side-button">Cut</div>
             <div id="copy-but" class="side-button">Copy</div>
             <div  id="paste-but" class="side-button">Paste</div>
             <div style="clear:left;"></div>
@@ -418,69 +353,7 @@
             <label class="side-button">Upload<input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
             <div id="new-folder-but" class="side-button">New Folder</div>
             <div style="clear:left;"></div>
-            <ul class="breadcrumb" id="fsbreadcrumb"></ul-->
-            <!--div id="cut-but" class="icon-button" title="Cut">
-                <i class="fas fa-cut"></i>
-            </div>
-            <div id="copy-but" class="icon-button" title="Copy">
-                <i class="fas fa-copy"></i>
-            </div>
-            <div id="paste-but" class="icon-button" title="Paste">
-                <i class="fas fa-paste"></i>
-            </div>
-            <div id="rename-but" class="icon-button" title="Rename">
-                <i class="fas fa-edit"></i>
-            </div>
-            <div id="zip-but" class="icon-button" title="Zip">
-                <i class="fas fa-file-archive"></i>
-            </div>
-            <div id="unzip-but" class="icon-button" title="Unzip">
-                <i class="fas fa-file-archive"></i>
-            </div>
-            <div id="delete-but" class="icon-button" title="Delete">
-                <i class="fas fa-trash"></i>
-            </div>
-            <label class="icon-button" title="Upload">
-                <i class="fas fa-upload"></i>
-                <input id="fileupload" type="file" name="files[]" style="display: none;" multiple>
-            </label>
-            <div id="new-folder-but" class="icon-button" title="New Folder">
-                <i class="fas fa-folder-plus"></i>
-            </divi-->
-
-            <div id="cut-but" class="icon-button" title="Cut">
-                <span class="material-icons">content_cut</span>
-            </div>
-            <div id="copy-but" class="icon-button" title="Copy">
-                <span class="material-icons">content_copy</span>
-            </div>
-            <div id="paste-but" class="icon-button" title="Paste">
-                <span class="material-icons">content_paste</span>
-            </div>
-            <div style="clear:left;"></div>
-            <div id="rename-but" class="icon-button" title="Rename">
-                <span class="material-icons">drive_file_rename_outline</span>
-            </div>
-            <div id="zip-but" class="icon-button" title="Zip">
-                <span class="material-icons">folder_zip</span>
-            </div>
-            <div id="unzip-but" class="icon-button" title="Unzip">
-                <span class="material-icons">unarchive</span>
-            </div>
-            <div id="delete-but" class="icon-button" title="Delete">
-                <span class="material-icons">delete</span>
-            </div>
-            <div style="clear:left;"></div>
-            <label class="icon-button" title="Upload">
-                <span class="material-icons">upload_file</span>
-                <input id="fileupload" type="file" name="files[]" style="display: none;" multiple>
-            </label>
-            <div id="new-folder-but" class="icon-button" title="New Folder">
-                <span class="material-icons">create_new_folder</span>
-            </div>
-
-	        <div style="clear:left;"></div>
-            <ul class="breadcrumb" id="fsbreadcrumb">
+            <ul class="breadcrumb" id="fsbreadcrumb"></ul>
         </div>
 
         <div style="clear:left;"></div>

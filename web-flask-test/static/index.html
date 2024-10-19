@@ -15,311 +15,12 @@
     <script src="/static/assets/jquery.ui.widget.js"></script>
     <!--script src="assets/jquery.iframe-transport.js"></script-->
     <script src="/static/assets/jquery.fileupload.js"></script>
-
-<style type="text/css" media="screen">
-	/* Scrollbar styling for WebKit browsers */
-	::-webkit-scrollbar {
-	    width: 12px;
-	}
-
-	::-webkit-scrollbar-track {
-	    background: #222;
-	}
-
-	::-webkit-scrollbar-thumb {
-	    background-color: #444;
-	    border-radius: 6px;
-	    border: 3px solid #222;
-	}
-
-	::-webkit-scrollbar-thumb:hover {
-	    background-color: #555;
-	}        
-
-/*
-.ace_scrollbar-inner {
-              background-color: white;
-                opacity: 0.01;
-        }*/
-        #menu { 
-            top:  0px;
-        }
-
-        #title { 
-            /*height: 32px;
-            padding: 4px;
-            background-color: #222;*/
-        }
-         
-        #left-col {
-            float: left;
-            padding-top: 4px;
-            padding-left: 4px;
-            width: 236px;
-            /*border:1px solid #00F; */
-            background-color: #222;
-            height: calc(100% - 4px);
-        }
-        #right-col { 
-            height: 100%;
-            margin-left:250px;
-        }
-        #modees {
-        }
-        #vconsole-container { 
-           /* border:1px solid #F00; */
-            overflow:auto;
-            height: calc(25% - 28px);
-            background-color: #222;
-        }
-	#vconsole {
-            padding-left:4px;
-	}
-        #editor-container { 
-            /*border:1px solid #0F0; */
-            height: 75%;
-        }
-        #settings-container { 
-            /*border:1px solid #0F0; */
-            height: 75%;
-	    display:none;
-        }
-	#settings {
-	    padding: 8px;
-            overflow:auto;
-            height: calc(100% - 30px); 
-	}
-
-  	#editor {
-            overflow:auto;
-            height: calc(100% - 10px); 
-        }
-        pre {font-family:"Lucida Console", Monaco, monospace;}
-        body {
-            height: calc(100vh - 20px); 
-            background-color: black;
-            color : white;
-            font-family: 'Avenir', Arial, sans-serif;
-            font-size: 14px; 
-            scrollbar-width: thin;
-            scrollbar-color: #444 #222;
-
-	}
-         .side-button {
-            float:left;
-            cursor: pointer;
-            text-decoration: none;
-            background-color: #444;
-            padding: 4px;
-            margin: 2px;
-            overflow: hidden;
-        }
-        .side-button:hover {background-color:#666;}
-        .fsdir:hover {
-            background-color:#666;
-            cursor: pointer;
-        }
-        
-        .fsfile:hover {
-            background-color:#666;
-            cursor: pointer;
-        }
-        .fname-icon {
-            float:left;
-            padding-top: 2px;
-            padding-left: 4px;
-            margin-right: 6px;
-        }
-        .fname-name {
-            padding-top: 4px;
-            padding-left: 8px;
-            white-space: nowrap;
-        }
-        .fsfilename {
-            width:100%;
-        }
-        .fsdirname{
-            width:100%;
-        }
-        .dl-but {
-	    float: right;
-	    padding-top: 4px;
-            padding-right: 8px;
-	}    
-      	.dl-but a {
-	    color: white;
-	    text-decoration: none;
-            font-weight: bold;
-	}
-	.dl-but a:hover{
-	    color: #ccc;
-	}	
-	.breadcrumb {
-            list-style-type: none;
-            padding: 0;
-        }
-        .breadcrumb li {
-            cursor: pointer;
-            text-decoration: none;
-            overflow: hidden;
-           float:left;
-        }
-        #progress-bar {
-            border: 1px solid;
-            width: 100%;
-            height: 16px;
-        }
-        #progress-bar-progress {
-            background-color: #aaa;
-            height: 16px;
-        }
-        .mode-button {
-            cursor: pointer;
-            text-decoration: none;
-            overflow: hidden;
-        }
-        .mode-button:hover {color:#FF00FF;}
- 	
-	#files-table {
-            margin-top:6px;
-            overflow: auto;
-            height: calc(100% - 285px);
-        }
-
-	#title-bar {
-	    background-color: #222;
-	    height: 28px;
-	    padding: 4px;
-	    overflow-x: auto;
-	    white-space: nowrap;
-	}
-
-	#tabs-container {
-	    height: 100%;
-	}
-
-	.tab {
-	    display: inline-block;
-	    background-color: #333;
-	    padding: 4px 8px;
-	    margin-right: 2px;
-	    cursor: pointer;
-	    position: relative;
-	    color: #fff;
-    	    padding-right: 24px;    
-	    /*max-width: 150px; 
-    	    overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;*/
-	}
-
-	.tab.active {
-	    background-color: #444;
-	}
-
-	.tab:hover {
-	    background-color: #555;
-	}
-
-	.tab .close-tab {
-	    position: absolute;      /* Position the close button within the tab */
-	    top: 50%;                /* Center vertically */
-	    right: 8px;              /* Position from the right edge */
-	    transform: translateY(-50%); /* Adjust for vertical centering */
-	    color: #ccc;
-	    font-weight: bold;
-	    cursor: pointer;
-	}
-
-	.tab .close-tab:hover {
-	    color: #fff;
-	}
-
-	.tab.unsaved {
-	    font-style: italic;
-	}
-
-        /* Start by setting display:none to make this hidden.
-           Then we position it in relation to the viewport window
-           with position:fixed. Width, height, top and left speak
-           speak for themselves. Background we set to 80% white with
-           our animation centered, and no-repeating */
-        .modal {
-            display:    none;
-            position:   fixed;
-            z-index:    1000;
-            top:        0;
-            left:       0;
-            height:     100%;
-            width:      100%;
-            background: rgba( 255, 255, 255, .25 ) 
-                        url('/static/assets/loading.gif') 
-                        50% 50% 
-                        no-repeat;
-        }
-       .modal-dialog {
-            display:    none;
-            position:   fixed;
-            z-index:    1000;
-            top:        0;
-            left:       0;
-            height:     100%;
-            width:      100%;
-            background: rgba( 255, 255, 255, .25 ) ;
-        }
-        #modal-dialog-contents {
-            margin: auto;
-			padding: 8px;
-            max-width:500px;
-            margin-top: 32px;
-            background-color: #222;
-        }
-        #modal-dialog-title {
-            margin-bottom: 10px;
-            background-color: #333;
-            font-weight: bold;
-            padding:4px;
-        }
-        #modal-dialog-body {
-            margin-bottom: 10px;
-        }
-        .modal-button {
-            cursor: pointer;
-            text-decoration: none;
-            background-color: #444;
-            padding: 4px;
-            margin: 2px 10px 2px 2px;
-            overflow: hidden;
-            float:left;
-        }
-        .modal-button:hover {background-color:#666;}
-
-        /* When the body has the loading class, we turn
-           the scrollbar off with overflow:hidden */
-        body.loading {
-            overflow: hidden;   
-        }
-
-        /* Anytime the body has the loading class, our
-           modal element will be visible */
-        body.loading .modal {
-            display: block;
-        }
-
-        body.dialog {overflow: hidden;}
-        body.dialog .modal-dialog { display: block;}
-
-</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
 
   </head>
   <body>
-    <!--div id="menu" >
-    <a class="side-button" href="index.html">Editor</a> &nbsp;&nbsp; | &nbsp;&nbsp; 
-    </div-->
-
-    <!--h1 id="title"></h1-->
-    
-
 	<div id="left-col">
         <div id="show-settings" class="side-button" style="">Settings</div>
         <div style="clear:both;"></div>
@@ -331,28 +32,51 @@
         <div style="clear:left;"></div>
         <br/>
 
-        <div id="save" class="side-button">Save</div>
-        <div id="reload-mode" class="side-button">Reload Mode</div>
+        <div id="save" class="icon-button" title="Save">
+            <span class="material-icons">save</span>
+        </div>
+        <div id="reload-mode" class="icon-button" title="Reload Mode">
+            <span class="material-icons">refresh</span>
+        </div>
+
         <div style="clear:left;"></div>
         <br/>
 
         <div id="control-panel">
-            <!--div id="sd-sel-but" class="side-button">SD Card</div>
-            <div id="usb-sel-but" class="side-button">USB Drive</div>
-            <div style="clear:left;"></div-->
-            <div id="cut-but"  class="side-button">Cut</div>
-            <div id="copy-but" class="side-button">Copy</div>
-            <div  id="paste-but" class="side-button">Paste</div>
+            
+            <div id="cut-but" class="icon-button" title="Cut">
+                <span class="material-icons">content_cut</span>
+            </div>
+            <div id="copy-but" class="icon-button" title="Copy">
+                <span class="material-icons">content_copy</span>
+            </div>
+            <div id="paste-but" class="icon-button" title="Paste">
+                <span class="material-icons">content_paste</span>
+            </div>
             <div style="clear:left;"></div>
-            <div  id="rename-but" class="side-button">Rename</div>
-            <div id="zip-but" class="side-button">Zip</div>
-            <div id="unzip-but" class="side-button">Unzip</div>
-            <div id="delete-but" class="side-button">Delete</div>
+            <div id="rename-but" class="icon-button" title="Rename">
+                <span class="material-icons">drive_file_rename_outline</span>
+            </div>
+            <div id="zip-but" class="icon-button" title="Zip">
+                <span class="material-icons">folder_zip</span>
+            </div>
+            <div id="unzip-but" class="icon-button" title="Unzip">
+                <span class="material-icons">unarchive</span>
+            </div>
             <div style="clear:left;"></div>
-            <label class="side-button">Upload<input id="fileupload" type="file" name="files[]" value="Upload" style="display: none;" multiple></label>
-            <div id="new-folder-but" class="side-button">New Folder</div>
-            <div style="clear:left;"></div>
-            <ul class="breadcrumb" id="fsbreadcrumb"></ul>
+            <label class="icon-button" title="Upload">
+                <span class="material-icons">upload_file</span>
+                <input id="fileupload" type="file" name="files[]" style="display: none;" multiple>
+            </label>
+            <div id="new-folder-but" class="icon-button" title="New Folder">
+                <span class="material-icons">create_new_folder</span>
+            </div>
+            <div id="delete-but" class="icon-button" title="Delete">
+                <span class="material-icons">delete</span>
+            </div>
+
+	        <div style="clear:left;"></div>
+            <ul class="breadcrumb" id="fsbreadcrumb">
         </div>
 
         <div style="clear:left;"></div>
@@ -379,8 +103,6 @@
 		<div class="tab" data-filepath="path/to/file2.lua">file2.lua <span class="close-tab">&times;</span></div-->
 	    </div>
 	</div>
-
-
         <div id="settings-container">
 		<div id="settings">
 		    <h3>WiFi Network</h3>
@@ -455,7 +177,5 @@
 	});
 
     </script>
-
-
     </body>
 </html>

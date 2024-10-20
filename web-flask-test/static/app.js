@@ -770,6 +770,11 @@ $(function () {
 
     $("#unzip-but").click(unzipDialog);
 
+    // Clear console when trash icon is clicked
+    $('#clear-console').click(function() {
+        $('#vconsole').empty();
+    });
+
     // click on directory table row, excluding input elements
     $('body').on('click', '.fsdir', function(event) {
         var target = $(event.target);
@@ -778,7 +783,6 @@ $(function () {
             refreshWorkingDir();
         }
     });
-
 
     // Click handler for file items
     $('body').on('click', '.fsfile', function(event) {

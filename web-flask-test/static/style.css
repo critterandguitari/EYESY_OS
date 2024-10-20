@@ -42,15 +42,6 @@
 }
 #modees {
 }
-#vconsole-container { 
-   /* border:1px solid #F00; */
-    overflow:auto;
-    height: calc(25% - 28px);
-    background-color: #222;
-}
-#vconsole {
-        padding-left:4px;
-}
 #editor-container { 
     /*border:1px solid #0F0; */
     height: 75%;
@@ -314,5 +305,31 @@ body.dialog .modal-dialog { display: block;}
 * {
     /*border-radius: 4px;*/
 }
+#vconsole-title-bar {
+    background-color: #333;
+    height: 28px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
+#vconsole-title-bar span {
+    font-weight: bold;
+    padding-left: 4px;
+}
+
+#vconsole-container {
+    background-color: #222;
+    height: calc(25% - 75px); /* Adjust height to account for the title bar */
+    overflow: auto;
+}
+
+#vconsole {
+    padding-left: 4px;
+}
+
+.icon-button.small-icon .material-icons {
+    font-size: 18px; /* Smaller icon size */
+}
 

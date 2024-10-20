@@ -93,68 +93,65 @@
 
     <div id="right-col">        
 
-	<div id="title-bar">
-	    <div id="tabs-container">
-		<!--div class="tab active" data-filepath="path/to/file1.lua">file1.lua <span class="close-tab">&times;</span></div>
-		<div class="tab" data-filepath="path/to/file2.lua">file2.lua <span class="close-tab">&times;</span></div-->
-	    </div>
-	</div>
+        <div id="title-bar">
+            <div id="tabs-container">
+            <!--div class="tab active" data-filepath="path/to/file1.lua">file1.lua <span class="close-tab">&times;</span></div>
+            <div class="tab" data-filepath="path/to/file2.lua">file2.lua <span class="close-tab">&times;</span></div-->
+            </div>
+        </div>
         <div id="settings-container">
-		<div id="settings">
-		    <h3>WiFi Network</h3>
-		    <p>Enter network details. When it boots up the EYESY will attempt to join this network.</p>
-		    <p>Network Name <input type="text" id="wifi-net-name" value="Name"></p>
-		    <p>Password <input type="text" id="wifi-net-pw" value=""></p>
-		    <div id="wifi-save-net" class="side-button">Save</div>
-	           
-		    <br/> 
-		    <br/> 
-		    <h3>WiFi Access Point</h3>
-		    <p>Hold down the shift button while the EYESY boots up to enable access point mode.</p>
-		    <p>In access point mode the EYESY will create a WiFi network that you can join from your computer.</p>
-		    <p>By default the network name is 'EYESY' and the password is 'coolmusic'. This can be changed below.</p>
-		    <p>Network Name <input type="text" id="wifi-ap-name" value="Name"></p>
-		    <p>Password <input type="text" id="wifi-ap-pw" value="Password"></p>
-		    <div id="wifi-save-ap" class="side-button">Save</div>
+            <div id="settings">
+                <h3>WiFi Network</h3>
+                <p>Enter network details. When it boots up the EYESY will attempt to join this network.</p>
+                <p>Network Name <input type="text" id="wifi-net-name" value="Name"></p>
+                <p>Password <input type="text" id="wifi-net-pw" value=""></p>
+                <div id="wifi-save-net" class="side-button">Save</div>
+                   
+                <br/> 
+                <br/> 
+                <h3>WiFi Access Point</h3>
+                <p>Hold down the shift button while the EYESY boots up to enable access point mode.</p>
+                <p>In access point mode the EYESY will create a WiFi network that you can join from your computer.</p>
+                <p>By default the network name is 'EYESY' and the password is 'coolmusic'. This can be changed below.</p>
+                <p>Network Name <input type="text" id="wifi-ap-name" value="Name"></p>
+                <p>Password <input type="text" id="wifi-ap-pw" value="Password"></p>
+                <div id="wifi-save-ap" class="side-button">Save</div>
 
-		    <br/>
-		    <br/>
-		    <p>WiFi settings take effect after restarting the EYESY.</p>
-			    
-		    <h3>Composite Video Format</h3>
-		    <p>When the EYESY is not connected to a HDMI monitor it will output composite video.</p>
-		    <p>Select NTSC or PAL depending on the type of television you are using.</p>
-		    <p> 
-		     <input type="radio" id="compvid-ntsc-select" name="compvid" value="ntsc">
-		     <label for="compvid-ntsc-select">NTSC</label><br>
-		     <input type="radio" id="compvid-pal-select" name="compvid" value="pal">
-		     <label for="compvid-pal-select">PAL</label><br> 
-		    </p>
-		    <div id="compvid-save-format" class="side-button">Save</div>
-
-		    <br/>
-		    <br/>
-		    <p>Video settings take effect after restarting the EYESY.</p>
-	
-		</div>
-	</div>
+                <br/>
+                <br/>
+                <p>WiFi settings take effect after restarting the EYESY.</p>
+                    
+                <h3>Composite Video Format</h3>
+                <p>When the EYESY is not connected to a HDMI monitor it will output composite video.</p>
+                <p>Select NTSC or PAL depending on the type of television you are using.</p>
+                <p> 
+                 <input type="radio" id="compvid-ntsc-select" name="compvid" value="ntsc">
+                 <label for="compvid-ntsc-select">NTSC</label><br>
+                 <input type="radio" id="compvid-pal-select" name="compvid" value="pal">
+                 <label for="compvid-pal-select">PAL</label><br> 
+                </p>
+                <div id="compvid-save-format" class="side-button">Save</div>
+                <br/>
+                <br/>
+                <p>Video settings take effect after restarting the EYESY.</p>
+        
+		    </div>
+	    </div>
 
         <div id="editor-container">
             <div id="editor">
             </div>
         </div>
         
-        <!-- Replace your current console section with this -->
-        <div id="vconsole-title-bar">
-            <span>Console</span>
-            <div id="clear-console" class="icon-button small-icon" title="Clear Console">
-                <span class="material-icons">delete</span>
-            </div>
-        </div>
         <div id="vconsole-container">
+            <div id="vconsole-title-bar">
+                <span>Console</span>
+                <div id="clear-console" class="icon-button small-icon" title="Clear Console">
+                    <span class="material-icons">delete</span>
+                </div>
+            </div>
             <pre id="vconsole"></pre>
         </div>
-
     </div>
 
     <div class="modal"><!-- Place at bottom of page --></div>

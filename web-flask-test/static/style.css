@@ -17,6 +17,11 @@
     background-color: #555;
 }        
 
+
+* {
+    border-radius: 2px;
+}
+
 #menu { 
     top:  0px;
 }
@@ -36,16 +41,22 @@
     background-color: #222;
     height: calc(100% - 4px);
 }
-#right-col { 
-    height: 100%;
-    margin-left:250px;
+
+#right-col {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 20px); /* Ensure it fills the viewport */
+    margin-left: 250px;
 }
+
 #modees {
 }
-#editor-container { 
-    /*border:1px solid #0F0; */
-    height: 75%;
+#editor-container {
+    flex: 3 1 0%; /* Grow factor of 3 */
+    display: flex;
+    flex-direction: column;
 }
+
 #settings-container { 
     /*border:1px solid #0F0; */
     height: 75%;
@@ -302,31 +313,29 @@ body.dialog .modal-dialog { display: block;}
     display: none;
 }
 
-* {
-    /*border-radius: 4px;*/
-}
 #vconsole-title-bar {
     background-color: #333;
-    height: 28px;
+    height: 36px;
     padding: 4px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-
 #vconsole-title-bar span {
     font-weight: bold;
     padding-left: 4px;
 }
-
 #vconsole-container {
-    background-color: #222;
-    height: calc(25% - 75px); /* Adjust height to account for the title bar */
+    flex: 1 1 0%; /* Grow factor of 1 */
+    display: flex;
+    flex-direction: column;
     overflow: auto;
+    background-color: #222;
 }
-
 #vconsole {
     padding-left: 4px;
+    flex: 1; /* Allow the console output to fill the remaining space */
+    overflow-y: auto;
 }
 
 .icon-button.small-icon .material-icons {

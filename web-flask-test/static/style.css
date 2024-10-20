@@ -119,19 +119,34 @@ body {
 .fsdirname{
     width:100%;
 }
-.dl-but {
-float: right;
-padding-top: 4px;
-    padding-right: 8px;
-}    
-.dl-but a {
-    color: white;
-    text-decoration: none;
-        font-weight: bold;
+/* Adjust the download icon size and alignment */
+.dl-but .material-icons.download-icon {
+    font-size: 18px; /* Adjust size as needed */
+    vertical-align: middle;
+    color: white; /* Ensure the icon is visible */
+    line-height: 1; /* Prevents icon from increasing line height */
 }
-.dl-but a:hover{
+
+/* Ensure the download button container doesn't affect layout */
+.dl-but {
+    float: right;
+    padding: 0 8px 0 0;
+}
+
+.dl-but a {
+    text-decoration: none;
+    color: white;
+}
+
+.dl-but a:hover {
     color: #ccc;
-}	
+}
+.dl-but a .material-icons.download-icon {
+    color: inherit; 
+}
+.dl-but a:hover .material-icons.download-icon {
+    color: #ccc;
+}
 .breadcrumb {
     list-style-type: none;
     padding: 0;

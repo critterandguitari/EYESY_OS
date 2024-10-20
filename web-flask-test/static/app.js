@@ -249,7 +249,7 @@ console.log(typeof d)
             sizeType = c.size;
             var trow = $('<tr class="fsfile">');
             var tdata = $('<td class="fsfilename">');
-            var dlButton = $('<div class="dl-but"><a href="'+appBaseURL+'/download?fpath='+encodeURIComponent(c.path)+'&cb=cool">\u2B07</a></div>');
+            var dlButton = $('<div class="dl-but"><a href="'+appBaseURL+'/download?fpath='+encodeURIComponent(c.path)+'&cb=cool"><span class="material-icons download-icon">download</span></a></div>'); 
             tdata.append(dlButton);
             tdata.append(nodeNameWithIcon(c.path, c.type));
         }

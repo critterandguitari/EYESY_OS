@@ -330,14 +330,14 @@ body.dialog .modal-dialog { display: block;}
 
 #vconsole-title-bar {
     background-color: #333;
-    height: 36px;
+    height: 20px;
     padding: 4px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    font-size: 14px; 
 }
 #vconsole-title-bar span {
-    font-weight: bold;
     padding-left: 4px;
 }
 #vconsole-container {
@@ -353,7 +353,24 @@ body.dialog .modal-dialog { display: block;}
     overflow-y: auto;
 }
 
-.icon-button.small-icon .material-icons {
-    font-size: 18px; /* Smaller icon size */
+.icon-button.small-icon  {
+    padding: 4px;
 }
+
+.icon-button.small-icon .material-icons {
+    font-size: 18px; 
+}
+
+#image-container {
+    overflow: auto;
+    height: calc(100% - 10px);
+    text-align: center; /* Center the image */
+}
+
+#image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensure the image fits within the container */
+}
+
 

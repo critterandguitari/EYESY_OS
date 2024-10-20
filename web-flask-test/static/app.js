@@ -35,12 +35,23 @@ function openFile(path) {
         return;
     }
 
-    // Get the file content from the server
-    $.get(appBaseURL + '/get_file?fpath=' + encodeURIComponent(path), function(data) {
-        // Create a new tab
-        var fileName = path.split('/').pop();
-        addTab(path, fileName, data);
-    });
+    // Determine the file extension
+    var extension = path.split('.').pop().toLowerCase();
+
+    // List of image extensions
+    var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'];
+
+    if (imageExtensions.includes(extension)) {
+        // For image files, add a tab that displays the image
+        addImageTab(path);
+    } else {
+        // Get the file content from the server for text files
+        $.get(appBaseURL + '/get_file?fpath=' + encodeURIComponent(path), function(data) {
+            // Create a new tab
+            var fileName = path.split('/').pop();
+            addTab(path, fileName, data);
+        });
+    }
 }
 
 function addTab(path, fileName, content) {
@@ -96,16 +107,47 @@ function addTab(path, fileName, content) {
     switchTab(path);
 }
 
+function addImageTab(path) {
+    // Create a new tab element
+    var fileName = path.split('/').pop();
+
+    // Create the tab label
+    var $tab = $('<div class="tab"></div>').text(fileName);
+    $tab.attr('data-file-path', path);
+
+    // Add a close button to the tab
+    var $closeButton = $('<span class="close-tab">&times;</span>');
+    $tab.append($closeButton);
+
+    // Event listeners for tab click and close
+    $tab.on('click', function() {
+        switchTab(path);
+    });
+
+    $closeButton.on('click', function(e) {
+        e.stopPropagation();
+        closeTab(path);
+    });
+
+    // Append the tab to the tabs container
+    $('#tabs-container').append($tab);
+
+    // Create an object representing the image file
+    var fileObj = {
+        path: path,
+        name: fileName,
+        tabElement: $tab,
+        isImage: true
+    };
+    openFiles.push(fileObj);
+
+    // Switch to the new tab
+    switchTab(path);
+}
+
 function switchTab(path) {
     // Update the currentFile to the new file
     currentFile = openFiles.find(file => file.path === path);
-
-    // Update the editor session
-    editor.setSession(currentFile.editorSession);
-
-    // Update syntax highlighting
-    var extension = path.split('.').pop();
-    editorSetSyntax(extension);
 
     // Update active tab styling
     $('.tab').removeClass('active');
@@ -113,6 +155,26 @@ function switchTab(path) {
 
     // Update the title
     $("#title").html(path);
+
+    // Clear the editor or image container
+    $('#editor').hide();
+    $('#image-container').hide();
+
+    if (currentFile.isImage) {
+        // Display the image
+        $('#image-container').empty(); // Clear any previous content
+
+        // Create the image element
+        var img = $('<img>').attr('src', appBaseURL + '/get_file?fpath=' + encodeURIComponent(currentFile.path));
+        $('#image-container').append(img);
+
+        $('#image-container').show();
+    } else {
+        // Display the editor with the file's session
+        editor.setSession(currentFile.editorSession);
+        editor.focus();
+        $('#editor').show();
+    }
 }
 
 function closeTab(path) {
@@ -146,15 +208,18 @@ function closeTabConfirmed(path) {
         // If the closed tab was active, switch to another tab
         if (currentFile && currentFile.path === path) {
             if (openFiles.length > 0) {
-                switchTab(openFiles[0].path);
+                switchTab(openFiles[openFiles.length - 1].path);
             } else {
                 currentFile = null;
                 editor.setValue('');
+                $('#editor').hide();
+                $('#image-container').hide();
                 $("#title").html('...');
             }
         }
     }
 }
+
 
 
 function editorSetSyntax(extension) {

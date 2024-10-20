@@ -6,6 +6,7 @@ from flask_socketio import SocketIO, emit
 import subprocess
 import urllib.parse
 import werkzeug
+import mimetypes
 
 GRABS_PATH = "/sdcard/Grabs/"
 MODES_PATH = "/"
@@ -28,14 +29,18 @@ def index():
     #return render_template('index.html')
     return send_from_directory(app.static_folder, 'index.html')
 
-#@app.route('/get_file')
-#def get_file():
 
 @app.route('/get_file', methods=['GET'])
 def get_file():
     fpath = request.args.get('fpath')
-    mode_path = os.path.join(MODES_PATH, fpath)
-    return send_file(mode_path, mimetype='text/plain')
+    file_path = os.path.join(MODES_PATH, fpath)
+
+    # Guess the MIME type of the file
+    mime_type, _ = mimetypes.guess_type(file_path)
+    if mime_type is None:
+        mime_type = 'application/octet-stream'  # Default MIME type
+
+    return send_file(file_path, mimetype=mime_type)
 
 @app.route('/download')
 def download():

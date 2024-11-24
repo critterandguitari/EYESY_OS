@@ -28,7 +28,10 @@ sound.init(etc)
 
 # init pygame, this has to happen after sound is setup
 # but before the graphics stuff below
+# os.environ["SDL_FBDEV"] = "/dev/fb0"
+# os.putenv("SDL_VIDEODRIVER", "rpi")
 pygame.init()
+pygame.mouse.set_visible(False)
 clocker = pygame.time.Clock() # for locking fps
 
 print("pygame version " + pygame.version.ver)
@@ -39,10 +42,10 @@ osc.send("/led", 7) # set led to running
 
 # init fb and main surfaces
 print("opening frame buffer...")
-#os.putenv('SDL_VIDEODRIVER', "directfb")
+os.putenv('SDL_VIDEODRIVER', "directfb")
 #hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED, 32)
-hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.HWSURFACE, 32)
-#hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF, 32)
+#hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.HWSURFACE, 32)
+hwscreen = pygame.display.set_mode(etc.RES, pygame.OPENGL | pygame.DOUBLEBUF)
 screen = pygame.Surface(hwscreen.get_size())
 etc.xres=hwscreen.get_width()
 etc.yres=hwscreen.get_height()
@@ -154,10 +157,11 @@ while 1:
     if ((etc.frame_count % 50) == 0):
         now = time.time()
         etc.fps = 1 / ((now - start) / 50)
+        print(etc.fps)
         start = now
 
     # check for sound
-    sound.recv()
+    #sound.recv()
 
     # set the mode on which to call draw
     try : 
@@ -218,7 +222,7 @@ while 1:
     osc_msgs_recv = 0
     
     #draw the main screen, limit fps 30
-    clocker.tick(30)
+   # clocker.tick(30)
 
 time.sleep(1)
 

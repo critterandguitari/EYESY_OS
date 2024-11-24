@@ -16,8 +16,9 @@ class System:
     MODES_PATH = "/sdcard/Modes/Python/"
     SCENES_PATH = "/sdcard/Scenes.csv"
 
-    #RES =  (1280,720)
-    RES =  (640,480)
+    RES =  (1280,720)
+    #RES =  (1920,1080)
+    #RES =  (640,480)
    # RES =  (0,0)
 
     # this is just an alias to the screen in main loop
@@ -71,11 +72,11 @@ class System:
     link_connected = False
 
     # knobs a used by mode 
-    knob1 = .200
-    knob2 = .200
-    knob3 = .200
-    knob4 = .200
-    knob5 = .200
+    knob1 = 0
+    knob2 = 1
+    knob3 = 1
+    knob4 = 1
+    knob5 = 1
    
     # knob values used internally
     knob = [.2] * 5
@@ -351,7 +352,7 @@ class System:
         # make sure it is saved as 'music' user, uid=gid=1000
         os.chown(self.SCENES_PATH, 1000, 1000)
         # open it
-        with open(self.SCENES_PATH, 'rb') as f:
+        with open(self.SCENES_PATH, 'r') as f:
             reader = csv.reader(f)
             csvin = list(reader)
         self.scenes = []

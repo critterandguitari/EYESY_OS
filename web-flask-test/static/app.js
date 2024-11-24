@@ -220,15 +220,9 @@ function closeTabConfirmed(path) {
     }
 }
 
-
-
 function editorSetSyntax(extension) {
     editor.getSession().setMode("ace/mode/" + getAceMode(extension));
 }
-
-
-
-
 
 function refreshWorkingDir(){
     $.get(fsurl+'?operation=get_node', { 'path' : workingDir})

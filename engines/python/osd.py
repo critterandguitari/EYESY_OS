@@ -57,7 +57,7 @@ def draw_vu_480(screen, etc, offx, offy):
         pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 20], 1)
         pygame.draw.line(screen, color, [x, offy + 20], [x + 6, offy + 20], 1)
     color = etc.GREEN
-    for i in range(0, etc.audio_peak / 2048):
+    for i in range(0, int(etc.audio_peak / 2048)):
         if i > 8 : color = (255,255,0)
         if i == 14 : color = etc.RED
         x = offx + 8 * i
@@ -234,15 +234,15 @@ def render_overlay_480(screen) :
     screen.blit(text, text_rect)
 
     # fps
-    #mode_str = " FPS:  "   + str(int(etc.fps)) + " "
-    #text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
-    #text_rect = text.get_rect()
-    #text_rect.x = 10
-    #text_rect.centery = 10
-    #screen.blit(text, text_rect)
+    mode_str = " FPS:  "   + str(int(etc.fps)) + " "
+    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 10
+    text_rect.centery = 10
+    screen.blit(text, text_rect)
     
     # version
-    mode_str = " v2.3 "
+    mode_str = " v3beta1 "
     text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20

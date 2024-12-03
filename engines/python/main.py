@@ -157,7 +157,7 @@ while 1:
     if ((etc.frame_count % 50) == 0):
         now = time.time()
         etc.fps = 1 / ((now - start) / 50)
-        print(etc.fps)
+        #print(etc.fps)
         start = now
 
     # check for sound

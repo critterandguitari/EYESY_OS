@@ -20,7 +20,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 def background_thread(sid):
-    with subprocess.Popen(["tail", "-F", "/home/music/testlog"], stdout=subprocess.PIPE) as p:
+    with subprocess.Popen(["tail", "-F", "/tmp/video.log"], stdout=subprocess.PIPE) as p:
         for line in iter(p.stdout.readline, b''):
             socketio.emit('log_output', {'data': line.decode()}, room=sid, namespace='/test')
 

@@ -11,15 +11,18 @@ sin = [0] * 100
 def init (etc_object) :
     global inp, etc, trig_this_time, trig_last_time, sin
     etc = etc_object
-    #setup alsa for sound in
-    inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK, cardindex=1)
-
-    inp.setchannels(1)
-    #inp.setrate(11025)
-    inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
-    inp.setperiodsize(300)
     trig_last_time = time.time()
     trig_this_time = time.time()
+    inp = alsaaudio.PCM(
+        type=alsaaudio.PCM_CAPTURE,
+        mode=alsaaudio.PCM_NONBLOCK,
+        cardindex=1,
+        channels=1,
+        rate=22050,
+        format = alsaaudio.PCM_FORMAT_S16_LE,
+        periodsize=1024,
+        periods=2
+    )
     
     for i in range(0,100) :
         sin[i] = int(math.sin(2 * 3.1459 * i / 100) * 32700)
@@ -29,7 +32,10 @@ def recv() :
     # get audio
     l,data = inp.read()
     peak = 0
-    while l:
+    if l <= 0:
+        print("got bad " + str(l))
+    if l > 0:
+        print("got data " + str(l))
         #for i in range(0,100) :
         for i in range(0,len(data)) :
             try :
@@ -55,9 +61,8 @@ def recv() :
             except Exception as e:
                 print("Problem: ", str(e))
                 print(len(data))
+
             #except :
                 #print('issue')
                 #pass
-        l,data = inp.read()
-
 

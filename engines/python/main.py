@@ -161,7 +161,7 @@ while 1:
         start = now
 
     # check for sound
-    #sound.recv()
+    sound.recv()
 
     # set the mode on which to call draw
     try : 
@@ -222,7 +222,7 @@ while 1:
     osc_msgs_recv = 0
     
     #draw the main screen, limit fps 30
-   # clocker.tick(30)
+    clocker.tick(30)
 
 time.sleep(1)
 

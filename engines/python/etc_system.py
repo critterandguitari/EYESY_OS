@@ -16,10 +16,10 @@ class System:
     MODES_PATH = "/sdcard/Modes/Python/"
     SCENES_PATH = "/sdcard/Scenes.csv"
 
-    RES =  (720,480)
+    #RES =  (720,480)
     #RES =  (1920,1080)
     #RES =  (640,480)
-   # RES =  (0,0)
+    RES =  (0,0)
 
     # this is just an alias to the screen in main loop
     screen = None

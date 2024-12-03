@@ -1,3 +1,5 @@
+from multiprocessing import Process, Array, Value
+from ctypes import c_float
 import pygame
 import time
 import etc_system
@@ -10,6 +12,7 @@ import sound
 import osd
 import liblo
 import os
+
 print("starting...")
 
 # create etc object
@@ -24,7 +27,16 @@ etc.clear_flags()
 osc.init(etc)
 
 # setup alsa sound
-sound.init(etc)
+# Shared resources
+BUFFER_SIZE = 100
+shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer
+write_index = Value('i', 0)  # Write index for the buffer
+lock = shared_buffer.get_lock()  # Lock for thread-safe access
+
+# Start the audio processing in a separate process
+audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, lock))
+audio_process.start()
+
 
 # init pygame, this has to happen after sound is setup
 # but before the graphics stuff below
@@ -161,7 +173,8 @@ while 1:
         start = now
 
     # check for sound
-    sound.recv()
+    with lock:
+        etc.audio_in[:] = shared_buffer[:]
 
     # set the mode on which to call draw
     try : 

@@ -39,9 +39,9 @@ def audio_processing(shared_buffer, write_index, lock):
 
                 # Write samples to the circular buffer
                 with lock:
-                    for i in range(0, len(samples), 4):
-                        if i + 4 <= len(samples):
-                            avg_sample = sum(samples[i:i+4]) / 4
+                    for i in range(0, len(samples), 16):
+                        if i + 16 <= len(samples):
+                            avg_sample = sum(samples[i:i+16]) / 16
                             shared_buffer[write_index.value] = avg_sample
                             write_index.value = (write_index.value + 1) % BUFFER_SIZE
 

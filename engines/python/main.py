@@ -1,17 +1,19 @@
+
+import os
 from multiprocessing import Process, Array, Value
 from ctypes import c_float
-import pygame
 import time
-import etc_system
-import traceback
 import sys
 import psutil
+import traceback
+import liblo
+import pygame
 from pygame.locals import *
+import etc_system
 import osc
 import sound
 import osd
-import liblo
-import os
+   
 
 print("starting...")
 
@@ -74,6 +76,11 @@ time.sleep(2)
 etc.screen = screen
 print(str(etc.screen) + " " +  str(screen))
 
+# menu screens
+from screen_main_menu import MainMenu
+etc.menu_screens["home"] = MainMenu(etc)
+etc.current_screen = etc.menu_screens["home"]
+ 
 # load modes, post banner if none found
 if not (etc.load_modes()) :
     print("no modes found.")
@@ -222,8 +229,14 @@ while 1:
     if etc.osd :
         osd.render_overlay_480(hwscreen)
 
-    if etc.shift :
-        osd.render_shift_overlay(hwscreen)
+    if etc.menu :
+        # Handle events in the current screen
+        etc.current_screen.handle_events()
+        # Update and render the current screen
+        etc.current_screen.update()
+        etc.current_screen.render(hwscreen)
+
+
     
     pygame.display.flip()
 

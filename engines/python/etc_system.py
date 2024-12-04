@@ -17,6 +17,8 @@ class System:
     SCENES_PATH = "/sdcard/Scenes.csv"
 
     #RES =  (720,480)
+    #RES =  (800,600)
+    #RES =  (320,240)
     #RES =  (1920,1080)
     #RES =  (640,480)
     RES =  (0,0)
@@ -67,9 +69,6 @@ class System:
     audio_trig = False
     audio_scale = 1.0
     audio_trig_enable = True
-   
-    # LINK
-    link_connected = False
 
     # knobs a used by mode 
     knob1 = 0
@@ -103,10 +102,22 @@ class System:
     bg_color = (0, 0, 0)
     quit = False
     osd = False
-    shift = False
+    menu = False
     osd_first = False # when osd is first turned on this is used to gather info
     trig_button = False # if the button is held down or not
-    shift_line = ["","",""]
+
+    # menu stuff
+    current_screen = None
+    menu_screens = {}
+    # Key navigation flags
+    key_nav_up = False
+    key_nav_down = False
+    key_nav_left = False
+    key_nav_right = False
+    key_nav_select = False   # For Enter key
+    key_nav_back = False     # For Escape key or Backspace
+    # Add other flags as needed
+
 
     def update_trig_button(self, stat) :
         if (stat > 0 ):
@@ -118,6 +129,27 @@ class System:
     def set_osd(self, stat) :
         self.osd = stat
         self.osd_first = True
+
+    def toggle_menu(self) :
+        if not self.menu: 
+            self.menu = True
+            self.set_osd(False)
+        else : 
+            self.menu = False
+
+    def toggle_osd(self) :
+        print("setting osd")
+        if not self.osd: 
+            self.set_osd(True)
+            self.menu = False
+        else : 
+            self.set_osd(False)
+
+    def toggle_auto_clear(self):
+        if not self.bg_clear :
+            self.bg_clear = True
+        else :
+            self.bg_clear = False
 
     def set_mode_by_index (self, index) :
         self.mode_index = index
@@ -299,8 +331,6 @@ class System:
                 print("error loading grab: " + self.error)
             if self.grabcount > 10: break
 
-
-
     # called from main loop
     def update_scene_save_key(self):
         if self.save_key_status :
@@ -472,6 +502,26 @@ class System:
         self.bg_color = color
         return color
 
+    def dispatch_key_event(self, k, v):
+        if self.menu :
+            if (k == 2 and v > 0) : self.key_nav_down = True
+            if (k == 4 and v > 0) : self.key_nav_up = True
+            if (k == 1 and v > 0) : self.key_nav_left = True
+            if (k == 6 and v > 0) : self.key_nav_right = True
+            if (k == 3 and v > 0) : self.key_nav_ender = True
+            if (k == 9 and v > 0) : self.toggle_menu()
+        else : 
+            if (k == 2 and v > 0) : self.next_mode()
+            if (k == 9 and v > 0) : self.toggle_menu()
+            if (k == 4 and v > 0) : self.prev_mode()
+            if (k == 7)           : self.update_trig_button(v)
+            if (k == 5 and v > 0) : self.screengrab_flag = True
+            if (k == 6 and v > 0) : self.prev_scene()
+            if (k == 3)           : self.save_or_delete_scene(v)
+            if (k == 1 and v > 0) : self.next_scene()
+            if (k == 0 and v > 0) : self.toggle_osd() 
+            if (k == 8 and v > 0) : self.toggle_auto_clear()
+
     def clear_flags(self):
         self.new_midi = False
         self.audio_trig = False
@@ -480,5 +530,12 @@ class System:
         self.midi_note_new = False
         for i in range(0, 128):
             self.midi_notes_last[i] = self.midi_notes[i]
+        self.key_nav_up = False
+        self.key_nav_down = False
+        self.key_nav_left = False
+        self.key_nav_right = False
+        self.key_nav_select = False
+        self.key_nav_back = False
+
 
 

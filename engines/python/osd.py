@@ -187,17 +187,6 @@ def render_overlay_480(screen) :
     text_rect.centery = 306
     screen.blit(text, text_rect)
  
-    # LINK session
-    if (etc.link_connected) :
-        mode_str = " LINK Connected: Yes "
-    else :
-        mode_str = " LINK Connected: No "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 20
-    text_rect.centery = 334
-    screen.blit(text, text_rect)
- 
     # midi usb dev
 #    if (etc.usb_midi_present) :
 #        mode_str = " USB MIDI:  "   + str(etc.usb_midi_name) + " "
@@ -272,27 +261,4 @@ def render_overlay_480(screen) :
         screen.blit(errormsg, text_rect)
         i += 1
 
-def render_shift_overlay(screen) :
-    global etc
-
-    font = pygame.font.Font("font.ttf", 16)
-
-    # shift lines
-    text = font.render(etc.shift_line[0], True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 40
-    text_rect.centery = 100
-    screen.blit(text, text_rect)
-
-    text = font.render(etc.shift_line[1], True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 40
-    text_rect.centery = 150
-    screen.blit(text, text_rect)
-    
-    text = font.render(etc.shift_line[2], True, etc.WHITE, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 40
-    text_rect.centery = 200
-    screen.blit(text, text_rect)
 

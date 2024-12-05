@@ -101,8 +101,9 @@ class System:
     auto_clear = True
     bg_color = (0, 0, 0)
     quit = False
-    osd = False
-    menu = False
+    show_osd = False
+    show_menu = False
+    osd_menu_select = 0  # 0 for regular, 1 for OSD overlay, 2 for settings menu
     osd_first = False # when osd is first turned on this is used to gather info
     trig_button = False # if the button is held down or not
 
@@ -127,29 +128,34 @@ class System:
             self.trig_button = False
 
     def set_osd(self, stat) :
-        self.osd = stat
+        self.show_osd = stat
         self.osd_first = True
 
     def toggle_menu(self) :
-        if not self.menu: 
-            self.menu = True
-            self.set_osd(False)
-        else : 
-            self.menu = False
+        pass
 
     def toggle_osd(self) :
         print("setting osd")
-        if not self.osd: 
-            self.set_osd(True)
-            self.menu = False
-        else : 
+        self.osd_menu_select += 1
+        if self.osd_menu_select == 3: self.osd_menu_select = 0
+
+        if self.osd_menu_select == 0:
             self.set_osd(False)
+            self.show_menu = False
+
+        if self.osd_menu_select == 1:
+            self.set_osd(True)
+            self.show_menu = False
+
+        if self.osd_menu_select == 2:
+            self.set_osd(False)
+            self.show_menu = True
 
     def toggle_auto_clear(self):
-        if not self.bg_clear :
-            self.bg_clear = True
+        if not self.auto_clear :
+            self.auto_clear = True
         else :
-            self.bg_clear = False
+            self.auto_clear = False
 
     def set_mode_by_index (self, index) :
         self.mode_index = index
@@ -503,13 +509,14 @@ class System:
         return color
 
     def dispatch_key_event(self, k, v):
-        if self.menu :
+        if self.show_menu :
             if (k == 2 and v > 0) : self.key_nav_down = True
             if (k == 4 and v > 0) : self.key_nav_up = True
-            if (k == 1 and v > 0) : self.key_nav_left = True
-            if (k == 6 and v > 0) : self.key_nav_right = True
-            if (k == 3 and v > 0) : self.key_nav_ender = True
+            if (k == 1 and v > 0) : self.key_nav_right = True
+            if (k == 6 and v > 0) : self.key_nav_left = True
+            if (k == 3 and v > 0) : self.key_nav_select = True
             if (k == 9 and v > 0) : self.toggle_menu()
+            if (k == 0 and v > 0) : self.toggle_osd() 
         else : 
             if (k == 2 and v > 0) : self.next_mode()
             if (k == 9 and v > 0) : self.toggle_menu()

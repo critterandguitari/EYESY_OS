@@ -2,13 +2,7 @@ import pygame
 import socket
 import imp
 
-etc = None
-
 wifi = imp.load_source('wifi_control', '/home/music/EYESY_OS/system/wifi_control.py')
-
-def init(etc_obj) :
-    global etc
-    etc = etc_obj
 
 def draw_knob_slider(screen, etc, offx, offy, index) :
     if etc.knob_override[index]:
@@ -66,7 +60,6 @@ def draw_vu_480(screen, etc, offx, offy):
 
 # loading banner helper
 def loading_banner(screen, stuff) :
-    global etc
     screen.fill((0,0,0)) 
         
     font = pygame.font.Font("./font.ttf", 80)
@@ -84,8 +77,7 @@ def loading_banner(screen, stuff) :
     screen.blit(text, text_rect)
     pygame.display.flip()
 
-def render_overlay_480(screen) :
-    global etc
+def render_overlay_480(screen, etc) :
 
     font = pygame.font.Font("font.ttf", 16)
 

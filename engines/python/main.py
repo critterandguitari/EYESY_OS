@@ -51,7 +51,6 @@ clocker = pygame.time.Clock() # for locking fps
 print("pygame version " + pygame.version.ver)
 
 # on screen display and other screen helpers
-osd.init(etc)
 osc.send("/led", 7) # set led to running
 
 # init fb and main surfaces
@@ -78,7 +77,9 @@ print(str(etc.screen) + " " +  str(screen))
 
 # menu screens
 from screen_main_menu import MainMenu
+from screen_wifi import WiFiScreen
 etc.menu_screens["home"] = MainMenu(etc)
+etc.menu_screens["wifi"] = WiFiScreen(etc)
 etc.current_screen = etc.menu_screens["home"]
  
 # load modes, post banner if none found
@@ -226,10 +227,10 @@ while 1:
     hwscreen.blit(screen, (0,0))
     
     # osd
-    if etc.osd :
-        osd.render_overlay_480(hwscreen)
+    if etc.show_osd :
+        osd.render_overlay_480(hwscreen, etc)
 
-    if etc.menu :
+    if etc.show_menu :
         # Handle events in the current screen
         etc.current_screen.handle_events()
         # Update and render the current screen

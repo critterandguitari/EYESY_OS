@@ -11,7 +11,7 @@ class MainMenu(Screen):
             MenuItem('MIDI Ch 16', self.exit_menu),
             MenuItem('Gain 100%', self.exit_menu),
             MenuItem('WiFi >', self.goto_wifi),
-            MenuItem('Storage >', self.exit_menu)
+            MenuItem('Test >', self.goto_circle)
         ])
 
     def handle_events(self):
@@ -23,6 +23,10 @@ class MainMenu(Screen):
 
     def render(self, surface):
         self.menu.render(surface)
+
+    def goto_circle(self):
+        self.app_state.current_screen = self.app_state.menu_screens["test"]
+
 
     def goto_wifi(self):
         self.app_state.current_screen = self.app_state.menu_screens["wifi"]

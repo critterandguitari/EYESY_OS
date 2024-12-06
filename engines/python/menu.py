@@ -17,15 +17,12 @@ class Menu:
         self.font = pygame.font.Font("font.ttf", 24)  # Customize font and size as needed
 
     def handle_events(self):
-        if self.app_state.key_nav_up:
+        if self.app_state.key4_press:
             self.selected_index = (self.selected_index - 1) % len(self.items)
-        elif self.app_state.key_nav_down:
+        elif self.app_state.key5_press:
             self.selected_index = (self.selected_index + 1) % len(self.items)
-        elif self.app_state.key_nav_select:
+        elif self.app_state.key8_press:
             self.items[self.selected_index].action()
-            # and clear the flag
-            self.app_state.key_nav_select = False
-        # Left and right keys will be handled in the screen's handle_events method
 
     def render(self, surface):
         #surface.fill((0, 0, 0))  # Clear screen with black

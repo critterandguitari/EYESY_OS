@@ -78,8 +78,10 @@ print(str(etc.screen) + " " +  str(screen))
 # menu screens
 from screen_main_menu import MainMenu
 from screen_wifi import WiFiScreen
+from screen_test import TestScreen
 etc.menu_screens["home"] = MainMenu(etc)
 etc.menu_screens["wifi"] = WiFiScreen(etc)
+etc.menu_screens["test"] = TestScreen(etc)
 etc.current_screen = etc.menu_screens["home"]
  
 # load modes, post banner if none found
@@ -229,15 +231,23 @@ while 1:
         
     # osd
     if etc.show_osd :
-        osd.render_overlay_480(hwscreen, etc)
+        try :
+            osd.render_overlay_480(hwscreen, etc)
+        except Exception as e:   
+            etc.error = traceback.format_exc()
+            print("error with OSD: " + etc.error)
+            pygame.time.wait(200)
 
     if etc.show_menu :
-        # Handle events in the current screen
-        etc.current_screen.handle_events()
-        # Update and render the current screen
-        etc.current_screen.update()
-        etc.current_screen.render(hwscreen)
-    
+        try: 
+            etc.current_screen.handle_events()
+            etc.current_screen.update()
+            etc.current_screen.render(hwscreen)
+        except Exception as e:   
+            etc.error = traceback.format_exc()
+            print("error with Menu: " + etc.error)
+            pygame.time.wait(200)
+       
     pygame.display.flip()
 
     if etc.quit :

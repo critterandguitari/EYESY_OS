@@ -16,12 +16,12 @@ class System:
     MODES_PATH = "/sdcard/Modes/Python/"
     SCENES_PATH = "/sdcard/Scenes.csv"
 
-    #RES =  (720,480)
+    RES =  (720,480)
     #RES =  (800,600)
     #RES =  (320,240)
     #RES =  (1920,1080)
     #RES =  (640,480)
-    RES =  (0,0)
+    #RES =  (0,0)
 
     # this is just an alias to the screen in main loop
     screen = None
@@ -111,15 +111,17 @@ class System:
     # menu stuff
     current_screen = None
     menu_screens = {}
-    # Key navigation flags
-    key_nav_up = False
-    key_nav_down = False
-    key_nav_left = False
-    key_nav_right = False
-    key_nav_select = False   # For Enter key
-    key_nav_back = False     # For Escape key or Backspace
-    # Add other flags as needed
-
+    # Key flags
+    key1_press = False
+    key2_press = False
+    key3_press = False
+    key4_press = False
+    key5_press = False
+    key6_press = False
+    key7_press = False
+    key8_press = False
+    key9_press = False
+    key10_press = False
 
     def update_trig_button(self, stat) :
         if (stat > 0 ):
@@ -511,24 +513,27 @@ class System:
 
     def dispatch_key_event(self, k, v):
         if self.show_menu :
-            if (k == 2 and v > 0) : self.key_nav_down = True
-            if (k == 4 and v > 0) : self.key_nav_up = True
-            if (k == 1 and v > 0) : self.key_nav_right = True
-            if (k == 6 and v > 0) : self.key_nav_left = True
-            if (k == 3 and v > 0) : self.key_nav_select = True
-            if (k == 9 and v > 0) : self.toggle_menu()
-            if (k == 0 and v > 0) : self.toggle_osd() 
+            if (k == 1 and v > 0) : self.toggle_osd()
+            if (k == 2 and v > 0) : self.key2_press = True
+            if (k == 3 and v > 0) : self.key3_press = True
+            if (k == 4 and v > 0) : self.key4_press = True
+            if (k == 5 and v > 0) : self.key5_press = True
+            if (k == 6 and v > 0) : self.key6_press = True
+            if (k == 7 and v > 0) : self.key7_press = True
+            if (k == 8 and v > 0) : self.key8_press = True
+            if (k == 9 and v > 0) : self.key9_press = True
+            if (k == 10 and v > 0) : self.key10_press = True
         else : 
-            if (k == 2 and v > 0) : self.next_mode()
-            if (k == 9 and v > 0) : self.toggle_menu()
+            if (k == 5 and v > 0) : self.next_mode()
+            #if (k == 9 and v > 0) : self.toggle_menu()
             if (k == 4 and v > 0) : self.prev_mode()
-            if (k == 7)           : self.update_trig_button(v)
-            if (k == 5 and v > 0) : self.screengrab_flag = True
+            if (k == 10)           : self.update_trig_button(v)
+            if (k == 9 and v > 0) : self.screengrab_flag = True
             if (k == 6 and v > 0) : self.prev_scene()
-            if (k == 3)           : self.save_or_delete_scene(v)
-            if (k == 1 and v > 0) : self.next_scene()
-            if (k == 0 and v > 0) : self.toggle_osd() 
-            if (k == 8 and v > 0) : self.toggle_auto_clear()
+            if (k == 8)           : self.save_or_delete_scene(v)
+            if (k == 7 and v > 0) : self.next_scene()
+            if (k == 1 and v > 0) : self.toggle_osd() 
+            if (k == 3 and v > 0) : self.toggle_auto_clear()
 
     def clear_flags(self):
         self.new_midi = False
@@ -538,12 +543,16 @@ class System:
         self.midi_note_new = False
         for i in range(0, 128):
             self.midi_notes_last[i] = self.midi_notes[i]
-        self.key_nav_up = False
-        self.key_nav_down = False
-        self.key_nav_left = False
-        self.key_nav_right = False
-        self.key_nav_select = False
-        self.key_nav_back = False
+        self.key1_press = False
+        self.key2_press = False
+        self.key3_press = False
+        self.key4_press = False
+        self.key5_press = False
+        self.key6_press = False
+        self.key7_press = False
+        self.key8_press = False
+        self.key9_press = False
+        self.key10_press = False
 
 
 

@@ -151,10 +151,9 @@ def keyboard_selector(surface, app_data):
 
     Parameters:
     - surface: Main Pygame surface to draw onto.
-    - app_data: Object containing knob values and key_nav_select.
+    - app_data: Object containing knob values and keys.
       app_data should have:
         app_data.knob1 (float): 0.0 to 1.0 for key selection
-        app_data.key_nav_select (bool): True when user selects the key
     """
     global password
     global keyboard_surface, keyboard
@@ -172,28 +171,6 @@ def keyboard_selector(surface, app_data):
     # Draw the keyboard onto the keyboard_surface
     keyboard.draw(keyboard_surface)
 
-    # Handle key selection
-    if app_data.key_nav_select:
-        selected_key = keyboard.get_key(selected_index)
-        if selected_key:
-            lower_key = selected_key.lower()
-            if selected_index == 40:
-                # Toggle shift mode
-                keyboard.shift = not keyboard.shift
-            elif selected_index == 41:
-                # Add a space
-                password += ' '
-            elif selected_index == 42:
-                # Remove last character if any
-                if len(password) > 0:
-                    password = password[:-1]
-            else:
-                # Append the selected key character
-                password += selected_key
-
-        # Reset select flag (you may manage debounce outside this if needed)
-        app_data.key_nav_select = False
-
     # Blit the keyboard_surface onto the main surface
     x_offset = (surface.get_width() - 400) // 2
     y_offset = (surface.get_height() - 200 - 50) // 2
@@ -204,6 +181,28 @@ def keyboard_selector(surface, app_data):
     textbox_y = y_offset + 200 + 10  # 10 pixels padding below keyboard
     draw_textbox(surface, textbox_x, textbox_y, (400, 50), password, textbox_font)
 
+# Handle key selection
+def handle_key_events (app_data):
+    global password
+    if app_data.key4_press:
+        app_data.current_screen = app_data.menu_screens["home"]
+    if app_data.key8_press:
+        selected_key = keyboard.get_key(keyboard.highlight_index)
+        if selected_key:
+            lower_key = selected_key.lower()
+            if keyboard.highlight_index == 40:
+                # Toggle shift mode
+                keyboard.shift = not keyboard.shift
+            elif keyboard.highlight_index == 41:
+                # Add a space
+                password += ' '
+            elif keyboard.highlight_index == 42:
+                # Remove last character if any
+                if len(password) > 0:
+                    password = password[:-1]
+            else:
+                # Append the selected key character
+                password += selected_key
 
 from screen import Screen
 
@@ -212,7 +211,7 @@ class WiFiScreen(Screen):
         super().__init__(app_state)
 
     def handle_events(self):
-        pass
+        handle_key_events(self.app_state)
         # Handle other keys if needed
 
     def update(self):

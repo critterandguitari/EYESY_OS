@@ -8,7 +8,7 @@ def draw_knob_slider(screen, etc, offx, offy, index) :
     if etc.knob_override[index]:
         color = etc.RED
     else :
-        color = etc.WHITE
+        color = etc.LGRAY
     pygame.draw.line(screen, color, [offx, offy], [offx + 16, offy], 1)
     pygame.draw.line(screen, color, [offx, offy], [offx, offy + 40], 1)
     pygame.draw.line(screen, color, [offx + 16, offy], [offx + 16, offy + 40], 1)
@@ -19,7 +19,7 @@ def draw_knob_slider_480(screen, etc, offx, offy, index) :
     if etc.knob_override[index]:
         color = etc.RED
     else :
-        color = etc.WHITE
+        color = etc.LGRAY
     pygame.draw.line(screen, color, [offx, offy], [offx + 10, offy], 1)
     pygame.draw.line(screen, color, [offx, offy], [offx, offy + 24], 1)
     pygame.draw.line(screen, color, [offx + 10, offy], [offx + 10, offy + 24], 1)
@@ -28,7 +28,7 @@ def draw_knob_slider_480(screen, etc, offx, offy, index) :
 
 
 def draw_vu(screen, etc, offx, offy):
-    color = etc.WHITE
+    color = etc.LGRAY
     for i in range(0,15) :
         x = offx + 14 * i
         pygame.draw.line(screen, color, [x, offy], [x + 10, offy], 1)
@@ -43,7 +43,7 @@ def draw_vu(screen, etc, offx, offy):
         pygame.draw.rect(screen, color, (x + 1, offy + 1, 9, 29))
 
 def draw_vu_480(screen, etc, offx, offy):
-    color = etc.WHITE
+    color = etc.LGRAY
     for i in range(0,15) :
         x = offx + 8 * i
         pygame.draw.line(screen, color, [x, offy], [x + 6, offy], 1)
@@ -81,8 +81,8 @@ def render_overlay_480(screen, etc) :
 
     font = pygame.font.Font("font.ttf", 16)
 
-    #pygame.draw.line(screen, etc.WHITE, [0,480], [720,480], 1)
-    #pygame.draw.line(screen, etc.WHITE, [720,480], [720,0], 1)
+    #pygame.draw.line(screen, etc.LGRAY, [0,480], [720,480], 1)
+    #pygame.draw.line(screen, etc.LGRAY, [720,480], [720,0], 1)
     
     # first time through, gather some info
     if etc.osd_first :
@@ -92,7 +92,7 @@ def render_overlay_480(screen, etc) :
 
     # mode
     mode_str = " Mode:  "   + str(etc.mode) + " (" + str(etc.mode_index + 1) +" of "+str(len(etc.mode_names)) + ")"
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 40
@@ -103,7 +103,7 @@ def render_overlay_480(screen, etc) :
         scene_str = " Scene:  " + str(etc.scene_index + 1) +" of "+str(len(etc.scenes)) + " "
     else:
         scene_str = " Scene: Not Set "
-    text = font.render(scene_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(scene_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 68
@@ -111,7 +111,7 @@ def render_overlay_480(screen, etc) :
     
     # midi notes
     pygame.draw.rect(screen, etc.BLACK, (20, 85, 299, 33))
-    text = font.render(" MIDI Notes:", True, etc.WHITE, etc.BLACK)
+    text = font.render(" MIDI Notes:", True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 101
@@ -119,16 +119,16 @@ def render_overlay_480(screen, etc) :
     offx = 120
     offy = 89
     for i in range(0, 33):
-        pygame.draw.line(screen, etc.WHITE, [(i*6)+offx, offy], [(i*6)+offx, 24+offy], 1)
+        pygame.draw.line(screen, etc.LGRAY, [(i*6)+offx, offy], [(i*6)+offx, 24+offy], 1)
     for i in range(0, 5):
-        pygame.draw.line(screen, etc.WHITE, [offx, (i*6)+offy], [offx + 192, (i*6)+offy], 1)
+        pygame.draw.line(screen, etc.LGRAY, [offx, (i*6)+offy], [offx + 192, (i*6)+offy], 1)
     for i in range(0,128):
         if (etc.midi_notes[i] > 0):
-            pygame.draw.rect(screen, etc.WHITE, (offx + 6 * (i % 32), offy + 6 * (i / 32), 6, 6))
+            pygame.draw.rect(screen, etc.LGRAY, (offx + 6 * (i % 32), offy + 6 * (i / 32), 6, 6))
             
     # knobs
     pygame.draw.rect(screen, etc.BLACK, (20, 124, 144, 35))
-    text = font.render(" Knobs:", True, etc.WHITE, etc.BLACK)
+    text = font.render(" Knobs:", True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 141
@@ -141,19 +141,19 @@ def render_overlay_480(screen, etc) :
     
     # trigger
     pygame.draw.rect(screen, etc.BLACK, (20, 166, 105, 30))
-    text = font.render(" Trigger:", True, etc.WHITE, etc.BLACK)
+    text = font.render(" Trigger:", True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 180
     screen.blit(text, text_rect)
-    pygame.draw.rect(screen, etc.WHITE, (98, 169, 24, 24), 1)
+    pygame.draw.rect(screen, etc.LGRAY, (98, 169, 24, 24), 1)
     if etc.audio_trig:
         pygame.draw.rect(screen, (255,255,0), (98, 169, 24, 24))
     
     # input level 
     pygame.draw.rect(screen, etc.BLACK, (20, 205, 220, 30))
     mode_str = " Input Level:"
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 220
@@ -165,7 +165,7 @@ def render_overlay_480(screen, etc) :
         mode_str = " Persist: No " 
     else :
         mode_str = " Persist: Yes "         
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 252
@@ -173,7 +173,7 @@ def render_overlay_480(screen, etc) :
     
     # mem
     mode_str = " Memory Used:  "   + str(int(etc.memory_used) + 1) + "% "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 306
@@ -184,7 +184,7 @@ def render_overlay_480(screen, etc) :
 #        mode_str = " USB MIDI:  "   + str(etc.usb_midi_name) + " "
 #    else :
 #        mode_str = " USB MIDI:  None "
-#    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+#    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
 #    text_rect = text.get_rect()
 #    text_rect.x = 20
 #    text_rect.centery = 334
@@ -192,7 +192,7 @@ def render_overlay_480(screen, etc) :
  
     # midi ch
 #    mode_str = " MIDI CH:  "   + str(etc.midi_ch) + " "
-#    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+#    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
 #    text_rect = text.get_rect()
 #    text_rect.x = 20
 #    text_rect.centery = 362
@@ -200,7 +200,7 @@ def render_overlay_480(screen, etc) :
       
     # ip    
     mode_str = " IP Address:  "   + wifi.ip_address + " "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 390
@@ -208,7 +208,7 @@ def render_overlay_480(screen, etc) :
     
     # SSID    
     mode_str = " Network:  "   + wifi.current_net + " "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 418
@@ -216,7 +216,7 @@ def render_overlay_480(screen, etc) :
 
     # fps
     mode_str = " FPS:  "   + str(int(etc.fps)) + " "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 10
     text_rect.centery = 10
@@ -224,7 +224,7 @@ def render_overlay_480(screen, etc) :
     
     # version
     mode_str = " v3beta1 "
-    text = font.render(mode_str, True, etc.WHITE, etc.BLACK)
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 446
@@ -232,7 +232,7 @@ def render_overlay_480(screen, etc) :
     
     # grabs
     pygame.draw.rect(screen, etc.BLACK, (486, 20, 155, 435))
-    text = font.render(" Recent Grabs", True, etc.WHITE, etc.BLACK)
+    text = font.render(" Recent Grabs", True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 500
     text_rect.centery = 37
@@ -247,7 +247,7 @@ def render_overlay_480(screen, etc) :
     i = 0
     font = pygame.font.Font("font.ttf", 16)
     for errorline in etc.error.splitlines() :
-        errormsg = font.render(errorline, True, etc.WHITE, etc.RED) 
+        errormsg = font.render(errorline, True, etc.LGRAY, etc.RED) 
         text_rect.x = 50
         text_rect.y = 60 + (i * 20)
         screen.blit(errormsg, text_rect)

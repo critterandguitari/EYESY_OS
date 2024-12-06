@@ -26,7 +26,6 @@ class Keyboard:
 
         # Total keys: 4 rows x 10 keys = 40 + 1 row x 3 keys = 43
         self.total_keys = len(self.flat_keys_lower)
-
         # Dimensions
         self.rows = len(self.lower_keys)  # 5
         # The top 4 rows have 10 columns, the last row has 3 columns
@@ -54,9 +53,9 @@ class Keyboard:
         total_height = surface.get_height()
 
         # Define colors
-        key_color = (200, 200, 200)       # Light gray for keys
-        highlight_color = (255, 0, 0)     # Red for highlighted key
-        text_color = (0, 0, 0)            # Black for key labels
+        key_color = (0,0,0)       # Light gray for keys
+        highlight_color = (100, 100, 100)     # Red for highlighted key
+        text_color = (200,200,200)           # Black for key labels
 
         index = 0
         for row_idx, row in enumerate(keys):
@@ -127,13 +126,13 @@ def draw_textbox(surface, x, y, size, string, font):
     """
     # Draw the textbox rectangle
     textbox_rect = pygame.Rect(x, y, size[0], size[1])
-    pygame.draw.rect(surface, (200, 200, 200), textbox_rect)  # White background
+    pygame.draw.rect(surface, (0, 0, 0), textbox_rect)  
 
     # Display the string as-is
     display_string = string
 
     # Render the display string
-    text_surf = font.render(display_string, True, (0, 0, 0))
+    text_surf = font.render(display_string, True, (200,200,200))
     text_rect = text_surf.get_rect()
     # Left-justify: place text_rect left side inside the textbox with some padding
     text_rect.left = textbox_rect.left + 5
@@ -142,7 +141,7 @@ def draw_textbox(surface, x, y, size, string, font):
 
 # Initialize static resources outside the function
 keyboard_surface = pygame.Surface((400, 200))
-keyboard_surface.fill((255, 255, 255))  # White background
+keyboard_surface.fill((0, 0, 0))  
 textbox_font = pygame.font.Font("font.ttf", 30)
 keyboard = Keyboard()
 
@@ -168,7 +167,7 @@ def keyboard_selector(surface, app_data):
     keyboard.highlight(selected_index)
 
     # Clear the keyboard surface before drawing
-    keyboard_surface.fill((255, 255, 255))  # White background
+    keyboard_surface.fill((0, 0, 0))  # White background
 
     # Draw the keyboard onto the keyboard_surface
     keyboard.draw(keyboard_surface)

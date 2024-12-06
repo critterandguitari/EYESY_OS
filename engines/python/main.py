@@ -216,16 +216,17 @@ while 1:
             print("error with setup: " + etc.error)
    
     # draw it
-    try :
-        mode.draw(screen, etc)
-    except Exception as e:   
-        etc.error = traceback.format_exc()
-        print("error with draw: " + etc.error)
-        # no use spitting these errors out at 30 fps
-        pygame.time.wait(200)
+    if True: #not etc.show_menu :
+        try :
+            mode.draw(screen, etc)
+        except Exception as e:   
+            etc.error = traceback.format_exc()
+            print("error with draw: " + etc.error)
+            # no use spitting these errors out at 30 fps
+            pygame.time.wait(200)
+            
+        hwscreen.blit(screen, (0,0))
         
-    hwscreen.blit(screen, (0,0))
-    
     # osd
     if etc.show_osd :
         osd.render_overlay_480(hwscreen, etc)
@@ -236,8 +237,6 @@ while 1:
         # Update and render the current screen
         etc.current_screen.update()
         etc.current_screen.render(hwscreen)
-
-
     
     pygame.display.flip()
 

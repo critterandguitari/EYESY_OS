@@ -122,6 +122,8 @@ class System:
     key8_press = False
     key9_press = False
     key10_press = False
+    
+    key2_status = False  # shift key pressed or not
 
     def update_trig_button(self, stat) :
         if (stat > 0 ):
@@ -135,24 +137,35 @@ class System:
         self.osd_first = True
 
     def toggle_menu(self) :
-        pass
+        if self.show_menu:
+            self.show_menu = False
+            self.set_osd(False)
+        else :
+            self.set_osd(False)
+            self.show_menu = True
 
     def toggle_osd(self) :
-        print("setting osd")
-        self.osd_menu_select += 1
-        if self.osd_menu_select == 3: self.osd_menu_select = 0
-
-        if self.osd_menu_select == 0:
-            self.set_osd(False)
+        if self.show_osd or self.show_menu:
             self.show_menu = False
-
-        if self.osd_menu_select == 1:
+            self.set_osd(False)
+        else :
             self.set_osd(True)
             self.show_menu = False
 
-        if self.osd_menu_select == 2:
-            self.set_osd(False)
-            self.show_menu = True
+        #self.osd_menu_select += 1
+        #if self.osd_menu_select == 3: self.osd_menu_select = 0
+
+        #if self.osd_menu_select == 0:
+        #    self.set_osd(False)
+        #    self.show_menu = False
+
+        #if self.osd_menu_select == 1:
+        #    self.set_osd(True)
+        #    self.show_menu = False
+
+        #if self.osd_menu_select == 2:
+        #    self.set_osd(False)
+        #    self.show_menu = True
 
     def toggle_auto_clear(self):
         if not self.auto_clear :
@@ -512,8 +525,14 @@ class System:
         return color
 
     def dispatch_key_event(self, k, v):
+        if k == 2 :
+            if v > 0 : self.key2_status = True
+            else : self.key2_status = False
+        if (k == 1 and v > 0) : # osd or menu
+            if self.key2_status: self.toggle_menu()
+            else : self.toggle_osd()
+       
         if self.show_menu :
-            if (k == 1 and v > 0) : self.toggle_osd()
             if (k == 2 and v > 0) : self.key2_press = True
             if (k == 3 and v > 0) : self.key3_press = True
             if (k == 4 and v > 0) : self.key4_press = True
@@ -524,16 +543,14 @@ class System:
             if (k == 9 and v > 0) : self.key9_press = True
             if (k == 10 and v > 0) : self.key10_press = True
         else : 
-            if (k == 5 and v > 0) : self.next_mode()
-            #if (k == 9 and v > 0) : self.toggle_menu()
-            if (k == 4 and v > 0) : self.prev_mode()
-            if (k == 10)           : self.update_trig_button(v)
-            if (k == 9 and v > 0) : self.screengrab_flag = True
-            if (k == 6 and v > 0) : self.prev_scene()
-            if (k == 8)           : self.save_or_delete_scene(v)
-            if (k == 7 and v > 0) : self.next_scene()
-            if (k == 1 and v > 0) : self.toggle_osd() 
             if (k == 3 and v > 0) : self.toggle_auto_clear()
+            if (k == 4 and v > 0) : self.prev_mode()
+            if (k == 5 and v > 0) : self.next_mode()
+            if (k == 6 and v > 0) : self.prev_scene()
+            if (k == 7 and v > 0) : self.next_scene()
+            if (k == 8)           : self.save_or_delete_scene(v)
+            if (k == 9 and v > 0) : self.screengrab_flag = True
+            if (k == 10)           : self.update_trig_button(v)
 
     def clear_flags(self):
         self.new_midi = False

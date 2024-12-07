@@ -525,10 +525,14 @@ class System:
         return color
 
     def dispatch_key_event(self, k, v):
+        
+        # the shift key
         if k == 2 :
             if v > 0 : self.key2_status = True
             else : self.key2_status = False
-        if (k == 1 and v > 0) : # osd or menu
+        
+        # select osd or menu 
+        if (k == 1 and v > 0) : 
             if self.key2_status: self.toggle_menu()
             else : self.toggle_osd()
        

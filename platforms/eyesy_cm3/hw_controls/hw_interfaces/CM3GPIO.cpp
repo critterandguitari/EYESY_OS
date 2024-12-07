@@ -196,12 +196,12 @@ void CM3GPIO::pollKnobs(){
 
     static uint32_t battAvg = 0;
     static uint8_t num = 0;
-    
-    adcs[0] = adcRead(0);
-    adcs[1] = adcRead(1);
-    adcs[2] = adcRead(2);
-    adcs[3] = adcRead(3);
-    adcs[4] = adcRead(4);
+   // 40213 
+    adcs[0] = adcRead(4);
+    adcs[1] = adcRead(2);
+    adcs[2] = adcRead(0);
+    adcs[3] = adcRead(1);
+    adcs[4] = adcRead(3);
     adcs[5] = adcRead(5);
     adcs[6] = adcRead(7);
 

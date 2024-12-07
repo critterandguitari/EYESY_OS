@@ -218,7 +218,7 @@ while 1:
             print("error with setup: " + etc.error)
    
     # draw it
-    if True: #not etc.show_menu :
+    if not etc.show_menu :
         try :
             mode.draw(screen, etc)
         except Exception as e:   

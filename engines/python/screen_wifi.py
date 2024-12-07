@@ -54,7 +54,7 @@ class Keyboard:
 
         # Define colors
         key_color = (0,0,0)       # Light gray for keys
-        highlight_color = (100, 100, 100)     # Red for highlighted key
+        highlight_color = (100, 100, 100)     # gray for highlighted key
         text_color = (200,200,200)           # Black for key labels
 
         index = 0
@@ -127,6 +127,7 @@ def draw_textbox(surface, x, y, size, string, font):
     # Draw the textbox rectangle
     textbox_rect = pygame.Rect(x, y, size[0], size[1])
     pygame.draw.rect(surface, (0, 0, 0), textbox_rect)  
+    pygame.draw.rect(surface, (200,200,200), textbox_rect, width=1)
 
     # Display the string as-is
     display_string = string
@@ -184,9 +185,9 @@ def keyboard_selector(surface, app_data):
 # Handle key selection
 def handle_key_events (app_data):
     global password
-    if app_data.key4_press:
+    if app_data.key3_press:
         app_data.current_screen = app_data.menu_screens["home"]
-    if app_data.key8_press:
+    if app_data.key2_press:
         selected_key = keyboard.get_key(keyboard.highlight_index)
         if selected_key:
             lower_key = selected_key.lower()
@@ -218,6 +219,7 @@ class WiFiScreen(Screen):
         pass  # Update logic if needed
 
     def render(self, surface):
+        pygame.draw.rect(surface, (0,0,0), (20, 20, 600, 440))
         keyboard_selector(surface, self.app_state)
 
     def goto_home(self):

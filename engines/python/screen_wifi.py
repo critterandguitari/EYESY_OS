@@ -173,8 +173,8 @@ def keyboard_selector(surface, app_data):
     keyboard.draw(keyboard_surface)
 
     # Blit the keyboard_surface onto the main surface
-    x_offset = (surface.get_width() - 400) // 2
-    y_offset = (surface.get_height() - 200 - 50) // 2
+    x_offset = 90#(surface.get_width() - 400) // 2
+    y_offset =150#(surface.get_height() - 200 - 50) // 2
     surface.blit(keyboard_surface, (x_offset, y_offset))
 
     # Draw the textbox onto the main surface
@@ -185,9 +185,9 @@ def keyboard_selector(surface, app_data):
 # Handle key selection
 def handle_key_events (app_data):
     global password
-    if app_data.key3_press:
-        app_data.current_screen = app_data.menu_screens["home"]
-    if app_data.key2_press:
+    #if app_data.key10_press:
+    #    app_data.current_screen = app_data.menu_screens["home"]
+    if app_data.key4_press:
         selected_key = keyboard.get_key(keyboard.highlight_index)
         if selected_key:
             lower_key = selected_key.lower()

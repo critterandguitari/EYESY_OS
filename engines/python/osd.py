@@ -2,7 +2,7 @@ import pygame
 import socket
 import imp
 
-wifi = imp.load_source('wifi_control', '/home/music/EYESY_OS/system/wifi_control.py')
+wifi = imp.load_source('wifi_control', '/home/music/EYESY_OS/platforms/eyesy_cm3/system/wifi_control.py')
 
 def draw_knob_slider(screen, etc, offx, offy, index) :
     if etc.knob_override[index]:

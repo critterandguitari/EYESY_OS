@@ -7,11 +7,11 @@ class MainMenu(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.menu = Menu(app_state, [
-            MenuItem(' Info ', self.goto_info),
             MenuItem(' MIDI Ch 16 ', self.exit_menu),
             MenuItem(' Gain 100% ', self.exit_menu),
             MenuItem(' WiFi > ', self.goto_wifi),
-            MenuItem(' Test > ', self.goto_test)
+            MenuItem(' Test > ', self.goto_test),
+            MenuItem(' Exit ', self.exit_menu)
         ])
 
     def handle_events(self):
@@ -30,10 +30,6 @@ class MainMenu(Screen):
 
     def goto_wifi(self):
         self.app_state.current_screen = self.app_state.menu_screens["wifi"]
-
-    def goto_info(self):
-        pass
-        #self.app_state.current_screen = self.app_state.menu_screens["info"]
 
     def exit_menu(self):
         self.app_state.osd_menu_select = 0

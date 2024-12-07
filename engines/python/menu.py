@@ -22,7 +22,7 @@ class Menu:
         #    self.selected_index = (self.selected_index - 1) % len(self.items)
         #elif self.app_state.key5_press:
         #    self.selected_index = (self.selected_index + 1) % len(self.items)
-        if self.app_state.key2_press:
+        if self.app_state.key4_press:
             self.items[self.selected_index].action()
 
     def render(self, surface):

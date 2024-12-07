@@ -79,9 +79,11 @@ print(str(etc.screen) + " " +  str(screen))
 from screen_main_menu import MainMenu
 from screen_wifi import WiFiScreen
 from screen_test import TestScreen
+from screen_res_menu import ResMenu
 etc.menu_screens["home"] = MainMenu(etc)
 etc.menu_screens["wifi"] = WiFiScreen(etc)
 etc.menu_screens["test"] = TestScreen(etc)
+etc.menu_screens["res"] = ResMenu(etc)
 etc.current_screen = etc.menu_screens["home"]
  
 # load modes, post banner if none found

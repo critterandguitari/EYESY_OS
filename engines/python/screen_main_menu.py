@@ -12,6 +12,7 @@ class MainMenu(Screen):
             MenuItem(' Screen Size >', self.goto_res),
             MenuItem(' WiFi > ', self.goto_wifi),
             MenuItem(' Test > ', self.goto_test),
+            MenuItem(' Color Palette > ', self.goto_palette),
             MenuItem(' < Exit ', self.exit_menu)
         ])
 
@@ -25,10 +26,11 @@ class MainMenu(Screen):
     def render(self, surface):
         self.menu.render(surface)
 
+    def goto_palette(self):
+        self.app_state.current_screen = self.app_state.menu_screens["palette"]
+
     def goto_res(self):
         self.app_state.current_screen = self.app_state.menu_screens["res"]
-
-
 
     def goto_test(self):
         self.app_state.current_screen = self.app_state.menu_screens["test"]

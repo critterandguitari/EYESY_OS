@@ -126,6 +126,81 @@ class System:
     
     key2_status = False  # shift key pressed or not
 
+    # color stuff
+    palettes = [
+       {
+          "name": "palette 1",
+          "a": [0.332, 0.347, 0.404],
+          "b": [0.944, 0.346, 0.315],
+          "c": [0.368, 0.980, 1.422],
+          "d": [4.571, 2.412, 4.308],
+        },
+        {
+          "name": "cool colors",
+          "a" : [0.938, 0.998, 0.560],
+          "b" : [0.279, 0.267, 0.401],
+          "c" : [-0.372, 0.564, 0.286],
+          "d" : [-5.234, -1.732, -5.037],
+        },
+        {
+          "name": "springtime",
+          "a": [0.500, 0.500, 0.918],
+          "b": [-2.827, -0.487, 0.392],
+          "c": [0.468, 0.400, -0.400],
+          "d": [0.000, 0.233, 0.667],
+        },
+        {
+          "name": "purple-centered rainbow",
+          "a": [0.500, 0.500, 0.480],
+          "b": [0.500, 0.500, 0.500],
+          "c": [0.500, 0.770, 0.630],
+          "d": [0.000, 0.243, 0.667],
+        },
+        {
+          "name": "modified rainbow",
+          "a": [0.498, 0.530, 0.500],
+          "b": [0.500, 0.500, 0.500],
+          "c": [0.960, 0.910, 0.810],
+          "d": [-1.302, -0.997, -0.693],
+        },
+        {
+          "name": "pastel yellow, pink, blue",
+          "a": [1.278, 1.310, 1.280],
+          "b": [0.500, 0.500, 0.500],
+          "c": [0.960, 0.910, 0.810],
+          "d": [-1.302, -0.997, -0.693],
+        },
+        {
+          "name": "was eggplant",
+          "a": [1.438, 0.500, 0.918],
+          "b": [-1.080, 0.490, 0.720],
+          "c": [-0.270, 0.690, -0.687],
+          "d": [0.000, -0.512, 0.628],
+        },
+        {
+          "name": "one of each",
+          "a": [0.500, 0.500, 0.918],
+          "b": [0.500, 0.500, 0.500],
+          "c": [0.960, 0.910, 0.810],
+          "d": [0.000, -0.512, 0.628],
+        },
+        {
+          "name": "duner",
+          "a": [1.438, 0.500, 0.918],
+          "b": [-1.080, 0.490, 0.720],
+          "c": [-0.249, 0.359, 0.127],
+          "d": [1.008, 0.517, 3.537],
+        },
+        {
+            "name": "My First Palette",
+            "a": [random.uniform(0, 10) for _ in range(3)],
+            "b": [random.uniform(0, 10) for _ in range(3)],
+            "c": [random.uniform(0, 10) for _ in range(3)],
+            "d": [random.uniform(0, 10) for _ in range(3)],
+        }
+    ]
+    palette = 0;
+
     def update_trig_button(self, stat) :
         if (stat > 0 ):
             self.audio_trig = True
@@ -460,7 +535,7 @@ class System:
         except :
             print("probably no scenes")
 
-    def palette(self, t, a, b, c, d):
+    def get_color_from_palette(self, t, a, b, c, d):
         # a, b, c, and d should be iterables of length 3: (x, y, z)
         # t is a float.
         # The formula: a + b * cos( 2π * (c*t + d) )
@@ -479,17 +554,14 @@ class System:
         c = [1.0, 2.0, 3.0]
         d = [0.0, 0.1, 0.2]
 
-        a = [0.938, 0.998, 0.560] 
-        b = [0.279, 0.267, 0.401] 
-        c = [-0.372, 0.564, 0.286] 
-        d = [-5.234, -1.732, -5.037]
-
-        a = [0.332, 0.347, 0.404] 
-        b = [0.944, 0.346, 0.315] 
-        c = [0.368, 0.980, 1.422] 
-        d = [4.571, 2.412, 4.308]
-
-        color = self.palette(t, a, b, c, d)
+        ci = self.palette
+        a = self.palettes[ci]["a"]
+        b = self.palettes[ci]["b"]
+        c = self.palettes[ci]["c"]
+        d = self.palettes[ci]["d"]
+   
+        #print(self.palettes[ci]["name"])
+        color = self.get_color_from_palette(t, a, b, c, d)
 
         color2 = (max(0, min(1,color[0])) * 255, max(0, min(1,color[1])) * 255, max(0, min(1,color[2])) * 255)
         #print(color2)

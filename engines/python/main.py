@@ -80,10 +80,12 @@ from screen_main_menu import MainMenu
 from screen_wifi import WiFiScreen
 from screen_test import TestScreen
 from screen_res_menu import ResMenu
+from screen_palette import PaletteMenu
 etc.menu_screens["home"] = MainMenu(etc)
 etc.menu_screens["wifi"] = WiFiScreen(etc)
 etc.menu_screens["test"] = TestScreen(etc)
 etc.menu_screens["res"] = ResMenu(etc)
+etc.menu_screens["palette"] = PaletteMenu(etc)
 etc.current_screen = etc.menu_screens["home"]
  
 # load modes, post banner if none found
@@ -282,7 +284,7 @@ while 1:
     etc.update_scene_save_key()
 
     # shift - sequence the knobs
-    knob_sequencer(etc)
+    #knob_sequencer(etc)
 
     # clear it with bg color if auto clear enabled
     if etc.auto_clear :

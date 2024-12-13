@@ -602,7 +602,6 @@ function saveMode() {
             // Handle response, show message, etc.
             currentFile.unsaved = false;
             currentFile.tabElement.removeClass('unsaved');
-            currentFile.editorSession.setValue(content);
             console.log('File saved successfully.');
         });
     } else {

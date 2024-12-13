@@ -95,6 +95,21 @@ def upload():
     }
     return jsonify(response)
 
+@app.route('/save', methods=['POST'])
+def save():
+    fpath = request.form.get('fpath')
+    content = request.form.get('content')
+    
+    if not fpath or not content:
+        return "Missing 'fpath' or 'content' in form data.", 400
+    
+    mode_path = MODES_PATH + fpath
+    with open(mode_path, "w") as text_file:
+        text_file.write(content)
+    
+    print("SAVED " + fpath)
+    return "SAVED " + fpath
+
 @app.route('/fmdata', methods=['GET', 'POST'])
 def fmdata():
 

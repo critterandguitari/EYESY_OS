@@ -1,4 +1,3 @@
-
 import os
 import imp
 from flask import Flask, request, make_response, jsonify, send_from_directory, send_file
@@ -7,10 +6,18 @@ import subprocess
 import urllib.parse
 import werkzeug
 import mimetypes
+import liblo
 
 GRABS_PATH = "/sdcard/Grabs/"
 MODES_PATH = "/"
 USER_DIR =   "/sdcard/"
+
+# osc to eyesy app
+try:
+	osc_target = liblo.Address(4000)
+except liblo.AddressError as err:
+	print(err)
+	sys.exit()
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 file_operations = imp.load_source('file_operations', current_dir + '/file_operations.py')
@@ -24,11 +31,18 @@ def background_thread(sid):
         for line in iter(p.stdout.readline, b''):
             socketio.emit('log_output', {'data': line.decode()}, room=sid, namespace='/test')
 
+@app.route('/test')
+def test():
+    return "asdf"
+
 @app.route('/')
 def index():
-    #return render_template('index.html')
     return send_from_directory(app.static_folder, 'index.html')
 
+@app.route('/reload_mode', methods=['GET', 'POST'])
+def reload_mode():
+    liblo.send(osc_target, "/reload", 1)
+    return "reloaded mode"
 
 @app.route('/get_file', methods=['GET'])
 def get_file():

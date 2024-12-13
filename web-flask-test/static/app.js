@@ -13,7 +13,6 @@ function getFile(fpath) {
     $.get(appBaseURL + '/get_file?fpath='+encodeURIComponent(fpath), function(data) {
         editor.setValue(data)
         editor.gotoLine(1)
-        currentEditorFile = fpath
         $("#title").html(fpath)
     });
 }
@@ -619,7 +618,7 @@ function saveMode() {
 }
 */
 function reloadMode() {
-  $.post(appBaseURL + "/reload_mode", { name: currentEditorFile })
+  $.post(appBaseURL + "/reload_mode", { name: currentFile.path })
   .done(function(data) {
     console.log(data);
   });
@@ -716,7 +715,7 @@ $(function () {
 	} else {
     	    $("#editor-container").show();
     	    $("#settings-container").hide();
-            $("#title").html(currentEditorFile)
+            $("#title").html(currentFile.path)
             $("#show-settings").html("Settings")
 	}
     });

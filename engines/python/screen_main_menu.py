@@ -7,13 +7,13 @@ class MainMenu(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.menu = Menu(app_state, [
-            MenuItem(' MIDI Ch 16 ', self.exit_menu),
-            MenuItem(' Gain 100% ', self.exit_menu),
-            MenuItem(' Screen Size >', self.goto_res),
-            MenuItem(' WiFi > ', self.goto_wifi),
-            MenuItem(' Test > ', self.goto_test),
-            MenuItem(' Color Palette > ', self.goto_palette),
-            MenuItem(' < Exit ', self.exit_menu)
+            MenuItem('MIDI Ch 16', self.exit_menu),
+            MenuItem('Gain 100%', self.exit_menu),
+            MenuItem('Screen Size >', self.goto_res),
+            MenuItem('WiFi >', self.goto_wifi),
+            MenuItem('Test >', self.goto_test),
+            MenuItem('Color Palette >', self.goto_palette),
+            MenuItem('< Exit', self.exit_menu)
         ])
 
     def handle_events(self):
@@ -27,7 +27,7 @@ class MainMenu(Screen):
         self.menu.render(surface)
 
     def goto_palette(self):
-        self.app_state.current_screen = self.app_state.menu_screens["palette"]
+        self.app_state.switch_menu_screen("palette")
 
     def goto_res(self):
         self.app_state.current_screen = self.app_state.menu_screens["res"]

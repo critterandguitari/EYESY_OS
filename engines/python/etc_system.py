@@ -192,11 +192,11 @@ class System:
           "d": [1.008, 0.517, 3.537],
         },
         {
-            "name": "My First Palette",
-            "a": [random.uniform(0, 10) for _ in range(3)],
-            "b": [random.uniform(0, 10) for _ in range(3)],
-            "c": [random.uniform(0, 10) for _ in range(3)],
-            "d": [random.uniform(0, 10) for _ in range(3)],
+          "name": "Random",
+          "a": [random.uniform(0, 10) for _ in range(3)],
+          "b": [random.uniform(0, 10) for _ in range(3)],
+          "c": [random.uniform(0, 10) for _ in range(3)],
+          "d": [random.uniform(0, 10) for _ in range(3)],
         }
     ]
     palette = 0;
@@ -219,7 +219,13 @@ class System:
         else :
             self.set_osd(False)
             self.show_menu = True
-            self.current_screen = self.menu_screens["home"]
+            self.switch_menu_screen("home")
+       
+    # run the pre and post logic function for a screen when entering / leaving
+    def switch_menu_screen(self,s) :
+        if self.current_screen is not None: self.current_screen.after()
+        self.current_screen = self.menu_screens[s]
+        self.current_screen.before()
 
     def toggle_osd(self) :
         if self.show_osd or self.show_menu:
@@ -277,6 +283,16 @@ class System:
             self.mode_index = len(self.mode_names) - 1
         self.set_mode_by_index(self.mode_index)
         self.scene_set = False
+
+    def next_palette (self) :
+        self.palette += 1
+        if self.palette >= len(self.palettes) : 
+            self.palette = 0
+
+    def prev_palette (self) :
+        self.palette -= 1
+        if self.palette < 0 : 
+            self.palette = len(self.palettes) - 1
 
     def override_all_knobs(self) :
         for i in range(0,5):
@@ -549,10 +565,6 @@ class System:
         c = float(val)
 
         t = c
-        a = [0.5, 0.5, 0.5]
-        b = [0.5, 0.5, 0.5]
-        c = [1.0, 2.0, 3.0]
-        d = [0.0, 0.1, 0.2]
 
         ci = self.palette
         a = self.palettes[ci]["a"]
@@ -568,15 +580,34 @@ class System:
         return color2
  
     def color_picker_bg( self, val):
+        #c = float(val)
+        #r = (1 - (math.cos(c * 3 * math.pi) * .5 + .5)) * c
+        #g = (1 - (math.cos(c * 7 * math.pi) * .5 + .5)) * c
+        #b = (1 - (math.cos(c * 11 * math.pi) * .5 + .5)) * c
+        
+        #color = (r * 255,g * 255,b * 255)
+        
+        #self.bg_color = color
+        #return color
+
         c = float(val)
-        r = (1 - (math.cos(c * 3 * math.pi) * .5 + .5)) * c
-        g = (1 - (math.cos(c * 7 * math.pi) * .5 + .5)) * c
-        b = (1 - (math.cos(c * 11 * math.pi) * .5 + .5)) * c
+
+        t = c
+
+        ci = self.palette
+        a = self.palettes[ci]["a"]
+        b = self.palettes[ci]["b"]
+        c = self.palettes[ci]["c"]
+        d = self.palettes[ci]["d"]
+   
+        #print(self.palettes[ci]["name"])
+        color = self.get_color_from_palette(t, a, b, c, d)
+
+        color2 = (max(0, min(1,color[0])) * 255, max(0, min(1,color[1])) * 255, max(0, min(1,color[2])) * 255)
+        self.bg_color = color2
+        return color2
         
-        color = (r * 255,g * 255,b * 255)
-        
-        self.bg_color = color
-        return color
+ 
 
     def dispatch_key_event(self, k, v):
         
@@ -600,15 +631,20 @@ class System:
             if (k == 8 and v > 0) : self.key8_press = True
             if (k == 9 and v > 0) : self.key9_press = True
             if (k == 10 and v > 0) : self.key10_press = True
-        else : 
-            if (k == 3 and v > 0) : self.toggle_auto_clear()
-            if (k == 4 and v > 0) : self.prev_mode()
-            if (k == 5 and v > 0) : self.next_mode()
-            if (k == 6 and v > 0) : self.prev_scene()
-            if (k == 7 and v > 0) : self.next_scene()
-            if (k == 8)           : self.save_or_delete_scene(v)
-            if (k == 9 and v > 0) : self.screengrab_flag = True
-            if (k == 10)           : self.update_trig_button(v)
+        else :
+            if not self.key2_status : 
+                if (k == 3 and v > 0) : self.toggle_auto_clear()
+                if (k == 4 and v > 0) : self.prev_mode()
+                if (k == 5 and v > 0) : self.next_mode()
+                if (k == 6 and v > 0) : self.prev_scene()
+                if (k == 7 and v > 0) : self.next_scene()
+                if (k == 8)           : self.save_or_delete_scene(v)
+                if (k == 9 and v > 0) : self.screengrab_flag = True
+                if (k == 10)          : self.update_trig_button(v)
+            else :
+                if (k == 4 and v > 0) : self.prev_palette()
+                if (k == 5 and v > 0) : self.next_palette()
+                 
 
     def clear_flags(self):
         self.new_midi = False

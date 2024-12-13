@@ -12,6 +12,18 @@ class Screen:
         """Update the screen's state."""
         pass
 
+    def before(self):
+        """Update the screen's state."""
+        print ("first time")
+        pass
+
+
+    def after(self):
+        """Update the screen's state."""
+        print ("before leaving")
+        pass
+
+
     def render(self, surface):
         """Render the screen."""
         pass

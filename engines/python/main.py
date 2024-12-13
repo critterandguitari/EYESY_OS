@@ -39,7 +39,6 @@ lock = shared_buffer.get_lock()  # Lock for thread-safe access
 audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, lock))
 audio_process.start()
 
-
 # init pygame, this has to happen after sound is setup
 # but before the graphics stuff below
 # os.environ["SDL_FBDEV"] = "/dev/fb0"
@@ -86,8 +85,8 @@ etc.menu_screens["wifi"] = WiFiScreen(etc)
 etc.menu_screens["test"] = TestScreen(etc)
 etc.menu_screens["res"] = ResMenu(etc)
 etc.menu_screens["palette"] = PaletteMenu(etc)
-etc.current_screen = etc.menu_screens["home"]
- 
+etc.switch_menu_screen("home")
+
 # load modes, post banner if none found
 if not (etc.load_modes()) :
     print("no modes found.")

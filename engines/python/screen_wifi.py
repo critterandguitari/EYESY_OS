@@ -32,8 +32,7 @@ class Keyboard:
         self.cols_top = 10
         self.cols_bottom = 3
 
-        # By default, no key is highlighted
-        self.highlight_index = None
+        self.selected_index = 0
 
         # Track shift state internally
         self.shift = False
@@ -69,7 +68,7 @@ class Keyboard:
                     rect = pygame.Rect(x, y, key_width, key_height)
 
                     # Highlight the selected key
-                    if self.highlight_index == index:
+                    if self.selected_index == index:
                         pygame.draw.rect(surface, highlight_color, rect)
                     else:
                         pygame.draw.rect(surface, key_color, rect)
@@ -87,7 +86,7 @@ class Keyboard:
                     y = row_idx * key_height
                     rect = pygame.Rect(x, y, key_width, key_height)
 
-                    if self.highlight_index == index:
+                    if self.selected_index == index:
                         pygame.draw.rect(surface, highlight_color, rect)
                     else:
                         pygame.draw.rect(surface, key_color, rect)
@@ -96,12 +95,6 @@ class Keyboard:
                     text_rect = text_surf.get_rect(center=rect.center)
                     surface.blit(text_surf, text_rect)
                     index += 1
-
-    def highlight(self, index):
-        """
-        Sets the index of the key to highlight.
-        """
-        self.highlight_index = index
 
     def get_key(self, index):
         """
@@ -160,11 +153,8 @@ def keyboard_selector(surface, app_data):
     global keyboard_surface, keyboard
 
     # Map knob input to key index (0 to total_keys - 1)
-    knob_value = max(0.0, min(app_data.knob1, 1.0))
-    selected_index = int(knob_value * (keyboard.total_keys - 1))
-
-    # Set the highlighted key
-    keyboard.highlight(selected_index)
+    #knob_value = max(0.0, min(app_data.knob1, 1.0))
+    #selected_index = int(knob_value * (keyboard.total_keys - 1))
 
     # Clear the keyboard surface before drawing
     keyboard_surface.fill((0, 0, 0))  # White background
@@ -187,17 +177,25 @@ def handle_key_events (app_data):
     global password
     #if app_data.key10_press:
     #    app_data.current_screen = app_data.menu_screens["home"]
-    if app_data.key4_press:
-        selected_key = keyboard.get_key(keyboard.highlight_index)
+    if app_data.key6_press: keyboard.selected_index -= 1
+    if app_data.key7_press: keyboard.selected_index += 1
+    if app_data.key4_press: keyboard.selected_index -= 10
+    if app_data.key5_press: keyboard.selected_index += 10
+
+    if keyboard.selected_index >= keyboard.total_keys : keyboard.selected_index = 0
+    if keyboard.selected_index <  0: keyboard.selected_index = keyboard.total_keys - 1
+
+    if app_data.key8_press:
+        selected_key = keyboard.get_key(keyboard.selected_index)
         if selected_key:
             lower_key = selected_key.lower()
-            if keyboard.highlight_index == 40:
+            if keyboard.selected_index == 40:
                 # Toggle shift mode
                 keyboard.shift = not keyboard.shift
-            elif keyboard.highlight_index == 41:
+            elif keyboard.selected_index == 41:
                 # Add a space
                 password += ' '
-            elif keyboard.highlight_index == 42:
+            elif keyboard.selected_index == 42:
                 # Remove last character if any
                 if len(password) > 0:
                     password = password[:-1]

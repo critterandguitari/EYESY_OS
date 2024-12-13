@@ -38,17 +38,21 @@ class PaletteMenu(Screen):
         self.menu.items.append(MenuItem('< Exit', self.goto_home))
 
     def handle_events(self):
-        self.menu.selected_index = int(self.app_state.knob1 * len(self.menu.items) * .99 ) 
+        self.menu.handle_events()
         self.app_state.palette = min(len(self.app_state.palettes)-1, self.menu.selected_index)
-        if self.menu.app_state.key4_press:
-            self.menu.items[self.menu.selected_index].action()
-
+        if self.app_state.key8_press:
+            self.exit_menu()
+    
     def update(self):
         pass  # Update logic if needed
 
     def render(self, surface):
         self.menu.render(surface)
         draw_color_palette(surface, self.app_state)
+
+    def before(self):
+        print("entering color palette")
+        self.menu.selected_index = self.app_state.palette
 
     def goto_home(self):
         self.app_state.current_screen = self.app_state.menu_screens["home"]

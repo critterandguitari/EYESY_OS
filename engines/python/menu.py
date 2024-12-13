@@ -17,12 +17,12 @@ class Menu:
         self.font = pygame.font.Font("font.ttf", 16)  # Customize font and size as needed
 
     def handle_events(self):
-        self.selected_index = int(self.app_state.knob1 * len(self.items) * .99 ) 
-        #if self.app_state.key4_press:
-        #    self.selected_index = (self.selected_index - 1) % len(self.items)
-        #elif self.app_state.key5_press:
-        #    self.selected_index = (self.selected_index + 1) % len(self.items)
-        if self.app_state.key4_press:
+        #self.selected_index = int(self.app_state.knob1 * len(self.items) * .99 ) 
+        if self.app_state.key6_press:
+            self.selected_index = (self.selected_index - 1) % len(self.items)
+        elif self.app_state.key7_press:
+            self.selected_index = (self.selected_index + 1) % len(self.items)
+        elif self.app_state.key8_press:
             self.items[self.selected_index].action()
 
     def render(self, surface):

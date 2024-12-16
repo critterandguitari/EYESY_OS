@@ -220,6 +220,7 @@ class System:
             self.set_osd(False)
             self.show_menu = True
             self.switch_menu_screen("home")
+            print("enable menu home screen")
        
     # run the pre and post logic function for a screen when entering / leaving
     def switch_menu_screen(self,s) :

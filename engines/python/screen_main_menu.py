@@ -30,14 +30,14 @@ class MainMenu(Screen):
         self.app_state.switch_menu_screen("palette")
 
     def goto_res(self):
-        self.app_state.current_screen = self.app_state.menu_screens["res"]
+        self.app_state.switch_menu_screen("res")
 
     def goto_test(self):
-        self.app_state.current_screen = self.app_state.menu_screens["test"]
+        self.app_state.switch_menu_screen("test")
 
 
     def goto_wifi(self):
-        self.app_state.current_screen = self.app_state.menu_screens["wifi"]
+        self.app_state.switch_menu_screen("ssid")
 
     def exit_menu(self):
         self.app_state.osd_menu_select = 0

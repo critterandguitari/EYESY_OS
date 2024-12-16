@@ -1,5 +1,3 @@
-# menu.py
-
 import pygame
 
 class MenuItem:
@@ -7,31 +5,73 @@ class MenuItem:
         self.text = text
         self.action = action  # Function to call when item is selected
 
-# menu.py
-
 class Menu:
+    VISIBLE_ITEMS = 8  # Number of menu items visible at a time
+    
     def __init__(self, app_state, items):
         self.app_state = app_state
         self.items = items  # List of MenuItem instances
         self.selected_index = 0
-        self.font = pygame.font.Font("font.ttf", 16)  # Customize font and size as needed
+        self.font = pygame.font.Font("font.ttf", 16)
+        
+        # Use a system font (like Arial) for the arrow indicators
+        self.arrow_font = pygame.font.SysFont("Arial", 16)
+
+        # This determines which item in the list is at the top of the visible window
+        self.start_index = 0
 
     def handle_events(self):
-        #self.selected_index = int(self.app_state.knob1 * len(self.items) * .99 ) 
         if self.app_state.key6_press:
-            self.selected_index = (self.selected_index - 1) % len(self.items)
+            # Move up if not at the top already
+            if self.selected_index > 0:
+                self.selected_index -= 1
+                self._adjust_view()
         elif self.app_state.key7_press:
-            self.selected_index = (self.selected_index + 1) % len(self.items)
+            # Move down if not at the bottom already
+            if self.selected_index < len(self.items) - 1:
+                self.selected_index += 1
+                self._adjust_view()
         elif self.app_state.key8_press:
             self.items[self.selected_index].action()
 
+    def _adjust_view(self):
+        # Ensure the selected item is always visible
+        if self.selected_index < self.start_index:
+            self.start_index = self.selected_index
+        elif self.selected_index >= self.start_index + self.VISIBLE_ITEMS:
+            self.start_index = self.selected_index - self.VISIBLE_ITEMS + 1
+        
+        max_start = max(0, len(self.items) - self.VISIBLE_ITEMS)
+        if self.start_index > max_start:
+            self.start_index = max_start
+
     def render(self, surface):
+        # Draw the background for the menu area
         pygame.draw.rect(surface, (0,0,0), (20, 20, 600, 440))
-        for index, item in enumerate(self.items):
+
+        # Determine the visible slice of items
+        visible_slice = self.items[self.start_index:self.start_index+self.VISIBLE_ITEMS]
+
+        # Render each visible menu item
+        for i, item in enumerate(visible_slice):
+            index = self.start_index + i
             color = (200, 200, 200)
             bgcolor = (0,0,0)
             if index == self.selected_index:
                 bgcolor = (100,100,100)  # Highlight selected item
+
             text_surface = self.font.render(item.text, True, color, bgcolor)
-            surface.blit(text_surface, (50, 50 + index * 25))
+            y_pos = 50 + i * 25
+            surface.blit(text_surface, (50, y_pos))
+
+        # Draw "up" arrow if there are items above the current view
+        if self.start_index > 0:
+            up_arrow = self.arrow_font.render("▲", True, (200, 200, 200))
+            surface.blit(up_arrow, (50, 30))  # Positioned above the first item
+
+        # Draw "down" arrow if there are items below the current view
+        if self.start_index + self.VISIBLE_ITEMS < len(self.items):
+            down_arrow = self.arrow_font.render("▼", True, (200, 200, 200))
+            bottom_y = 50 + (len(visible_slice)-1)*25 + 30
+            surface.blit(down_arrow, (50, bottom_y))
 

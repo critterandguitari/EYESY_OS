@@ -4,17 +4,18 @@ from menu import Menu, MenuItem
 
 import pygame
 
+
 def draw_color_palette(surface, app_state):
-    
-    width, height = 300, 50  # Dimensions of the preview
-    xoff = 50
-    yoff = 400
-    for i in range(width):
+
+    width, height = 50, 300  # Dimensions of the preview (swapped for vertical gradient)
+    xoff = 350
+    yoff = 50
+    for i in range(height):
         # Get the color using the color_picker function
-        color = app_state.color_picker(i / width)
-        # Draw a vertical line (1 pixel wide)
-        #pygame.draw.line(surface, color, (i+xoff, yoff), (i+xoff, height - 1 + yoff))
-        pygame.draw.line(surface, color, (i+xoff, yoff), (i+xoff, height - 1 + yoff))
+        color = app_state.color_picker(i / height)
+        # Draw a horizontal line (1 pixel high)
+        pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
+
 
 # Function to handle palette selection
 def select_palette(app_state, index):
@@ -35,7 +36,7 @@ class PaletteMenu(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.menu = create_palette_menu(app_state)
-        self.menu.items.append(MenuItem('< Exit', self.goto_home))
+        self.menu.items.append(MenuItem('◀ Exit', self.goto_home))
 
     def handle_events(self):
         self.menu.handle_events()
@@ -52,7 +53,7 @@ class PaletteMenu(Screen):
 
     def before(self):
         print("entering color palette")
-        self.menu.selected_index = self.app_state.palette
+        self.menu.set_selected_index(self.app_state.palette)
 
     def goto_home(self):
         self.app_state.current_screen = self.app_state.menu_screens["home"]

@@ -20,6 +20,12 @@ class Menu:
         # This determines which item in the list is at the top of the visible window
         self.start_index = 0
 
+    def set_selected_index(self, index):
+        """Externally set the selected index, ensuring it is visible."""
+        if 0 <= index < len(self.items):
+            self.selected_index = index
+            self._adjust_view()
+
     def handle_events(self):
         if self.app_state.key6_press:
             # Move up if not at the top already
@@ -60,18 +66,20 @@ class Menu:
             if index == self.selected_index:
                 bgcolor = (100,100,100)  # Highlight selected item
 
-            text_surface = self.font.render(item.text, True, color, bgcolor)
+            # Add spaces before and after the text
+            display_text = f" {item.text} "
+            text_surface = self.font.render(display_text, True, color, bgcolor)
             y_pos = 50 + i * 25
             surface.blit(text_surface, (50, y_pos))
 
         # Draw "up" arrow if there are items above the current view
         if self.start_index > 0:
-            up_arrow = self.arrow_font.render("▲", True, (200, 200, 200))
-            surface.blit(up_arrow, (50, 30))  # Positioned above the first item
+            up_arrow = self.arrow_font.render(" ▲", True, (200, 200, 200))
+            surface.blit(up_arrow, (50, 30))  # Positioned above the first visible item
 
         # Draw "down" arrow if there are items below the current view
         if self.start_index + self.VISIBLE_ITEMS < len(self.items):
-            down_arrow = self.arrow_font.render("▼", True, (200, 200, 200))
+            down_arrow = self.arrow_font.render(" ▼", True, (200, 200, 200))
             bottom_y = 50 + (len(visible_slice)-1)*25 + 30
             surface.blit(down_arrow, (50, bottom_y))
 

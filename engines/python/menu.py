@@ -74,12 +74,14 @@ class Menu:
 
         # Draw "up" arrow if there are items above the current view
         if self.start_index > 0:
-            up_arrow = self.arrow_font.render(" ▲", True, (200, 200, 200))
+            #up_arrow = self.arrow_font.render(" ▲", True, (200, 200, 200))
+            up_arrow = self.font.render(" ▲", True, (200, 200, 200))
             surface.blit(up_arrow, (50, 30))  # Positioned above the first visible item
 
         # Draw "down" arrow if there are items below the current view
         if self.start_index + self.VISIBLE_ITEMS < len(self.items):
-            down_arrow = self.arrow_font.render(" ▼", True, (200, 200, 200))
+            #down_arrow = self.arrow_font.render(" ▼", True, (200, 200, 200))
+            down_arrow = self.font.render(" ▼", True, (200, 200, 200))
             bottom_y = 50 + (len(visible_slice)-1)*25 + 30
             surface.blit(down_arrow, (50, bottom_y))
 

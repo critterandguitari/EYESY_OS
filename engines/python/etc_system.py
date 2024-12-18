@@ -17,10 +17,10 @@ class System:
     MODES_PATH = "/sdcard/Modes/Python/"
     SCENES_PATH = "/sdcard/Scenes.csv"
 
-    RES =  (720,480)
+    #RES =  (720,480)
     #RES =  (800,600)
     #RES =  (320,240)
-    #RES =  (1280,720)
+    RES =  (1280,720)
     #RES =  (1920,1080)
     #RES =  (640,480)
     #RES =  (0,0)

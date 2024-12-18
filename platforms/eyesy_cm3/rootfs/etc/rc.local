@@ -28,11 +28,6 @@ echo none > /sys/class/leds/led0/trigger
 /usr/bin/python /home/music/EYESY_OS/system/power_switch_monitor.py &
 
 # redirect 80 to 8080 for the web server
-#iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-ports 8080
-
-#/home/music/EYESY_OS/engines/oflua/run.sh
-#/home/music/EYESY_OS/engines/oflua/run.sh
-
-/usr/bin/pd -nogui -noaudio /home/music/EYESY_OS/launcher/launcher.pd &
+iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-ports 8080
 
 exit 0

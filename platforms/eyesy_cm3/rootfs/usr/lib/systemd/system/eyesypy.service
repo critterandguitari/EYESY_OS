@@ -1,0 +1,21 @@
+[Unit]
+Description=EYESY Video Engine
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/music/EYESY_OS/engines/python
+# Run as the 'music' user and group if desired
+User=music
+Group=music
+
+# Directly run python with unbuffered output
+ExecStart=/usr/bin/python -u /home/music/EYESY_OS/engines/python/main.py
+
+# Restart on failure if needed
+#Restart=on-failure
+#RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

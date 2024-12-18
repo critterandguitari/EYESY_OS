@@ -2,8 +2,6 @@ import pygame
 import socket
 import imp
 
-wifi = imp.load_source('wifi_control', '/home/music/EYESY_OS/platforms/eyesy_cm3/system/wifi_control.py')
-
 def draw_knob_slider(screen, etc, offx, offy, index) :
     if etc.knob_override[index]:
         color = etc.RED
@@ -87,7 +85,6 @@ def render_overlay_480(screen, etc) :
     # first time through, gather some info
     if etc.osd_first :
         etc.ip = socket.gethostbyname(socket.gethostname())
-        wifi.wifi_connected() # get the ip and ssid
         etc.osd_first = False
 
     # mode
@@ -199,7 +196,7 @@ def render_overlay_480(screen, etc) :
 #    screen.blit(text, text_rect)
       
     # ip    
-    mode_str = " IP Address:  "   + wifi.ip_address + " "
+    mode_str = " IP Address:  FIX ME "
     text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
@@ -207,7 +204,7 @@ def render_overlay_480(screen, etc) :
     screen.blit(text, text_rect)
     
     # SSID    
-    mode_str = " Network:  "   + wifi.current_net + " "
+    mode_str = " Network: FIX ME "
     text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20

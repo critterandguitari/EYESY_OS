@@ -27,13 +27,28 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 def background_thread(sid):
-    with subprocess.Popen(["tail", "-F", "/tmp/video.log"], stdout=subprocess.PIPE) as p:
+    # Use 'journalctl -f -u eyesypy.service -o cat' to get just the raw log messages
+    # without extra metadata.
+    cmd = ["journalctl", "-f", "-u", "eyesypy.service", "-o", "cat"]
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
         for line in iter(p.stdout.readline, b''):
             socketio.emit('log_output', {'data': line.decode()}, room=sid, namespace='/test')
 
 @app.route('/test')
 def test():
     return "asdf"
+
+@app.route('/stop_video_engine')
+def stop_video_engine():
+    print("stopping video...")
+    os.system("sudo systemctl stop eyesypy")
+    return "stopping video..."
+
+@app.route('/start_video_engine')
+def start_video_engine():
+    print("starting video...")
+    os.system("sudo systemctl start eyesypy")
+    return "starting video..."
 
 @app.route('/')
 def index():

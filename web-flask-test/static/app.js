@@ -747,20 +747,14 @@ $(function () {
 	});
     });
 
-    $("#start-oflua").click(function(){
-        $.get(appBaseURL + '/start_video_engine/?engine=oflua', function(data) {
-            console.log(data);
-        });
-    });
-
-    $("#start-python").click(function(){
-        $.get(appBaseURL + '/start_video_engine/?engine=python', function(data) {
+    $("#start-video").click(function(){
+        $.get(appBaseURL + '/start_video_engine', function(data) {
             console.log(data);
         });
     });
 
     $("#stop-video").click(function(){
-        $.get(appBaseURL + '/stop_video_engine/?engine=all', function(data) {
+        $.get(appBaseURL + '/stop_video_engine', function(data) {
             console.log(data);
         });
     });

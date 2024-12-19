@@ -146,6 +146,10 @@ def exitexit() :
     print("EXIT exiting\n")
     pygame.display.quit()
     pygame.quit()
+    print("stopping audio process")
+    audio_process.terminate()
+    print("closing audio")
+    audio_process.close()
     sys.exit()
 
 # We'll use a simple state machine for the sequencer:

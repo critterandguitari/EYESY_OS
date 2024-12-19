@@ -25,7 +25,7 @@
         <!--div id="show-settings" class="side-button" style="">Settings</div-->
         <!--div id="show-settings" class="icon-button" title="Settings"><span class="material-icons">settings</span></div-->
         <!--div id="start-oflua" class="side-button">Start Video</div-->
-        <div id="start-oflua" class="icon-button" title="Start Video Engine"><span class="material-icons">smart_display</span></div>
+        <div id="start-video" class="icon-button" title="Start Video Engine"><span class="material-icons">smart_display</span></div>
         <!--div id="stop-video" class="side-button">Stop Video</div-->
         <div id="stop-video" class="icon-button" title="Stop Video Engine"><span class="material-icons">stop</span></div>
         <div style="clear:left;"></div>
@@ -141,8 +141,7 @@
             <div id="editor"></div>
             <div id="image-container" style="display: none;"></div>
         </div>
-
-        <div id="vconsole-container">
+        <div id="vconsole-container" style="overflow-y: auto; ">
             <div id="vconsole-title-bar">
                 <span>Console</span>
                 <div id="clear-console" class="icon-button small-icon" title="Clear Console">
@@ -173,11 +172,17 @@
 	    console.log('Connected');
 	});
 
-	socket.on('log_output', function(msg) {
-	    $("#vconsole").append(msg.data);
-	    $("#vconsole").append("\n");
-	    $('#vconsole-container').scrollTop($('#vconsole-container')[0].scrollHeight);
-	});
+    socket.on('log_output', function (msg) {
+        const logMessage = msg.data;
+        const vconsole = $("#vconsole");
+        const container = $('#vconsole-container');
+        
+        // Append the new log
+        vconsole.append(logMessage);
+
+        // Scroll to the bottom of the container
+        container.scrollTop(container[0].scrollHeight);
+    });
 
     </script>
     </body>

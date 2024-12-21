@@ -64,22 +64,45 @@ def disconnect_wifi(device='wlan0'):
     except subprocess.CalledProcessError as e:
         print(f"Error disconnecting WiFi: {e}")
 
-def connect(ssid, device='wlan0'):
+def connect_pw(ssid, device='wlan0', password=''):
+    cmd = ["sudo", "nmcli", "device", "wifi", "connect", ssid, "password", password]
     try:
-        subprocess.run(["sudo", "nmcli", "device", "wifi", "connect", ssid], check=True)
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        # If we reach here, the command succeeded
+        return True, result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"Error connecting to {ssid}: {e}")
+        # Command failed
+        error_output = e.stderr if e.stderr else e.stdout
+        print(f"Error connecting to {ssid}: {error_output}")
+        return False, error_output
+
+def connect(ssid, device='wlan0'):
+    cmd = ["sudo", "nmcli", "device", "wifi", "connect", ssid]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        # If we reach here, the command succeeded
+        return True, result.stdout
+    except subprocess.CalledProcessError as e:
+        # Command failed
+        error_output = e.stderr if e.stderr else e.stdout
+        print(f"Error connecting to {ssid}: {error_output}")
+        return False, error_output
+
+from screen_keyboard import KeyboardScreen
 
 class SSIDMenu(Screen):
+
     def __init__(self, app_state):
         super().__init__(app_state)
         self.menu = Menu(app_state, [])
         self.ssids = []
         self.connected = False
-        # States: "init", "scanning", "idle", "connecting", "disconnecting"
         self.state = "init"  
         self.current_ssid = "Not Connected"
-        self.target_ssid = None  # SSID we attempt to connect to
+        self.target_ssid = None
+        self.connection_error = None
+        self.pending_password = None
+        self.keyboard = None  # Will hold the KeyboardScreen instance when needed
 
     def before(self):
         # Called once when the screen is displayed
@@ -99,56 +122,55 @@ class SSIDMenu(Screen):
                 self.start_scanning()
                 self.state = "scanning"
 
-    def handle_events(self):
-        # Only handle events if idle
-        if self.state == "idle":
-            self.menu.handle_events()
-
     def render(self, surface):
-        font = self.menu.font
+        # If we are in enter_password state, just render the keyboard
+        if self.state == "enter_password":
+            # Let the keyboard handle its own rendering
+            self.keyboard.render(surface)
+            return
 
+        font = self.menu.font
         pygame.draw.rect(surface, (0,0,0), (20, 20, 600, 440))
-        # State machine: decide what to do or show based on current state
+
         if self.state == "init":
-            # Check if connected
             self.connected = is_connected()
             self.current_ssid = get_current_network()
             if self.connected:
-                # Build menu for connected state
                 self.build_connected_menu()
                 self.state = "idle"
             else:
-                # Not connected, start scanning
                 self.start_scanning()
                 self.state = "scanning"
 
         elif self.state == "scanning":
-            # Show scanning message
             message = "Looking for networks..."
             rendered_text = font.render(message, True, (255, 255, 255))
             surface.blit(rendered_text, (50, 280))
-            # The scanning thread will update self.state to "idle" when done
 
         elif self.state == "connecting":
-            # Show connecting message
             message = f"Connecting to {self.target_ssid}..."
             rendered_text = font.render(message, True, (255, 255, 255))
             surface.blit(rendered_text, (50, 280))
-            # The connecting thread will set state to "idle" after done
 
         elif self.state == "disconnecting":
-            # Show disconnecting message
             message = "Disconnecting..."
             rendered_text = font.render(message, True, (255, 255, 255))
             surface.blit(rendered_text, (50, 280))
-            # The disconnecting thread will set state to "idle" after done
 
         elif self.state == "idle":
-            # Render the menu and current network status
             self.menu.render(surface)
             message = f"Connected to: {self.current_ssid}"
             rendered_text = font.render(message, True, (255, 255, 255))
             surface.blit(rendered_text, (50, 280))
+
+    def handle_events(self):
+        # If we are in enter_password state, just let the keyboard handle events
+        if self.state == "enter_password":
+            self.keyboard.handle_events()
+            return
+
+        if self.state == "idle":
+            self.menu.handle_events()
 
     def build_connected_menu(self):
         self.menu.items = [
@@ -197,23 +219,74 @@ class SSIDMenu(Screen):
 
     def connect_callback(self, ssid):
         self.target_ssid = ssid
+        self.state = "connecting"
 
         def do_connect():
-            connect(ssid)
+            success, output = connect(ssid)
+            print("connection status: " + output)
+            if not success:
+                print("enabling keyboard")
+                self.request_password()
+                return
+                # Check if the error indicates a password is needed
+                error_output = str(error)
+                # This is just an example check. Actual nmcli errors may differ.
+                # Common errors might mention "No suitable security found" or "secrets were required"
+                if "secrets were required" in error_output or "No suitable connection" in error_output:
+                    # Show the keyboard screen to enter password
+                    self.request_password()
+                    return
+                else:
+                    # Some other error: just rebuild not connected menu
+                    self.build_not_connected_menu()
+                    self.state = "idle"
+                    self.target_ssid = None
+                    return
+
+            # If no error, we are connected now
             time.sleep(1)
             self.connected = is_connected()
             self.current_ssid = get_current_network()
             if self.connected:
                 self.build_connected_menu()
             else:
-                # Maybe connection failed, rebuild not connected menu
-                # Potentially re-scan or show old ssids
                 self.build_not_connected_menu()
             self.state = "idle"
             self.target_ssid = None
 
-        self.state = "connecting"
         threading.Thread(target=do_connect, daemon=True).start()
+
+    def request_password(self):
+        # Create the keyboard screen, passing a callback that will be called when password is entered
+        self.keyboard = KeyboardScreen(self.app_state, connect_callback=self.password_entered_callback, cancel_callback=self.password_cancel_callback)
+        self.state = "enter_password"
+
+    def password_cancel_callback(self):
+        self.state = "init"
+
+    def password_entered_callback(self, password):
+        # Password entered by user in KeyboardScreen
+        # Now attempt connecting again with the password
+        self.state = "connecting"
+
+        def do_password_connect():
+            error = connect_pw(self.target_ssid, password=password)
+            # Destroy keyboard reference
+            self.keyboard = None
+
+            if error:
+                # If still error, then just show not connected menu
+                self.build_not_connected_menu()
+                self.state = "idle"
+                self.target_ssid = None
+                return
+
+            # If successful
+            time.sleep(1)
+            self.state = "init"
+            self.target_ssid = None
+
+        threading.Thread(target=do_password_connect, daemon=True).start()
 
     def select_ssid_callback(self, ssid):
         def callback():

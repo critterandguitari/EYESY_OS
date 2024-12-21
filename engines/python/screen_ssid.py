@@ -229,29 +229,23 @@ class SSIDMenu(Screen):
                 self.request_password()
                 return
                 # Check if the error indicates a password is needed
-                error_output = str(error)
+                #error_output = str(error)
                 # This is just an example check. Actual nmcli errors may differ.
                 # Common errors might mention "No suitable security found" or "secrets were required"
-                if "secrets were required" in error_output or "No suitable connection" in error_output:
+                #if "secrets were required" in error_output or "No suitable connection" in error_output:
                     # Show the keyboard screen to enter password
-                    self.request_password()
-                    return
-                else:
+                #    self.request_password()
+                #    return
+                #else:
                     # Some other error: just rebuild not connected menu
-                    self.build_not_connected_menu()
-                    self.state = "idle"
-                    self.target_ssid = None
-                    return
+                #    self.build_not_connected_menu()
+                #    self.state = "idle"
+                #    self.target_ssid = None
+                #    return
 
             # If no error, we are connected now
             time.sleep(1)
-            self.connected = is_connected()
-            self.current_ssid = get_current_network()
-            if self.connected:
-                self.build_connected_menu()
-            else:
-                self.build_not_connected_menu()
-            self.state = "idle"
+            self.state = "init"
             self.target_ssid = None
 
         threading.Thread(target=do_connect, daemon=True).start()
@@ -270,18 +264,19 @@ class SSIDMenu(Screen):
         self.state = "connecting"
 
         def do_password_connect():
-            error = connect_pw(self.target_ssid, password=password)
+            success, output = connect_pw(self.target_ssid, password=password)
             # Destroy keyboard reference
             self.keyboard = None
 
-            if error:
+            if not success:
                 # If still error, then just show not connected menu
                 self.build_not_connected_menu()
                 self.state = "idle"
                 self.target_ssid = None
+                print("some pw connect error")
                 return
 
-            # If successful
+            print("sucess connecting")
             time.sleep(1)
             self.state = "init"
             self.target_ssid = None

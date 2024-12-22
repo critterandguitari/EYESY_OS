@@ -9,7 +9,7 @@ class KeyboardScreen(Screen):
         self.text_box_text = ""
         self.keyboard_surface = pygame.Surface((400, 200))
         self.keyboard_surface.fill((0, 0, 0))
-        self.textbox_font = pygame.font.Font("font.ttf", 22)
+        self.textbox_font = pygame.font.Font("font.ttf", 20)
         self.connect_callback = connect_callback
         self.cancel_callback = cancel_callback
         # Define the keyboard layout for lowercase and uppercase
@@ -48,7 +48,8 @@ class KeyboardScreen(Screen):
 
         # Initialize font
         pygame.font.init()
-        self.font = pygame.font.Font("font.ttf", 22)
+        self.font = pygame.font.Font("font.ttf", 20)
+        self.font16 = pygame.font.Font("font.ttf", 16)
 
     def draw_keyboard(self, surface):
         """
@@ -109,7 +110,7 @@ class KeyboardScreen(Screen):
 
                     pygame.draw.rect(surface, highlight_color if self.selected_index == index else key_color, rect)
 
-                    text_surf = self.font.render(key, True, text_color)
+                    text_surf = self.font16.render(key, True, text_color)
                     text_rect = text_surf.get_rect(center=rect.center)
                     surface.blit(text_surf, text_rect)
                     index += 1
@@ -194,7 +195,6 @@ class KeyboardScreen(Screen):
         pass  # Update logic if needed
 
     def render(self, surface):
-        pygame.draw.rect(surface, (0,0,0), (20, 20, 600, 440))
         """
         Handles keyboard rendering.
         """

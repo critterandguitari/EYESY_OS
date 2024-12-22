@@ -81,14 +81,12 @@ from screen_test import TestScreen
 from screen_res_menu import ResMenu
 from screen_palette import PaletteMenu
 from screen_ssid import SSIDMenu
-from screen_keyboard import KeyboardScreen
 etc.menu_screens["home"] = MainMenu(etc)
 etc.menu_screens["wifi"] = WiFiScreen(etc)
 etc.menu_screens["test"] = TestScreen(etc)
 etc.menu_screens["res"] = ResMenu(etc)
 etc.menu_screens["palette"] = PaletteMenu(etc)
 etc.menu_screens["ssid"] = SSIDMenu(etc)
-etc.menu_screens["keyboard"] = KeyboardScreen(etc)
 etc.switch_menu_screen("home")
 
 # load modes, post banner if none found
@@ -331,7 +329,7 @@ while 1:
         try: 
             etc.current_screen.handle_events()
             etc.current_screen.update()
-            etc.current_screen.render(hwscreen)
+            etc.current_screen.render_with_title(hwscreen)
         except Exception as e:   
             etc.error = traceback.format_exc()
             print("error with Menu: " + etc.error)

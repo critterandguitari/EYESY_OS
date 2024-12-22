@@ -72,7 +72,6 @@ class TestScreen(Screen):
         pass
 
     def render(self, surface):
-        pygame.draw.rect(surface, (0,0,0), (20, 20, 600, 440))
         self.draw_controls(surface, self.highlighted_controls)
 
     def draw_controls(self, surface, highlighted):

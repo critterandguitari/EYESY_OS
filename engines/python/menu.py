@@ -13,6 +13,8 @@ class Menu:
         self.items = items  # List of MenuItem instances
         self.selected_index = 0
         self.font = pygame.font.Font("font.ttf", 16)
+        self.off_x = 50
+        self.off_y = 70
         
         # Use a system font (like Arial) for the arrow indicators
         self.arrow_font = pygame.font.SysFont("Arial", 16)
@@ -52,8 +54,6 @@ class Menu:
             self.start_index = max_start
 
     def render(self, surface):
-        # Draw the background for the menu area
-        pygame.draw.rect(surface, (0,0,0), (20, 20, 600, 440))
 
         # Determine the visible slice of items
         visible_slice = self.items[self.start_index:self.start_index+self.VISIBLE_ITEMS]
@@ -69,19 +69,19 @@ class Menu:
             # Add spaces before and after the text
             display_text = f" {item.text} "
             text_surface = self.font.render(display_text, True, color, bgcolor)
-            y_pos = 50 + i * 25
-            surface.blit(text_surface, (50, y_pos))
+            y_pos = 30 + self.off_y + i * 25
+            surface.blit(text_surface, (self.off_x, y_pos))
 
         # Draw "up" arrow if there are items above the current view
         if self.start_index > 0:
             #up_arrow = self.arrow_font.render(" ▲", True, (200, 200, 200))
             up_arrow = self.font.render(" ▲", True, (200, 200, 200))
-            surface.blit(up_arrow, (50, 30))  # Positioned above the first visible item
+            surface.blit(up_arrow, (self.off_x, self.off_y))  # Positioned above the first visible item
 
         # Draw "down" arrow if there are items below the current view
         if self.start_index + self.VISIBLE_ITEMS < len(self.items):
             #down_arrow = self.arrow_font.render(" ▼", True, (200, 200, 200))
             down_arrow = self.font.render(" ▼", True, (200, 200, 200))
-            bottom_y = 50 + (len(visible_slice)-1)*25 + 30
-            surface.blit(down_arrow, (50, bottom_y))
+            bottom_y = self.off_y + (len(visible_slice)-1)*25 + 60
+            surface.blit(down_arrow, (self.off_x, bottom_y))
 

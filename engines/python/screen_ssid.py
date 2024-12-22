@@ -4,6 +4,8 @@ import time
 import pygame
 from screen import Screen
 from menu import Menu, MenuItem
+from screen_netlogs import NetLogsScreen
+from screen_keyboard import KeyboardScreen
 
 def list_wifi_ssids():
     try:
@@ -88,8 +90,6 @@ def connect(ssid, device='wlan0'):
         print(f"Error connecting to {ssid}: {error_output}")
         return False, error_output
 
-from screen_keyboard import KeyboardScreen
-
 class SSIDMenu(Screen):
 
     def __init__(self, app_state):
@@ -103,11 +103,14 @@ class SSIDMenu(Screen):
         self.connection_error = None
         self.pending_password = None
         self.keyboard = None  # Will hold the KeyboardScreen instance when needed
+        self.netlogs = NetLogsScreen(app_state)
+        self.netlogs.x_offset = 20
+        self.netlogs.y_offset = 300
 
     def before(self):
-        # Called once when the screen is displayed
-        #self.connected = is_connected()
-        #self.current_ssid = get_current_network()
+        
+        self.netlogs.before()
+
         # re get info only if we are in idle state 
         if self.state == "idle":
             # Check if connected
@@ -130,7 +133,8 @@ class SSIDMenu(Screen):
             return
 
         font = self.menu.font
-        pygame.draw.rect(surface, (0,0,0), (20, 20, 600, 440))
+
+        self.netlogs.render(surface)
 
         if self.state == "init":
             self.connected = is_connected()

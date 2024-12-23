@@ -37,7 +37,7 @@ class ScreenMainMenu(Screen):
 
 
     def goto_wifi(self):
-        self.app_state.switch_menu_screen("ssid")
+        self.app_state.switch_menu_screen("wifi")
 
     def exit_menu(self):
         self.app_state.osd_menu_select = 0

@@ -80,11 +80,11 @@ from screen_test import ScreenTest
 from screen_res import ScreenRes
 from screen_palette import ScreenPalette
 from screen_wifi import ScreenWiFi
-etc.menu_screens["home"] = MainMenu(etc)
-etc.menu_screens["test"] = TestScreen(etc)
-etc.menu_screens["res"] = ResMenu(etc)
-etc.menu_screens["palette"] = PaletteMenu(etc)
-etc.menu_screens["ssid"] = SSIDMenu(etc)
+etc.menu_screens["home"] = ScreenMainMenu(etc)
+etc.menu_screens["test"] = ScreenTest(etc)
+etc.menu_screens["res"] = ScreenRes(etc)
+etc.menu_screens["palette"] = ScreenPalette(etc)
+etc.menu_screens["wifi"] = ScreenWiFi(etc)
 etc.switch_menu_screen("home")
 
 # load modes, post banner if none found

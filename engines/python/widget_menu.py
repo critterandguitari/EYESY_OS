@@ -5,7 +5,7 @@ class MenuItem:
         self.text = text
         self.action = action  # Function to call when item is selected
 
-class Menu:
+class WidgetMenu:
     VISIBLE_ITEMS = 8  # Number of menu items visible at a time
     
     def __init__(self, app_state, items):

@@ -1,12 +1,12 @@
 # main_menu.py
 
 from screen import Screen
-from menu import Menu, MenuItem
+from widget_menu import WidgetMenu, MenuItem
 
 class MainMenu(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
-        self.menu = Menu(app_state, [
+        self.menu = WidgetMenu(app_state, [
             MenuItem('MIDI Ch 16', self.exit_menu),
             MenuItem('Gain 100%', self.exit_menu),
             MenuItem('Screen Size >', self.goto_res),

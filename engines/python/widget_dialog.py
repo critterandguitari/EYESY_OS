@@ -1,5 +1,4 @@
 import pygame
-from screen import Screen
 
 def ok_callback():
     print("OK")
@@ -7,11 +6,10 @@ def ok_callback():
 def cancel_callback():
     print("CANCEL")
 
-
-class DialogScreen(Screen):
+class WidgetDialog():
 
     def __init__(self, app_state, ok_callback=ok_callback, cancel_callback=cancel_callback):
-        super().__init__(app_state)
+        self.app_state = app_state
         # Initialize text, surfaces, fonts, etc.
         self.text_box_text = "Disconnect from Dogs?"
         self.keyboard_surface = pygame.Surface((200, 50))

@@ -3,9 +3,9 @@ import threading
 import time
 import pygame
 from screen import Screen
-from menu import Menu, MenuItem
-from screen_netlogs import NetLogsScreen
-from screen_keyboard import KeyboardScreen
+from widget_menu import WidgetMenu, MenuItem
+from widget_netlogs import WidgetNetLogs
+from widget_keyboard import WidgetKeyboard
 
 def list_wifi_ssids():
     try:
@@ -94,7 +94,7 @@ class SSIDMenu(Screen):
 
     def __init__(self, app_state):
         super().__init__(app_state)
-        self.menu = Menu(app_state, [])
+        self.menu = WidgetMenu(app_state, [])
         self.ssids = []
         self.connected = False
         self.state = "init"  
@@ -103,7 +103,7 @@ class SSIDMenu(Screen):
         self.connection_error = None
         self.pending_password = None
         self.keyboard = None  # Will hold the KeyboardScreen instance when needed
-        self.netlogs = NetLogsScreen(app_state)
+        self.netlogs = WidgetNetLogs(app_state)
         self.netlogs.x_offset = 20
         self.netlogs.y_offset = 300
 
@@ -256,7 +256,7 @@ class SSIDMenu(Screen):
 
     def request_password(self):
         # Create the keyboard screen, passing a callback that will be called when password is entered
-        self.keyboard = KeyboardScreen(self.app_state, connect_callback=self.password_entered_callback, cancel_callback=self.password_cancel_callback)
+        self.keyboard = WidgetKeyboard(self.app_state, connect_callback=self.password_entered_callback, cancel_callback=self.password_cancel_callback)
         self.state = "enter_password"
 
     def password_cancel_callback(self):

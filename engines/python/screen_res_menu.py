@@ -1,14 +1,14 @@
 
 from screen import Screen
-from menu import Menu, MenuItem
-from screen_dialog import DialogScreen
+from widget_menu import WidgetMenu, MenuItem
+from widget_dialog import WidgetDialog
 
 class ResMenu(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.state = "idle"  # states are idle and confirm
-        self.dialog = DialogScreen(app_state)
-        self.menu = Menu(app_state, [
+        self.dialog = WidgetDialog(app_state)
+        self.menu = WidgetMenu(app_state, [
             MenuItem(' 640x480 ', self.confirm),
             MenuItem(' 1280x720 ', self.confirm),
             MenuItem(' < Back ', self.goto_home)

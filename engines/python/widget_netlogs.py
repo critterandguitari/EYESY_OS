@@ -1,9 +1,8 @@
 import pygame
 import subprocess
 import time
-from screen import Screen
 
-class NetLogsScreen(Screen):
+class WidgetNetlogs():
     def __init__(self, app_state):
         self.app_state = app_state
         self.font = pygame.font.Font("font.ttf", 10)

@@ -1,9 +1,8 @@
 
 from screen import Screen
-from menu import Menu, MenuItem
+from widget_menu import WidgetMenu, MenuItem
 
 import pygame
-
 
 def draw_color_palette(surface, app_state):
 
@@ -15,7 +14,6 @@ def draw_color_palette(surface, app_state):
         color = app_state.color_picker(i / height)
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
-
 
 # Function to handle palette selection
 def select_palette(app_state, index):
@@ -30,7 +28,7 @@ def create_palette_menu(app_state):
         menu_items.append(MenuItem(palette['name'], lambda i=i: select_palette(app_state, i)))
 
     # Return the menu object
-    return Menu(app_state, menu_items)
+    return WidgetMenu(app_state, menu_items)
 
 class PaletteMenu(Screen):
     def __init__(self, app_state):

@@ -1,10 +1,9 @@
 import pygame
-from screen import Screen
 
-class KeyboardScreen(Screen):
+class WidgetKeyboard():
 
     def __init__(self, app_state, connect_callback=None, cancel_callback=None):
-        super().__init__(app_state)
+        self.app_state = app_state
         # Initialize text, surfaces, fonts, etc.
         self.text_box_text = ""
         self.keyboard_surface = pygame.Surface((400, 200))

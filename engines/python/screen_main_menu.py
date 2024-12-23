@@ -20,9 +20,6 @@ class ScreenMainMenu(Screen):
         self.menu.handle_events()
         # Handle other keys if needed
 
-    def update(self):
-        pass  # Update logic if needed
-
     def render(self, surface):
         self.menu.render(surface)
 

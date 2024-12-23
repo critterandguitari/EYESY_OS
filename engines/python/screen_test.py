@@ -68,9 +68,6 @@ class ScreenTest(Screen):
             if self.knob_min_reached[ctrl_id] and self.knob_max_reached[ctrl_id]:
                 self.highlighted_controls.add(ctrl_id)
 
-    def update(self):
-        pass
-
     def render(self, surface):
         self.draw_controls(surface, self.highlighted_controls)
 

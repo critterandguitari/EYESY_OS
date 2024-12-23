@@ -10,10 +10,6 @@ class Screen:
         """Handle input events."""
         pass
 
-    def update(self):
-        """Update the screen's state."""
-        pass
-
     def before(self):
         """Update the screen's state."""
         print ("first time")

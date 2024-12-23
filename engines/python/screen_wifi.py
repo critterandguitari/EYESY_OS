@@ -6,6 +6,7 @@ from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
 from widget_netlogs import WidgetNetlogs
 from widget_keyboard import WidgetKeyboard
+from widget_dialog import WidgetDialog
 
 def list_wifi_ssids():
     try:
@@ -104,6 +105,7 @@ class ScreenWiFi(Screen):
         self.pending_password = None
         self.keyboard = None  # Will hold the KeyboardScreen instance when needed
         self.netlogs = WidgetNetlogs(app_state)
+        self.dialog = WidgetDialog(app_state)
         self.netlogs.x_offset = 20
         self.netlogs.y_offset = 300
 
@@ -126,16 +128,24 @@ class ScreenWiFi(Screen):
                 self.state = "scanning"
 
     def render(self, surface):
+        
         # If we are in enter_password state, just render the keyboard
         if self.state == "enter_password":
             # Let the keyboard handle its own rendering
             self.keyboard.render(surface)
             return
 
-        font = self.menu.font
+        # If we are in disoconnect_confirm state, just render dialog
+        if self.state == "dialog":
+            # Let the keyboard handle its own rendering
+            self.dialog.render(surface)
+            return
 
+        
+        # otherwise we show the netlogs
         self.netlogs.render(surface)
 
+        font = self.menu.font
         if self.state == "init":
             self.connected = is_connected()
             self.current_ssid = get_current_network()
@@ -149,36 +159,42 @@ class ScreenWiFi(Screen):
         elif self.state == "scanning":
             message = "Looking for networks..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 280))
+            surface.blit(rendered_text, (50, 50))
 
         elif self.state == "connecting":
             message = f"Connecting to {self.target_ssid}..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 280))
+            surface.blit(rendered_text, (50, 50))
 
         elif self.state == "disconnecting":
             message = "Disconnecting..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 280))
+            surface.blit(rendered_text, (50, 50))
 
         elif self.state == "idle":
             self.menu.render(surface)
             message = f"Connected to: {self.current_ssid}"
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 280))
+            surface.blit(rendered_text, (50, 50))
 
     def handle_events(self):
         # If we are in enter_password state, just let the keyboard handle events
         if self.state == "enter_password":
             self.keyboard.handle_events()
             return
+        
+        # same if dialog
+        if self.state == "dialog":
+            self.dialog.handle_events()
+            return
 
+        # otherwise seclect from menu, but not during an action
         if self.state == "idle":
             self.menu.handle_events()
 
     def build_connected_menu(self):
         self.menu.items = [
-            MenuItem('Disconnect', self.disconnect_callback),
+            MenuItem('Disconnect', self.disconnect_confirm_callback),
             MenuItem('< Exit', self.exit_menu)
         ]
         self.menu.set_selected_index(0)
@@ -206,6 +222,15 @@ class ScreenWiFi(Screen):
             self.state = "idle"
 
         threading.Thread(target=do_scan, daemon=True).start()
+
+    def disconnect_confirm_callback(self):
+        self.dialog.message = "Disconnect WiFi?"
+        self.dialog.ok_callback = self.disconnect_callback
+        self.dialog.cancel_callback = self.disconnect_confirm_no
+        self.state = "dialog"
+   
+    def disconnect_confirm_no(self):
+        self.state = "init"
 
     def disconnect_callback(self):
         # Disconnect in a thread

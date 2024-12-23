@@ -11,7 +11,7 @@ class WidgetDialog():
     def __init__(self, app_state, ok_callback=ok_callback, cancel_callback=cancel_callback):
         self.app_state = app_state
         # Initialize text, surfaces, fonts, etc.
-        self.text_box_text = "Disconnect from Dogs?"
+        self.message = "Disconnect from Dogs?"
         self.keyboard_surface = pygame.Surface((200, 50))
         self.keyboard_surface.fill((0, 0, 0))
         self.textbox_font = pygame.font.Font("font.ttf", 16)
@@ -101,9 +101,9 @@ class WidgetDialog():
         app_data = self.app_state
 
         # Example navigation (assuming app_data.keyX_press are booleans):
-        if app_data.key4_press:
+        if app_data.key6_press:
             self.selected_index -= 1
-        if app_data.key5_press:
+        if app_data.key7_press:
             self.selected_index += 1
 
         # Wrap around
@@ -142,7 +142,7 @@ class WidgetDialog():
         # Draw the textbox onto the main surface
         textbox_x = x_offset
         textbox_y = 50  # 10 pixels padding below keyboard
-        self.draw_textbox(surface, textbox_x, textbox_y, (400, 40), self.text_box_text, self.textbox_font)
+        self.draw_textbox(surface, textbox_x, textbox_y, (400, 40), self.message, self.textbox_font)
 
     def goto_home(self):
         pass

@@ -326,7 +326,6 @@ while 1:
     if etc.show_menu :
         try: 
             etc.current_screen.handle_events()
-            etc.current_screen.update()
             etc.current_screen.render_with_title(hwscreen)
         except Exception as e:   
             etc.error = traceback.format_exc()

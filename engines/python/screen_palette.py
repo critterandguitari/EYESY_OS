@@ -42,9 +42,6 @@ class ScreenPalette(Screen):
         if self.app_state.key8_press:
             self.exit_menu()
     
-    def update(self):
-        pass  # Update logic if needed
-
     def render(self, surface):
         self.menu.render(surface)
         draw_color_palette(surface, self.app_state)

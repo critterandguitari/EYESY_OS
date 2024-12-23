@@ -3,7 +3,7 @@
 from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
 
-class MainMenu(Screen):
+class ScreenMainMenu(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.menu = WidgetMenu(app_state, [

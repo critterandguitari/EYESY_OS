@@ -3,7 +3,7 @@ from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
 from widget_dialog import WidgetDialog
 
-class ResMenu(Screen):
+class ScreenRes(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.state = "idle"  # states are idle and confirm

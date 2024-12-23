@@ -1,7 +1,7 @@
 from screen import Screen
 import pygame
 
-class TestScreen(Screen):
+class ScreenTest(Screen):
     def __init__(self, app_state):
         self.app_state = app_state
 

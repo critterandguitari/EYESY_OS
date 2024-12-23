@@ -4,7 +4,7 @@ import time
 import pygame
 from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
-from widget_netlogs import WidgetNetLogs
+from widget_netlogs import WidgetNetlogs
 from widget_keyboard import WidgetKeyboard
 
 def list_wifi_ssids():
@@ -90,7 +90,7 @@ def connect(ssid, device='wlan0'):
         print(f"Error connecting to {ssid}: {error_output}")
         return False, error_output
 
-class SSIDMenu(Screen):
+class ScreenWiFiMenu(Screen):
 
     def __init__(self, app_state):
         super().__init__(app_state)
@@ -103,7 +103,7 @@ class SSIDMenu(Screen):
         self.connection_error = None
         self.pending_password = None
         self.keyboard = None  # Will hold the KeyboardScreen instance when needed
-        self.netlogs = WidgetNetLogs(app_state)
+        self.netlogs = WidgetNetlogs(app_state)
         self.netlogs.x_offset = 20
         self.netlogs.y_offset = 300
 

@@ -30,7 +30,7 @@ def create_palette_menu(app_state):
     # Return the menu object
     return WidgetMenu(app_state, menu_items)
 
-class PaletteMenu(Screen):
+class ScreenPalette(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.menu = create_palette_menu(app_state)

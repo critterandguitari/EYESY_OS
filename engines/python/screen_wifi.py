@@ -227,6 +227,7 @@ class ScreenWiFi(Screen):
         self.dialog.message = "Disconnect WiFi?"
         self.dialog.ok_callback = self.disconnect_callback
         self.dialog.cancel_callback = self.disconnect_confirm_no
+        self.dialog.selected_index = 0
         self.state = "dialog"
    
     def disconnect_confirm_no(self):

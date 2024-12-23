@@ -27,10 +27,7 @@ class WidgetDialog():
         self.rows = len(self.lower_keys)  # 5
         # The top 4 rows have 10 columns each, the last row has 3
         self.cols_top = 2
-
         self.selected_index = 0
-
-
         # Initialize font
         pygame.font.init()
         self.font = pygame.font.Font("font.ttf", 20)

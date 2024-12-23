@@ -90,7 +90,7 @@ def connect(ssid, device='wlan0'):
         print(f"Error connecting to {ssid}: {error_output}")
         return False, error_output
 
-class ScreenWiFiMenu(Screen):
+class ScreenWiFi(Screen):
 
     def __init__(self, app_state):
         super().__init__(app_state)

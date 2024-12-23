@@ -75,11 +75,11 @@ etc.screen = screen
 print(str(etc.screen) + " " +  str(screen))
 
 # menu screens
-from screen_main_menu import MainMenu
-from screen_test import TestScreen
-from screen_res_menu import ResMenu
-from screen_palette import PaletteMenu
-from screen_ssid import SSIDMenu
+from screen_main_menu import ScreenMainMenu
+from screen_test import ScreenTest
+from screen_res import ScreenRes
+from screen_palette import ScreenPalette
+from screen_wifi import ScreenWiFi
 etc.menu_screens["home"] = MainMenu(etc)
 etc.menu_screens["test"] = TestScreen(etc)
 etc.menu_screens["res"] = ResMenu(etc)

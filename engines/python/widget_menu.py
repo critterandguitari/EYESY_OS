@@ -17,7 +17,6 @@ class WidgetMenu:
         self.off_y = 70
         
         # Use a system font (like Arial) for the arrow indicators
-        self.arrow_font = pygame.font.SysFont("Arial", 16)
 
         # This determines which item in the list is at the top of the visible window
         self.start_index = 0
@@ -74,13 +73,11 @@ class WidgetMenu:
 
         # Draw "up" arrow if there are items above the current view
         if self.start_index > 0:
-            #up_arrow = self.arrow_font.render(" ▲", True, (200, 200, 200))
             up_arrow = self.font.render(" ▲", True, (200, 200, 200))
             surface.blit(up_arrow, (self.off_x, self.off_y))  # Positioned above the first visible item
 
         # Draw "down" arrow if there are items below the current view
         if self.start_index + self.VISIBLE_ITEMS < len(self.items):
-            #down_arrow = self.arrow_font.render(" ▼", True, (200, 200, 200))
             down_arrow = self.font.render(" ▼", True, (200, 200, 200))
             bottom_y = self.off_y + (len(visible_slice)-1)*25 + 60
             surface.blit(down_arrow, (self.off_x, bottom_y))

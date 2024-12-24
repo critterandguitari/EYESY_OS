@@ -14,7 +14,6 @@ class WidgetDialog():
         self.message = "Disconnect from Dogs?"
         self.keyboard_surface = pygame.Surface((200, 50))
         self.keyboard_surface.fill((0, 0, 0))
-        self.textbox_font = pygame.font.Font("font.ttf", 16)
         self.ok_callback = ok_callback
         self.cancel_callback = cancel_callback
         # Define the keyboard layout for lowercase and uppercase
@@ -30,8 +29,7 @@ class WidgetDialog():
         self.selected_index = 0
         # Initialize font
         pygame.font.init()
-        self.font = pygame.font.Font("font.ttf", 20)
-        self.font16 = pygame.font.Font("font.ttf", 16)
+        self.font = pygame.font.Font("font.ttf", 16)
 
     def draw_keyboard(self, surface):
         keys = self.lower_keys
@@ -139,7 +137,7 @@ class WidgetDialog():
         # Draw the textbox onto the main surface
         textbox_x = x_offset
         textbox_y = 50  # 10 pixels padding below keyboard
-        self.draw_textbox(surface, textbox_x, textbox_y, (400, 40), self.message, self.textbox_font)
+        self.draw_textbox(surface, textbox_x, textbox_y, (400, 40), self.message, self.font)
 
     def goto_home(self):
         pass

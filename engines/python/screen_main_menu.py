@@ -9,11 +9,11 @@ class ScreenMainMenu(Screen):
         self.menu = WidgetMenu(app_state, [
             MenuItem('MIDI Ch 16', self.exit_menu),
             MenuItem('Gain 100%', self.exit_menu),
-            MenuItem('Screen Size >', self.goto_res),
-            MenuItem('WiFi >', self.goto_wifi),
-            MenuItem('Test >', self.goto_test),
-            MenuItem('Color Palette >', self.goto_palette),
-            MenuItem('< Exit', self.exit_menu)
+            MenuItem('Screen Size  ▶', self.goto_res),
+            MenuItem('WiFi  ▶', self.goto_wifi),
+            MenuItem('Test  ▶', self.goto_test),
+            MenuItem('Color Palette  ▶', self.goto_palette),
+            MenuItem('◀  Exit', self.exit_menu)
         ])
 
     def handle_events(self):

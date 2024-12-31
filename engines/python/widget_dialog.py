@@ -12,8 +12,8 @@ class WidgetDialog():
         self.app_state = app_state
         # Initialize text, surfaces, fonts, etc.
         self.message = "Disconnect from Dogs?"
-        self.keyboard_surface = pygame.Surface((200, 50))
-        self.keyboard_surface.fill((0, 0, 0))
+        self.keyboard_surface = pygame.Surface((300, 50))
+        self.dialog_surface = pygame.Surface((300, 100))
         self.ok_callback = ok_callback
         self.cancel_callback = cancel_callback
         # Define the keyboard layout for lowercase and uppercase
@@ -80,14 +80,14 @@ class WidgetDialog():
         Left-justifies the text.
         """
         textbox_rect = pygame.Rect(x, y, size[0], size[1])
-        pygame.draw.rect(surface, (0, 0, 0), textbox_rect)  
+        #pygame.draw.rect(surface, (0, 0, 0), textbox_rect)  
         #pygame.draw.rect(surface, (200,200,200), textbox_rect, width=1)
 
         # Render the display string
         text_surf = font.render(string, True, (200,200,200))
         text_rect = text_surf.get_rect()
         # Left-justify: place text_rect left side inside the textbox with some padding
-        text_rect.left = textbox_rect.left + 5
+        text_rect.left = textbox_rect.left + 12
         text_rect.centery = textbox_rect.centery
         surface.blit(text_surf, text_rect)
 
@@ -120,24 +120,23 @@ class WidgetDialog():
         pass  # Update logic if needed
 
     def render(self, surface):
-        """
-        Handles keyboard rendering.
-        """
-        # Clear the keyboard surface before drawing
         self.keyboard_surface.fill((0, 0, 0))
+        self.dialog_surface.fill((0, 0, 0))
 
         # Draw the keyboard onto the keyboard_surface
         self.draw_keyboard(self.keyboard_surface)
 
-        # Blit the keyboard_surface onto the main surface
+        # Blit the keyboard_surface onto the dialog surface
+        self.dialog_surface.blit(self.keyboard_surface, (0, 50))
+        pygame.draw.rect(self.dialog_surface, (200,200,200), (0, 0, 299, 99), width=1)
         x_offset = 90
         y_offset = 120
-        surface.blit(self.keyboard_surface, (x_offset, y_offset))
 
-        # Draw the textbox onto the main surface
-        textbox_x = x_offset
-        textbox_y = 50  # 10 pixels padding below keyboard
-        self.draw_textbox(surface, textbox_x, textbox_y, (400, 40), self.message, self.font)
+        # Draw the textbox onto the dialog surface
+        textbox_x = 0
+        textbox_y = 0
+        self.draw_textbox(self.dialog_surface, textbox_x, textbox_y, (300, 40), self.message, self.font)
+        surface.blit(self.dialog_surface, (100, 100))
 
     def goto_home(self):
         pass

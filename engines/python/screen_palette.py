@@ -33,6 +33,7 @@ def create_palette_menu(app_state):
 class ScreenPalette(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
+        self.title = "Color Palette"
         self.menu = create_palette_menu(app_state)
         self.menu.items.append(MenuItem('◀ Exit', self.goto_home))
 

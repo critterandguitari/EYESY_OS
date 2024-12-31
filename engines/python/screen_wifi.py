@@ -95,6 +95,7 @@ class ScreenWiFi(Screen):
 
     def __init__(self, app_state):
         super().__init__(app_state)
+        self.title = "WiFi Setup"
         self.menu = WidgetMenu(app_state, [])
         self.ssids = []
         self.connected = False
@@ -136,10 +137,10 @@ class ScreenWiFi(Screen):
             return
 
         # If we are in disoconnect_confirm state, just render dialog
-        if self.state == "dialog":
+        #if self.state == "dialog":
             # Let the keyboard handle its own rendering
-            self.dialog.render(surface)
-            return
+        #    self.dialog.render(surface)
+        #    return
 
         
         # otherwise we show the netlogs
@@ -177,6 +178,13 @@ class ScreenWiFi(Screen):
             rendered_text = font.render(message, True, (255, 255, 255))
             surface.blit(rendered_text, (50, 50))
 
+        elif self.state == "dialog":
+            self.menu.render(surface)
+            message = f"Disconnect from: {self.current_ssid} ?"
+            rendered_text = font.render(message, True, (255, 255, 255))
+            surface.blit(rendered_text, (50, 50))
+
+
     def handle_events(self):
         # If we are in enter_password state, just let the keyboard handle events
         if self.state == "enter_password":
@@ -185,7 +193,8 @@ class ScreenWiFi(Screen):
         
         # same if dialog
         if self.state == "dialog":
-            self.dialog.handle_events()
+            #self.dialog.handle_events()
+            self.menu.handle_events()
             return
 
         # otherwise seclect from menu, but not during an action
@@ -224,10 +233,17 @@ class ScreenWiFi(Screen):
         threading.Thread(target=do_scan, daemon=True).start()
 
     def disconnect_confirm_callback(self):
-        self.dialog.message = "Disconnect WiFi?"
-        self.dialog.ok_callback = self.disconnect_callback
-        self.dialog.cancel_callback = self.disconnect_confirm_no
-        self.dialog.selected_index = 0
+
+        self.menu.items = [
+            MenuItem('Yes', self.disconnect_callback),
+            MenuItem('< Cancel', self.disconnect_confirm_no)
+        ]
+        self.menu.set_selected_index(1)
+
+        #self.dialog.message = "Disconnect WiFi?"
+        #self.dialog.ok_callback = self.disconnect_callback
+        #self.dialog.cancel_callback = self.disconnect_confirm_no
+        #self.dialog.selected_index = 0
         self.state = "dialog"
    
     def disconnect_confirm_no(self):

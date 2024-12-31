@@ -3,7 +3,8 @@ import pygame
 
 class ScreenTest(Screen):
     def __init__(self, app_state):
-        self.app_state = app_state
+        super().__init__(app_state)
+        self.title = "Factory Test"
 
         # State previously stored globally
         self.highlighted_controls = set()

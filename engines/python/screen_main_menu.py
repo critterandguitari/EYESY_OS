@@ -6,6 +6,7 @@ from widget_menu import WidgetMenu, MenuItem
 class ScreenMainMenu(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
+        self.title = "Settings"
         self.menu = WidgetMenu(app_state, [
             MenuItem('MIDI Ch 16', self.exit_menu),
             MenuItem('Gain 100%', self.exit_menu),

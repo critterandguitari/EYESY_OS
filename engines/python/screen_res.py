@@ -7,6 +7,7 @@ class ScreenRes(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.state = "idle"  # states are idle and confirm
+        self.title = "Screen Size"
         self.dialog = WidgetDialog(app_state)
         self.menu = WidgetMenu(app_state, [
             MenuItem(' 640x480 ', self.confirm),

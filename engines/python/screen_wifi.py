@@ -109,13 +109,14 @@ class ScreenWiFi(Screen):
         self.dialog = WidgetDialog(app_state)
         self.netlogs.x_offset = 20
         self.netlogs.y_offset = 300
+        self.menu.off_y = 75
 
     def before(self):
         
         self.netlogs.before()
 
         # re get info only if we are in idle state 
-        if self.state == "idle":
+        if self.state == "idle" or self.state == "select_net":
             # Check if connected
             self.connected = is_connected()
             self.current_ssid = get_current_network()
@@ -160,29 +161,35 @@ class ScreenWiFi(Screen):
         elif self.state == "scanning":
             message = "Looking for networks..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 50))
+            surface.blit(rendered_text, (50, 60))
 
         elif self.state == "connecting":
             message = f"Connecting to {self.target_ssid}..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 50))
+            surface.blit(rendered_text, (50, 60))
 
         elif self.state == "disconnecting":
             message = "Disconnecting..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 50))
+            surface.blit(rendered_text, (50, 60))
 
         elif self.state == "idle":
             self.menu.render(surface)
             message = f"Connected to: {self.current_ssid}"
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 50))
+            surface.blit(rendered_text, (50, 60))
+
+        elif self.state == "select_net":
+            self.menu.render(surface)
+            message = f"Select WiFi Network"
+            rendered_text = font.render(message, True, (255, 255, 255))
+            surface.blit(rendered_text, (50, 60))
 
         elif self.state == "dialog":
             self.menu.render(surface)
-            message = f"Disconnect from: {self.current_ssid} ?"
+            message = f"Disconnect from: {self.current_ssid}?"
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 50))
+            surface.blit(rendered_text, (50, 60))
 
 
     def handle_events(self):
@@ -198,19 +205,19 @@ class ScreenWiFi(Screen):
             return
 
         # otherwise seclect from menu, but not during an action
-        if self.state == "idle":
+        if self.state == "idle" or self.state == "select_net":
             self.menu.handle_events()
 
     def build_connected_menu(self):
         self.menu.items = [
             MenuItem('Disconnect', self.disconnect_confirm_callback),
-            MenuItem('< Exit', self.exit_menu)
+            MenuItem('◀  Exit', self.exit_menu)
         ]
         self.menu.set_selected_index(0)
 
     def build_not_connected_menu(self):
         # Insert SSIDs plus Exit
-        self.menu.items = [MenuItem('< Exit', self.exit_menu)]
+        self.menu.items = [MenuItem('◀  Exit', self.exit_menu)]
         for ssid in self.ssids:
             self.menu.items.insert(-1, MenuItem(ssid, self.select_ssid_callback(ssid)))
         self.menu.set_selected_index(0)
@@ -225,10 +232,11 @@ class ScreenWiFi(Screen):
             # Once done, decide what menu to show
             if self.connected:
                 self.build_connected_menu()
+                self.state = "idle"
             else:
                 self.build_not_connected_menu()
+                self.state = "select_net"
 
-            self.state = "idle"
 
         threading.Thread(target=do_scan, daemon=True).start()
 
@@ -317,7 +325,7 @@ class ScreenWiFi(Screen):
             if not success:
                 # If still error, then just show not connected menu
                 self.build_not_connected_menu()
-                self.state = "idle"
+                self.state = "select_net"
                 self.target_ssid = None
                 print("some pw connect error")
                 return

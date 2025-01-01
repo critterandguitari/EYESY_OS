@@ -17,6 +17,7 @@ class ScreenMainMenu(Screen):
             MenuItem('◀  Exit', self.exit_menu)
         ])
         self.menu.visible_items = 8
+        self.menu.off_y = 55
 
     def handle_events(self):
         self.menu.handle_events()

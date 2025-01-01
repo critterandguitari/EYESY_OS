@@ -16,6 +16,7 @@ class ScreenMainMenu(Screen):
             MenuItem('Color Palette  ▶', self.goto_palette),
             MenuItem('◀  Exit', self.exit_menu)
         ])
+        self.menu.visible_items = 8
 
     def handle_events(self):
         self.menu.handle_events()

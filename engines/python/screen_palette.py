@@ -35,16 +35,21 @@ class ScreenPalette(Screen):
         super().__init__(app_state)
         self.title = "Color Palette"
         self.menu = create_palette_menu(app_state)
+        self.menu2 = create_palette_menu(app_state)
+        self.menu.off_y = 50
+        self.menu2.off_y = 250
         self.menu.items.append(MenuItem('◀ Exit', self.goto_home))
 
     def handle_events(self):
         self.menu.handle_events()
+        self.menu2.handle_events()
         self.app_state.palette = min(len(self.app_state.palettes)-1, self.menu.selected_index)
         if self.app_state.key8_press:
             self.exit_menu()
     
     def render(self, surface):
         self.menu.render(surface)
+        self.menu2.render(surface)
         draw_color_palette(surface, self.app_state)
 
     def before(self):

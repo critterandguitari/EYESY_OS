@@ -129,14 +129,18 @@ class ScreenWiFi(Screen):
 
     def render(self, surface):
         
+        font = self.menu.font
         # If we are in enter_password state, just render the keyboard
         if self.state == "enter_password":
             # Let the keyboard handle its own rendering
+            message = f"Enter password for {self.target_ssid}"
+            msg_xy = (32, 68)
+            rendered_text = font.render(message, True, (255, 255, 255))
+            surface.blit(rendered_text, msg_xy)
             self.keyboard.render(surface)
             return
 
         # otherwise we show the netlogs
-        font = self.menu.font
         message = "Logs"
         msg_xy = (32, 275)
         rendered_text = font.render(message, True, (255, 255, 255))
@@ -197,7 +201,6 @@ class ScreenWiFi(Screen):
         
         # same if dialog
         if self.state == "dialog":
-            #self.dialog.handle_events()
             self.menu.handle_events()
             return
 
@@ -241,14 +244,9 @@ class ScreenWiFi(Screen):
 
         self.menu.items = [
             MenuItem('Yes', self.disconnect_callback),
-            MenuItem('< Cancel', self.disconnect_confirm_no)
+            MenuItem('◀  Cancel', self.disconnect_confirm_no)
         ]
         self.menu.set_selected_index(1)
-
-        #self.dialog.message = "Disconnect WiFi?"
-        #self.dialog.ok_callback = self.disconnect_callback
-        #self.dialog.cancel_callback = self.disconnect_confirm_no
-        #self.dialog.selected_index = 0
         self.state = "dialog"
    
     def disconnect_confirm_no(self):

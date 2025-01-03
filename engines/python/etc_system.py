@@ -22,8 +22,8 @@ class System:
     #RES =  (320,240)
     #RES =  (1280,720)
     #RES =  (1920,1080)
-    RES =  (640,480)
-    #RES =  (0,0)
+    #RES =  (640,480)
+    RES =  (0,0)
 
     # this is just an alias to the screen in main loop
     screen = None

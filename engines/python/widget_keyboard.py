@@ -41,6 +41,7 @@ class WidgetKeyboard():
         self.cols_bottom = 3
 
         self.selected_index = 0
+        self.pointed_to_index = 0
 
         # Track shift state internally
         self.shift = False
@@ -153,13 +154,17 @@ class WidgetKeyboard():
 
         # Example navigation (assuming app_data.keyX_press are booleans):
         if app_data.key4_press:
-            self.selected_index -= 1
+            if self.selected_index > 0 :
+                self.selected_index -= 1
         if app_data.key5_press:
-            self.selected_index += 1
-        if app_data.key6_press:
-            self.selected_index -= 10
-        if app_data.key7_press:
-            self.selected_index += 10
+            if self.selected_index < self.total_keys-1 :
+                self.selected_index += 1
+        # first 3 rows only
+        if self.selected_index < 30:    
+            if app_data.key7_press:
+                self.selected_index += 10
+          #  if app_data.key6_press:
+          #      self.selected_index -= 10
 
         # Wrap around
         if self.selected_index >= self.total_keys:
@@ -205,12 +210,12 @@ class WidgetKeyboard():
 
         # Blit the keyboard_surface onto the main surface
         x_offset = 90
-        y_offset = 120
+        y_offset = 200
         surface.blit(self.keyboard_surface, (x_offset, y_offset))
 
         # Draw the textbox onto the main surface
         textbox_x = x_offset
-        textbox_y = 50  # 10 pixels padding below keyboard
+        textbox_y = 130  # 10 pixels padding below keyboard
         self.draw_textbox(surface, textbox_x, textbox_y, (400, 40), self.text_box_text, self.textbox_font)
 
     def goto_home(self):

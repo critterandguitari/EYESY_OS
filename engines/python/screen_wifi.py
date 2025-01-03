@@ -146,7 +146,7 @@ class ScreenWiFi(Screen):
         
         # otherwise we show the netlogs
         self.netlogs.render(surface)
-
+        msg_xy = (32, 68)
         font = self.menu.font
         if self.state == "init":
             self.connected = is_connected()
@@ -161,35 +161,35 @@ class ScreenWiFi(Screen):
         elif self.state == "scanning":
             message = "Looking for networks..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 60))
+            surface.blit(rendered_text, msg_xy)
 
         elif self.state == "connecting":
             message = f"Connecting to {self.target_ssid}..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 60))
+            surface.blit(rendered_text, msg_xy)
 
         elif self.state == "disconnecting":
             message = "Disconnecting..."
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 60))
+            surface.blit(rendered_text, msg_xy)
 
         elif self.state == "idle":
             self.menu.render(surface)
             message = f"Connected to: {self.current_ssid}"
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 60))
+            surface.blit(rendered_text, msg_xy)
 
         elif self.state == "select_net":
             self.menu.render(surface)
             message = f"Select WiFi Network"
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 60))
+            surface.blit(rendered_text, msg_xy)
 
         elif self.state == "dialog":
             self.menu.render(surface)
             message = f"Disconnect from: {self.current_ssid}?"
             rendered_text = font.render(message, True, (255, 255, 255))
-            surface.blit(rendered_text, (50, 60))
+            surface.blit(rendered_text, msg_xy)
 
 
     def handle_events(self):

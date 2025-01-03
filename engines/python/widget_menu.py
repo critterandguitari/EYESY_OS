@@ -41,6 +41,22 @@ class WidgetMenu:
         elif self.app_state.key8_press:
             self.items[self.selected_index].action()
 
+    # use key 4 and 5 for scrolling instead
+    def handle_events_k4_k5(self):
+        if self.app_state.key4_press:
+            # Move up if not at the top already
+            if self.selected_index > 0:
+                self.selected_index -= 1
+                self._adjust_view()
+        elif self.app_state.key5_press:
+            # Move down if not at the bottom already
+            if self.selected_index < len(self.items) - 1:
+                self.selected_index += 1
+                self._adjust_view()
+        elif self.app_state.key8_press:
+            self.items[self.selected_index].action()
+
+
     def _adjust_view(self):
         # Ensure the selected item is always visible
         if self.selected_index < self.start_index:
@@ -81,12 +97,12 @@ class WidgetMenu:
         
         # Scrollbar geometry:
         scrollbar_x = self.off_x - 15            # place scrollbar 15px left of text
-        scrollbar_track_top = 48 + self.off_y
+        scrollbar_track_top = 50 + self.off_y
         track_color = (200, 200, 200)
-        handle_color = (100, 100, 100)
+        handle_color = (200, 200, 200)
         
         # Track height = 25 px per item * number of visible items
-        track_height = 25 * (visible_items - 1)
+        track_height = 25 * (visible_items - 2) + 8
         
         # 1) Draw the track (a thin 1px vertical line)
         pygame.draw.line(
@@ -101,7 +117,7 @@ class WidgetMenu:
         fraction_visible = visible_items / total_items
         handle_height = int(track_height * fraction_visible)
         # enforce a minimum handle size so it's visible
-        handle_height = max(handle_height, 10)
+        handle_height = max(handle_height, 10) 
 
         max_scroll = total_items - visible_items
         scroll_ratio = self.start_index / max_scroll if max_scroll != 0 else 0.0
@@ -109,7 +125,7 @@ class WidgetMenu:
         handle_y = scrollbar_track_top + int(scroll_ratio * (track_height - handle_height))
         
         # Draw the handle as a 5px wide rectangle
-        handle_rect = pygame.Rect(scrollbar_x - 2, handle_y, 5, handle_height)
+        handle_rect = pygame.Rect(scrollbar_x - 2, handle_y, 5, handle_height + 2)
         pygame.draw.rect(surface, handle_color, handle_rect)
         
         # 3) Optional: draw up/down arrow text if there are items above or below
@@ -122,7 +138,7 @@ class WidgetMenu:
             up_arrow_rect = up_arrow_surf.get_rect()
             up_arrow_rect.centerx = scrollbar_x
             # place it a few pixels above the track (10 px above in this example)
-            up_arrow_rect.bottom = scrollbar_track_top - 5
+            up_arrow_rect.bottom = scrollbar_track_top + 5
             surface.blit(up_arrow_surf, up_arrow_rect)
 
         if self.start_index + visible_items < total_items:
@@ -132,6 +148,6 @@ class WidgetMenu:
             down_arrow_rect = down_arrow_surf.get_rect()
             down_arrow_rect.centerx = scrollbar_x
             # place it a few pixels below the track
-            down_arrow_rect.top = scrollbar_track_top + track_height + 5
+            down_arrow_rect.top = scrollbar_track_top + track_height - 5
             surface.blit(down_arrow_surf, down_arrow_rect)
 

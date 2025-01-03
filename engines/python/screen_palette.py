@@ -15,17 +15,30 @@ def draw_color_palette(surface, app_state):
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 
-# Function to handle palette selection
-def select_palette(app_state, index):
-    app_state.palette = index
-    print(f"Selected palette: {app_state.palettes[index]['name']}")
+# Function to handle palette selection, TODO is this really necessary to set them since they get set with each selection anyway?
+def select_fg_palette(app_state, index):
+    app_state.fg_palette = index
+    print(f"Selected fg palette: {app_state.palettes[index]['name']}")
+
+def select_bg_palette(app_state, index):
+    app_state.bg_palette = index
+    print(f"Selected bg palette: {app_state.palettes[index]['name']}")
 
 # Function to dynamically create a menu based on palettes
-def create_palette_menu(app_state):
+def create_fg_palette_menu(app_state):
     menu_items = []
     for i, palette in enumerate(app_state.palettes):
         # Create a menu item for each palette
-        menu_items.append(MenuItem(palette['name'], lambda i=i: select_palette(app_state, i)))
+        menu_items.append(MenuItem(palette['name'], lambda i=i: select_fg_palette(app_state, i)))
+
+    # Return the menu object
+    return WidgetMenu(app_state, menu_items)
+
+def create_bg_palette_menu(app_state):
+    menu_items = []
+    for i, palette in enumerate(app_state.palettes):
+        # Create a menu item for each palette
+        menu_items.append(MenuItem(palette['name'], lambda i=i: select_bg_palette(app_state, i)))
 
     # Return the menu object
     return WidgetMenu(app_state, menu_items)
@@ -34,27 +47,29 @@ class ScreenPalette(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.title = "Color Palette"
-        self.menu = create_palette_menu(app_state)
-        self.menu2 = create_palette_menu(app_state)
-        self.menu.off_y = 50
-        self.menu2.off_y = 250
-        self.menu.items.append(MenuItem('◀ Exit', self.goto_home))
+        self.fg_menu = create_fg_palette_menu(app_state)
+        self.bg_menu = create_bg_palette_menu(app_state)
+        self.fg_menu.off_y = 50
+        self.bg_menu.off_y = 250
+        #self.menu.items.append(MenuItem('◀ Exit', self.goto_home))
 
     def handle_events(self):
-        self.menu.handle_events()
-        self.menu2.handle_events()
-        self.app_state.palette = min(len(self.app_state.palettes)-1, self.menu.selected_index)
+        self.bg_menu.handle_events()
+        self.fg_menu.handle_events_k4_k5()
+        self.app_state.fg_palette = min(len(self.app_state.palettes)-1, self.fg_menu.selected_index)
+        self.app_state.bg_palette = min(len(self.app_state.palettes)-1, self.bg_menu.selected_index)
         if self.app_state.key8_press:
             self.exit_menu()
     
     def render(self, surface):
-        self.menu.render(surface)
-        self.menu2.render(surface)
+        self.fg_menu.render(surface)
+        self.bg_menu.render(surface)
         draw_color_palette(surface, self.app_state)
 
     def before(self):
         print("entering color palette")
-        self.menu.set_selected_index(self.app_state.palette)
+        self.fg_menu.set_selected_index(self.app_state.fg_palette)
+        self.bg_menu.set_selected_index(self.app_state.bg_palette)
 
     def goto_home(self):
         self.app_state.current_screen = self.app_state.menu_screens["home"]

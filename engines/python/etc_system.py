@@ -20,9 +20,9 @@ class System:
     #RES =  (720,480)
     #RES =  (800,600)
     #RES =  (320,240)
-    RES =  (1280,720)
+    #RES =  (1280,720)
     #RES =  (1920,1080)
-    #RES =  (640,480)
+    RES =  (640,480)
     #RES =  (0,0)
 
     # this is just an alias to the screen in main loop
@@ -129,7 +129,8 @@ class System:
 
     # color stuff
     palettes = color_palettes.abcd_palettes
-    palette = 0;
+    fg_palette = 0;
+    bg_palette = 0;
 
     def update_trig_button(self, stat) :
         if (stat > 0 ):
@@ -215,15 +216,25 @@ class System:
         self.set_mode_by_index(self.mode_index)
         self.scene_set = False
 
-    def next_palette (self) :
-        self.palette += 1
-        if self.palette >= len(self.palettes) : 
-            self.palette = 0
+    def next_bg_palette (self) :
+        self.bg_palette += 1
+        if self.bg_palette >= len(self.palettes) : 
+            self.bg_palette = 0
 
-    def prev_palette (self) :
-        self.palette -= 1
-        if self.palette < 0 : 
-            self.palette = len(self.palettes) - 1
+    def prev_bg_palette (self) :
+        self.bg_palette -= 1
+        if self.bg_palette < 0 : 
+            self.bg_palette = len(self.palettes) - 1
+
+    def next_fg_palette (self) :
+        self.fg_palette += 1
+        if self.fg_palette >= len(self.palettes) : 
+            self.fg_palette = 0
+
+    def prev_fg_palette (self) :
+        self.fg_palette -= 1
+        if self.fg_palette < 0 : 
+            self.fg_palette = len(self.palettes) - 1
 
     def override_all_knobs(self) :
         for i in range(0,5):
@@ -497,7 +508,7 @@ class System:
 
         t = c
 
-        ci = self.palette
+        ci = self.fg_palette
         a = self.palettes[ci]["a"]
         b = self.palettes[ci]["b"]
         c = self.palettes[ci]["c"]
@@ -525,7 +536,7 @@ class System:
 
         t = c
 
-        ci = self.palette
+        ci = self.bg_palette
         a = self.palettes[ci]["a"]
         b = self.palettes[ci]["b"]
         c = self.palettes[ci]["c"]
@@ -563,7 +574,7 @@ class System:
             if (k == 9 and v > 0) : self.key9_press = True
             if (k == 10 and v > 0) : self.key10_press = True
         else :
-            if not self.key2_status : 
+            if not self.key2_status :  
                 if (k == 3 and v > 0) : self.toggle_auto_clear()
                 if (k == 4 and v > 0) : self.prev_mode()
                 if (k == 5 and v > 0) : self.next_mode()
@@ -572,9 +583,11 @@ class System:
                 if (k == 8)           : self.save_or_delete_scene(v)
                 if (k == 9 and v > 0) : self.screengrab_flag = True
                 if (k == 10)          : self.update_trig_button(v)
-            else :
-                if (k == 4 and v > 0) : self.prev_palette()
-                if (k == 5 and v > 0) : self.next_palette()
+            else :      # shift key down
+                if (k == 4 and v > 0) : self.prev_fg_palette()
+                if (k == 5 and v > 0) : self.next_fg_palette()
+                if (k == 6 and v > 0) : self.prev_bg_palette()
+                if (k == 7 and v > 0) : self.next_bg_palette()
                  
 
     def clear_flags(self):

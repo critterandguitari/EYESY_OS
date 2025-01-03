@@ -1,6 +1,7 @@
 import pygame
 import subprocess
 import time
+import re
 
 class WidgetNetlogs():
     def __init__(self, app_state):
@@ -21,7 +22,9 @@ class WidgetNetlogs():
                 text=True,
             )
             if result.returncode == 0:
-                self.logs = result.stdout.strip().split("\n")
+                # Clean up each line by removing "[numbers]"
+                raw_logs = result.stdout.strip().split("\n")
+                self.logs = [re.sub(r"\[\d+(\.\d+)?\]", "", line).strip() for line in raw_logs]
             else:
                 self.logs = ["Error fetching logs: " + result.stderr.strip()]
         except FileNotFoundError:

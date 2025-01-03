@@ -6,7 +6,6 @@ from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
 from widget_netlogs import WidgetNetlogs
 from widget_keyboard import WidgetKeyboard
-from widget_dialog import WidgetDialog
 
 def list_wifi_ssids():
     try:
@@ -106,8 +105,7 @@ class ScreenWiFi(Screen):
         self.pending_password = None
         self.keyboard = None  # Will hold the KeyboardScreen instance when needed
         self.netlogs = WidgetNetlogs(app_state)
-        self.dialog = WidgetDialog(app_state)
-        self.netlogs.x_offset = 20
+        self.netlogs.x_offset = 50
         self.netlogs.y_offset = 300
         self.menu.off_y = 75
 
@@ -137,17 +135,16 @@ class ScreenWiFi(Screen):
             self.keyboard.render(surface)
             return
 
-        # If we are in disoconnect_confirm state, just render dialog
-        #if self.state == "dialog":
-            # Let the keyboard handle its own rendering
-        #    self.dialog.render(surface)
-        #    return
-
-        
         # otherwise we show the netlogs
-        self.netlogs.render(surface)
-        msg_xy = (32, 68)
         font = self.menu.font
+        message = "Logs"
+        msg_xy = (32, 275)
+        rendered_text = font.render(message, True, (255, 255, 255))
+        surface.blit(rendered_text, msg_xy)
+        self.netlogs.render(surface)
+
+        # then show stuff depeinding on state
+        msg_xy = (32, 68)
         if self.state == "init":
             self.connected = is_connected()
             self.current_ssid = get_current_network()

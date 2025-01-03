@@ -1,0 +1,21 @@
+[Unit]
+Description=EYESY Hardware Interface CM3
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/music/EYESY_OS/platforms/eyesy_cm3/hw_controls
+# Run as the 'music' user and group if desired
+User=music
+Group=music
+
+# Directly run python with unbuffered output
+ExecStart=/home/music/EYESY_OS/platforms/eyesy_cm3/hw_controls/controls
+
+# Restart on failure if needed
+#Restart=on-failure
+#RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

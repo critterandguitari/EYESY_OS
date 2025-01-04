@@ -11,6 +11,7 @@ class WidgetKeyboard():
         self.textbox_font = pygame.font.Font("font.ttf", 20)
         self.connect_callback = connect_callback
         self.cancel_callback = cancel_callback
+
         # Define the keyboard layout for lowercase and uppercase
         self.lower_keys = [
             ['1','2','3','4','5','6','7','8','9','0'],
@@ -41,7 +42,8 @@ class WidgetKeyboard():
         self.cols_bottom = 3
 
         self.selected_index = 0
-        self.pointed_to_index = 0
+        self.row_index = 0 # for nav
+        self.col_index = 0
 
         # Track shift state internally
         self.shift = False
@@ -152,25 +154,41 @@ class WidgetKeyboard():
         # Handle other events if needed
         app_data = self.app_state
 
-        # Example navigation (assuming app_data.keyX_press are booleans):
+        # navigate using rows and columns
         if app_data.key4_press:
-            if self.selected_index > 0 :
-                self.selected_index -= 1
-        if app_data.key5_press:
-            if self.selected_index < self.total_keys-1 :
-                self.selected_index += 1
-        # first 3 rows only
-        if self.selected_index < 30:    
-            if app_data.key7_press:
-                self.selected_index += 10
-          #  if app_data.key6_press:
-          #      self.selected_index -= 10
+            if self.col_index > 0 :
+                self.col_index -= 1
 
-        # Wrap around
-        if self.selected_index >= self.total_keys:
-            self.selected_index = 0
-        if self.selected_index < 0:
-            self.selected_index = self.total_keys - 1
+        if app_data.key5_press:
+            if self.col_index < len(self.lower_keys[self.row_index])-1 :
+                self.col_index += 1
+
+        if app_data.key6_press:
+            if self.row_index > 0 :
+                self.row_index -= 1
+                # correct column when moving to new row with dif len
+                if self.row_index == 3:
+                    self.col_index = int(self.col_index * (10/3))
+                if self.row_index == 4:
+                    self.col_index = int(self.col_index * (3/2))
+
+        if app_data.key7_press:
+            if self.row_index < 5 :
+                self.row_index += 1 
+                # correct column when moving to new row with dif len
+                if self.row_index == 4 :
+                    self.col_index = int(self.col_index / (10/3))
+                if self.row_index == 5 :
+                    self.col_index = int(self.col_index / (3/2))
+
+        # get index from row col index
+        # handle last 2 rows separately
+        if self.row_index < 4:
+            self.selected_index = self.col_index + self.row_index * 10
+        elif self.row_index == 4 :
+            self.selected_index = 40 + self.col_index
+        elif self.row_index == 5 : 
+            self.selected_index = 43 + self.col_index
 
         # Key selection/activation
         if app_data.key8_press:

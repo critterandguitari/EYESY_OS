@@ -130,12 +130,13 @@ class ScreenWiFi(Screen):
     def render(self, surface):
         
         font = self.menu.font
+        color = (200, 200, 200)
         # If we are in enter_password state, just render the keyboard
         if self.state == "enter_password":
             # Let the keyboard handle its own rendering
             message = f"Enter password for {self.target_ssid}"
             msg_xy = (32, 68)
-            rendered_text = font.render(message, True, (255, 255, 255))
+            rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
             self.keyboard.render(surface)
             return
@@ -143,7 +144,7 @@ class ScreenWiFi(Screen):
         # otherwise we show the netlogs
         message = "Logs"
         msg_xy = (32, 275)
-        rendered_text = font.render(message, True, (255, 255, 255))
+        rendered_text = font.render(message, True, color)
         surface.blit(rendered_text, msg_xy)
         self.netlogs.render(surface)
 
@@ -161,37 +162,36 @@ class ScreenWiFi(Screen):
 
         elif self.state == "scanning":
             message = "Looking for networks..."
-            rendered_text = font.render(message, True, (255, 255, 255))
+            rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
 
         elif self.state == "connecting":
             message = f"Connecting to {self.target_ssid}..."
-            rendered_text = font.render(message, True, (255, 255, 255))
+            rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
 
         elif self.state == "disconnecting":
             message = "Disconnecting..."
-            rendered_text = font.render(message, True, (255, 255, 255))
+            rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
 
         elif self.state == "idle":
             self.menu.render(surface)
             message = f"Connected to: {self.current_ssid}"
-            rendered_text = font.render(message, True, (255, 255, 255))
+            rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
 
         elif self.state == "select_net":
             self.menu.render(surface)
             message = f"Select WiFi Network"
-            rendered_text = font.render(message, True, (255, 255, 255))
+            rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
 
         elif self.state == "dialog":
             self.menu.render(surface)
             message = f"Disconnect from: {self.current_ssid}?"
-            rendered_text = font.render(message, True, (255, 255, 255))
+            rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
-
 
     def handle_events(self):
         # If we are in enter_password state, just let the keyboard handle events

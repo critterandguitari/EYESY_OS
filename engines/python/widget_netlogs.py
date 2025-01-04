@@ -41,6 +41,6 @@ class WidgetNetlogs():
 
         line_height = self.font.get_linesize()
         for i, log in enumerate(self.logs):
-            text_surface = self.font.render(log, True, (255, 255, 255))  # White text
+            text_surface = self.font.render(log, True, (200, 200, 200))  # White text
             surface.blit(text_surface, (self.x_offset, self.y_offset + i * line_height))
 

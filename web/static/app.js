@@ -5,25 +5,228 @@ var baseDirLabel = 'Home';
 var clipboard = {};
 
 var editor = null
-var currentEditorFile = '...'
+var openFiles = []; // Array to hold open files and their editor sessions
+var currentFile = null; // Currently active file
+
 
 function getFile(fpath) {
-    $.get(appBaseURL + '/get_file/?fpath='+encodeURIComponent(fpath), function(data) {
+    $.get(appBaseURL + '/get_file?fpath='+encodeURIComponent(fpath), function(data) {
         editor.setValue(data)
         editor.gotoLine(1)
-        currentEditorFile = fpath
         $("#title").html(fpath)
     });
 }
 
-function editorSetSyntax(syntax){
-   if (syntax == "py") editor.getSession().setMode("ace/mode/python");
-   if (syntax == "lua") editor.getSession().setMode("ace/mode/lua");
+
+function getAceMode(extension) {
+    if (extension === "py") return "python";
+    if (extension === "lua") return "lua";
+    // Add more mappings as needed
+    return "text";
+}
+
+function openFile(path) {
+    // Check if the file is already open
+    var existingFile = openFiles.find(file => file.path === path);
+    if (existingFile) {
+        // Switch to this tab
+        switchTab(path);
+        return;
+    }
+
+    // Determine the file extension
+    var extension = path.split('.').pop().toLowerCase();
+
+    // List of image extensions
+    var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'];
+
+    if (imageExtensions.includes(extension)) {
+        // For image files, add a tab that displays the image
+        addImageTab(path);
+    } else {
+        // Get the file content from the server for text files
+        $.get(appBaseURL + '/get_file?fpath=' + encodeURIComponent(path), function(data) {
+            // Create a new tab
+            var fileName = path.split('/').pop();
+            addTab(path, fileName, data);
+        });
+    }
+}
+
+function addTab(path, fileName, content) {
+    // Split the path into parts
+    var pathParts = path.split('/');
+
+    // Get the file name (last part of the path)
+    var fileName = pathParts.pop();
+
+    // Get the parent directory (one level up)
+    var parentDir = pathParts.length > 0 ? pathParts.pop() : '';
+
+    // Create the tab label with parent directory and file name
+    var tabLabel = parentDir ? parentDir + '/' + fileName : fileName;
+
+    // Create a new tab element with the updated label
+    var $tab = $('<div class="tab"></div>').text(tabLabel);
+    $tab.attr('data-file-path', path);
+
+    // Add a close button to the tab
+    var $closeButton = $('<span class="close-tab">&times;</span>');
+    $tab.append($closeButton);
+
+    // Event listeners remain the same...
+    $tab.on('click', function() {
+        switchTab(path);
+    });
+
+    $closeButton.on('click', function(e) {
+        e.stopPropagation();
+        closeTab(path);
+    });
+
+    // Append the tab to the tabs container
+    $('#tabs-container').append($tab);
+
+    // Create a new editor session for this file
+    var extension = path.split('.').pop();
+    var session = ace.createEditSession(content, 'ace/mode/' + getAceMode(extension));
+
+    // Add the file to the openFiles array
+    var fileObj = {
+        path: path,
+        name: fileName,
+        content: content,
+        tabElement: $tab,
+        editorSession: session,
+        unsaved: false
+    };
+    openFiles.push(fileObj);
+
+    // Switch to the new tab
+    switchTab(path);
+}
+
+function addImageTab(path) {
+    // Create a new tab element
+    var fileName = path.split('/').pop();
+
+    // Create the tab label
+    var $tab = $('<div class="tab"></div>').text(fileName);
+    $tab.attr('data-file-path', path);
+
+    // Add a close button to the tab
+    var $closeButton = $('<span class="close-tab">&times;</span>');
+    $tab.append($closeButton);
+
+    // Event listeners for tab click and close
+    $tab.on('click', function() {
+        switchTab(path);
+    });
+
+    $closeButton.on('click', function(e) {
+        e.stopPropagation();
+        closeTab(path);
+    });
+
+    // Append the tab to the tabs container
+    $('#tabs-container').append($tab);
+
+    // Create an object representing the image file
+    var fileObj = {
+        path: path,
+        name: fileName,
+        tabElement: $tab,
+        isImage: true
+    };
+    openFiles.push(fileObj);
+
+    // Switch to the new tab
+    switchTab(path);
+}
+
+function switchTab(path) {
+    // Update the currentFile to the new file
+    currentFile = openFiles.find(file => file.path === path);
+
+    // Update active tab styling
+    $('.tab').removeClass('active');
+    currentFile.tabElement.addClass('active');
+
+    // Update the title
+    $("#title").html(path);
+
+    // Clear the editor or image container
+    $('#editor').hide();
+    $('#image-container').hide();
+
+    if (currentFile.isImage) {
+        // Display the image
+        $('#image-container').empty(); // Clear any previous content
+
+        // Create the image element
+        var img = $('<img>').attr('src', appBaseURL + '/get_file?fpath=' + encodeURIComponent(currentFile.path));
+        $('#image-container').append(img);
+
+        $('#image-container').show();
+    } else {
+        // Display the editor with the file's session
+        editor.setSession(currentFile.editorSession);
+        editor.focus();
+        $('#editor').show();
+    }
+}
+
+function closeTab(path) {
+    var index = openFiles.findIndex(file => file.path === path);
+    if (index !== -1) {
+        var fileToClose = openFiles[index];
+
+        // If there are unsaved changes, prompt the user
+        if (fileToClose.unsaved) {
+            // Use custom modal instead of confirm()
+            closeFileConfirmDialog(path);
+            return; // Exit the function; actual closing will happen after confirmation
+        }
+
+        // Proceed to actually close the tab
+        closeTabConfirmed(path);
+    }
+}
+
+function closeTabConfirmed(path) {
+    var index = openFiles.findIndex(file => file.path === path);
+    if (index !== -1) {
+        var fileToClose = openFiles[index];
+
+        // Remove tab element
+        fileToClose.tabElement.remove();
+
+        // Remove from openFiles array
+        openFiles.splice(index, 1);
+
+        // If the closed tab was active, switch to another tab
+        if (currentFile && currentFile.path === path) {
+            if (openFiles.length > 0) {
+                switchTab(openFiles[openFiles.length - 1].path);
+            } else {
+                currentFile = null;
+                editor.setValue('');
+                $('#editor').hide();
+                $('#image-container').hide();
+                $("#title").html('...');
+            }
+        }
+    }
+}
+
+function editorSetSyntax(extension) {
+    editor.getSession().setMode("ace/mode/" + getAceMode(extension));
 }
 
 function refreshWorkingDir(){
     $.get(fsurl+'?operation=get_node', { 'path' : workingDir})
     .done(function (d) {
+	if (typeof d === 'string') {d = JSON.parse(d);}
         renderFilesTable(d);
         renderBreadcrumb();
     })
@@ -74,11 +277,11 @@ function nodeNameWithIcon(path, type){
     if (type == "file"){
         var extension = basename.split('.').pop();
         var img = '';
-        if (extension == 'pd') img = "./assets/pd.png";
-        else if (extension == 'wav') img = "./assets/wav.png";
-        else img = "./assets/txt.png";
+        if (extension == 'pd') img = "/static/assets/pd.png";
+        else if (extension == 'wav') img = "/static/assets/wav.png";
+        else img = "/static/assets/txt.png";
     } else {
-        img = "./assets/folder.png";
+        img = "/static/assets/folder.png";
     }
     return $('<div class="fname-icon"><img src="'+img+'" width=20/></div><div class="fname-name">' + basename + '</div><div style="clear:both;"/>');
 }
@@ -86,6 +289,12 @@ function nodeNameWithIcon(path, type){
 function renderFilesTable(d){
     $("#ftable").empty();
     var path = '';
+/*console.log('data:')
+console.log(d)
+console.log('type of data:')
+console.log(typeof d)
+*/
+
     d.forEach(function(c){
         var basename = c.path.split('/').pop();
         var sizeType = 'Folder'  // display size or Folder for folder
@@ -98,7 +307,7 @@ function renderFilesTable(d){
             sizeType = c.size;
             var trow = $('<tr class="fsfile">');
             var tdata = $('<td class="fsfilename">');
-            var dlButton = $('<div class="dl-but"><a href="'+appBaseURL+'/download?fpath='+encodeURIComponent(c.path)+'&cb=cool">\u2B07</a></div>');
+            var dlButton = $('<div class="dl-but"><a href="'+appBaseURL+'/download?fpath='+encodeURIComponent(c.path)+'&cb=cool"><span class="material-icons download-icon">download</span></a></div>'); 
             tdata.append(dlButton);
             tdata.append(nodeNameWithIcon(c.path, c.type));
         }
@@ -215,6 +424,17 @@ function pasteMoveDialog(){
             });
         });
         clipboard = {};
+    });
+    showModal();
+}
+
+function closeFileConfirmDialog(path){
+    newModal('Close?');
+    addModalBody('This file has unsaved changes. Close anyway?');   
+    addModalButton('Cancel', hideModal);
+    addModalButton('Yes', function() {
+        hideModal();
+        closeTabConfirmed(path);
     });
     showModal();
 }
@@ -371,15 +591,33 @@ function openFileDialog(path) {
     showModal();
 }
 
+
+function saveMode() {
+    if (currentFile) {
+        var content = editor.getValue();
+        $.post(appBaseURL + '/save', {
+            fpath: currentFile.path,
+            content: content
+        }, function(response) {
+            // Handle response, show message, etc.
+            currentFile.unsaved = false;
+            currentFile.tabElement.removeClass('unsaved');
+            console.log('File saved successfully.');
+        });
+    } else {
+        alertDialog('No file to save.');
+    }
+}
+/*
 function saveMode() {
   $.post(appBaseURL + "/save", { fpath: currentEditorFile, contents: editor.getValue() })
 	.done(function(data) {
     console.log(data);
 	});
 }
-
+*/
 function reloadMode() {
-  $.post(appBaseURL + "/reload_mode", { name: currentEditorFile })
+  $.post(appBaseURL + "/reload_mode", { name: currentFile.path })
   .done(function(data) {
     console.log(data);
   });
@@ -400,10 +638,34 @@ $(function () {
         
     editor = ace.edit("editor");
     editor.setTheme("ace/theme/merbivore_soft");
-    //editor.getSession().setMode("ace/mode/lua");
     editor.getSession().setMode("ace/mode/python");
-    //$("#editor").style.fontSize='16px';
     document.getElementById('editor').style.fontSize='14px';
+
+    // Mark current file as unsaved when editor content changes
+    editor.on('change', function() {
+        if (currentFile) {
+            currentFile.unsaved = true;
+            // Optionally, update the tab to indicate unsaved changes
+            currentFile.tabElement.addClass('unsaved');
+        }
+    });
+
+	    // Keyboard shortcuts for saving
+    $(".ace_text-input").keydown(function(e) {
+        // Save & reload on Cmd + P
+        if (e.metaKey && e.which === 80) {
+            e.preventDefault();
+            saveMode();
+            reloadMode(); // Ensure you have a reloadMode() function
+        }
+
+        // Save on Cmd + S
+        if (e.metaKey && e.which === 83) {
+            e.preventDefault();
+            saveMode();
+        }
+    });
+
 
 
     $('#fileupload').fileupload({
@@ -452,7 +714,7 @@ $(function () {
 	} else {
     	    $("#editor-container").show();
     	    $("#settings-container").hide();
-            $("#title").html(currentEditorFile)
+            $("#title").html(currentFile.path)
             $("#show-settings").html("Settings")
 	}
     });
@@ -485,20 +747,14 @@ $(function () {
 	});
     });
 
-    $("#start-oflua").click(function(){
-        $.get(appBaseURL + '/start_video_engine/?engine=oflua', function(data) {
-            console.log(data);
-        });
-    });
-
-    $("#start-python").click(function(){
-        $.get(appBaseURL + '/start_video_engine/?engine=python', function(data) {
+    $("#start-video").click(function(){
+        $.get(appBaseURL + '/start_video_engine', function(data) {
             console.log(data);
         });
     });
 
     $("#stop-video").click(function(){
-        $.get(appBaseURL + '/stop_video_engine/?engine=all', function(data) {
+        $.get(appBaseURL + '/stop_video_engine', function(data) {
             console.log(data);
         });
     });
@@ -565,6 +821,11 @@ $(function () {
 
     $("#unzip-but").click(unzipDialog);
 
+    // Clear console when trash icon is clicked
+    $('#clear-console').click(function() {
+        $('#vconsole').empty();
+    });
+
     // click on directory table row, excluding input elements
     $('body').on('click', '.fsdir', function(event) {
         var target = $(event.target);
@@ -574,17 +835,19 @@ $(function () {
         }
     });
 
-    // click on file row, excluding input elements
+    // Click handler for file items
     $('body').on('click', '.fsfile', function(event) {
         var target = $(event.target);
         if (!target.is("input") && !target.is("a")) {
-            var path=$(this).data("path");
-            openFileDialog(path);
+            var path = $(this).data("path");
+            openFile(path);
         }
     });
 
     $.get(fsurl+'?operation=get_node', { 'path' : workingDir})
     .done(function (d) {
+	if (typeof d === 'string') {d = JSON.parse(d);}
+	console.log('data:')
 	console.log(d)
         renderFilesTable(d);
         renderBreadcrumb();

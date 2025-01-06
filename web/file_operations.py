@@ -1,7 +1,6 @@
 import json
 import os
 import shutil
-import cherrypy
 
 BASE_DIR = "/"
 
@@ -118,20 +117,13 @@ def get_files(rootpath):
     files = sorted(files, key=lambda s: s.lower())
     # add to the list if they are cool
     for folder in folders :
-        if not folder[0] == '.' :
+        if not folder[0] == '.' and folder != "__pycache__":
             path = os.path.join(root, folder)
-            #if check_path(path):
             contents += [folder_to_dict(path)]
     
     for ffile in files :
         if not ffile[0] == '.' :
             path = os.path.join(root, ffile)
-            #if check_path(path):
             contents += [file_to_dict(path)]
 
-    #print json.dumps(contents, indent=4, encoding='utf-8')
     return json.dumps(contents, indent=4)
-
-
-
-

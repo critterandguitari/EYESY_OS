@@ -1,0 +1,18 @@
+[Unit]
+Description=EYESY Web Editor
+After=eyesysetup.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/music/EYESY_OS/web
+User=music
+Group=music
+ExecStart=/home/music/.local/bin/waitress-serve --port=8080 app:app 
+
+# Restart on failure if needed
+#Restart=on-failure
+#RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

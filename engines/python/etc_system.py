@@ -46,7 +46,9 @@ class System:
     DEFAULT_CONFIG = {
         "midi_channel": 1,
         "video_resolution": 0,
-        "audio_gain": 50
+        "audio_gain": 50,
+        "fg_palette": 0,
+        "bg_palette": 0
     }
     
     config = {}

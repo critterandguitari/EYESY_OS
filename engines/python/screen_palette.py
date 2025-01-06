@@ -56,7 +56,13 @@ class ScreenPalette(Screen):
         self.fg_menu.handle_events_k4_k5()
         self.app_state.fg_palette = min(len(self.app_state.palettes)-1, self.fg_menu.selected_index)
         self.app_state.bg_palette = min(len(self.app_state.palettes)-1, self.bg_menu.selected_index)
+        
+        # save to config and exit on selection
         if self.app_state.key8_press:
+            print("saving palette to config")
+            self.app_state.config["bg_palette"] = self.app_state.bg_palette
+            self.app_state.config["fg_palette"] = self.app_state.fg_palette
+            self.app_state.save_config_file()
             self.exit_menu()
     
     def render(self, surface):

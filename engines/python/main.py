@@ -30,6 +30,8 @@ etc.load_config_file()
 
 # try to set res from config
 etc.RES = etc.RESOLUTIONS[etc.config["video_resolution"]]["res"]
+etc.bg_palette = etc.config["bg_palette"]
+etc.fg_palette = etc.config["fg_palette"]
 
 # setup osc and callbacks
 osc.init(etc)

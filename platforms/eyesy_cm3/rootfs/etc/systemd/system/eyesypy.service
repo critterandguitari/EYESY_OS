@@ -1,6 +1,6 @@
 [Unit]
 Description=EYESY Video Engine
-After=network.target
+After=eyesyhw.service
 
 [Service]
 Type=simple

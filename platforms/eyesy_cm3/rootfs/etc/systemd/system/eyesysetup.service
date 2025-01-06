@@ -1,0 +1,13 @@
+[Unit]
+Description=Eyesy Setup Service
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/etc/eyesysetup.sh
+RemainAfterExit=yes
+User=root
+
+[Install]
+WantedBy=multi-user.target
+

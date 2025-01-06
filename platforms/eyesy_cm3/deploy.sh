@@ -9,9 +9,6 @@ cp -fr --preserve=mode,ownership tmp/rootfs/* /
 rm -fr tmp
 sync
 
-# make System folder
-mkdir /sdcard/System
-
 # configure systemd stuff
 #systemctl enable splashscreen.service  
 #systemctl enable ttymidi.service  

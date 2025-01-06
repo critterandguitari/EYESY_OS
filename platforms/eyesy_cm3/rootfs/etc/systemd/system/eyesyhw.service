@@ -1,6 +1,6 @@
 [Unit]
 Description=EYESY Hardware Interface CM3
-After=network.target
+After=eyesysetup.service
 
 [Service]
 Type=simple

@@ -13,12 +13,10 @@ class Screen:
 
     def before(self):
         """Update the screen's state."""
-        print ("first time")
         pass
 
     def after(self):
         """Update the screen's state."""
-        print ("before leaving")
         pass
     
     def render_with_title(self, surface):

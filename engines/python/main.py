@@ -25,6 +25,12 @@ etc = etc_system.System()
 # just to make sure
 etc.clear_flags()
 
+# load config
+etc.load_config_file()
+
+# try to set res from config
+etc.RES = etc.RESOLUTIONS[etc.config["video_resolution"]]["res"]
+
 # setup osc and callbacks
 osc.init(etc)
 
@@ -333,6 +339,9 @@ while 1:
         try: 
             etc.current_screen.handle_events()
             etc.current_screen.render_with_title(hwscreen)
+            # a menu may cause shutdown, i.e. changing resolution
+            if etc.quit :
+                exitexit()
         except Exception as e:   
             etc.error = traceback.format_exc()
             print("error with Menu: " + etc.error)

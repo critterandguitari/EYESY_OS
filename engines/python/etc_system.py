@@ -10,13 +10,22 @@ import sys
 import helpers
 import csv
 import color_palettes
+import config
+
+DEFAULT_CONFIG = {
+    "midi_channel": 1,
+    "video_resolution": 0,
+    "audio_gain": 50
+}
 
 class System:
 
     GRABS_PATH = "/sdcard/Grabs/"
     MODES_PATH = "/sdcard/Modes/Python/"
     SCENES_PATH = "/sdcard/Scenes.csv"
-    resolutions = [
+    SYSTEM_PATH = "/sdcard/System/"
+    
+    RESOLUTIONS = [
         { "name" : "640 x 480",
           "res"  : (640,480)
         },
@@ -33,6 +42,14 @@ class System:
           "res"  : (1920,1080)
         }
     ]
+
+    DEFAULT_CONFIG = {
+        "midi_channel": 1,
+        "video_resolution": 0,
+        "audio_gain": 50
+    }
+    
+    config = {}
 
     #RES =  (720,480)
     #RES =  (800,600)
@@ -148,6 +165,28 @@ class System:
     palettes = color_palettes.abcd_palettes
     fg_palette = 0;
     bg_palette = 0;
+
+    def load_config_file(self) :
+        config_file = self.SYSTEM_PATH + "config.json"
+        try:
+            # Load configuration, raising errors for file or JSON issues
+            self.config = config.load_config(config_file, self.DEFAULT_CONFIG)
+        except FileNotFoundError as e:
+            print(f"Error loading configuration: {e}")
+            print("Using all default values. Saving File.")
+            self.config = self.DEFAULT_CONFIG
+            config.save_config(config_file, self.config)
+        except ValueError as e:
+            print(f"Error loading configuration: {e}")
+            print("Using all default values.")
+            self.config = self.DEFAULT_CONFIG
+
+        # Modify or access configuration
+        print("Current Configuration:", self.config)
+
+    def save_config_file(self) :
+        config_file = self.SYSTEM_PATH + "config.json"
+        config.save_config(config_file, self.config)
 
     def update_trig_button(self, stat) :
         if (stat > 0 ):

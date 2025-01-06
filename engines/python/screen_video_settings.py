@@ -15,11 +15,11 @@ class ScreenVideoSettings(Screen):
         self.menu.off_y = 43
         
         self.menu_select_res = WidgetMenu(app_state, [
-            MenuItem(self.app_state.resolutions[0]["name"], self.select_res_callback(self.app_state.resolutions[0]["res"])),
-            MenuItem(self.app_state.resolutions[1]["name"], self.select_res_callback(self.app_state.resolutions[1]["res"])),
-            MenuItem(self.app_state.resolutions[2]["name"], self.select_res_callback(self.app_state.resolutions[2]["res"])),
-            MenuItem(self.app_state.resolutions[3]["name"], self.select_res_callback(self.app_state.resolutions[3]["res"])),
-            MenuItem(self.app_state.resolutions[4]["name"], self.select_res_callback(self.app_state.resolutions[4]["res"])),
+            MenuItem(self.app_state.RESOLUTIONS[0]["name"], self.select_res_callback(0)),
+            MenuItem(self.app_state.RESOLUTIONS[1]["name"], self.select_res_callback(1)),
+            MenuItem(self.app_state.RESOLUTIONS[2]["name"], self.select_res_callback(2)),
+            MenuItem(self.app_state.RESOLUTIONS[3]["name"], self.select_res_callback(3)),
+            MenuItem(self.app_state.RESOLUTIONS[4]["name"], self.select_res_callback(4)),
             MenuItem('◀  Exit', self.goto_home)
         ])
         self.menu_select_res.off_y = 75
@@ -35,11 +35,17 @@ class ScreenVideoSettings(Screen):
     def select_res_callback(self, res):
         def callback():
             #self.set_res(res)
-            print(res)
+            self.app_state.config["video_resolution"] = res
+            self.app_state.save_config_file()
+            self.app_state.quit = True
         return callback
 
     def before(self):
+        self.menu_select_res.set_selected_index(self.app_state.config["video_resolution"])
         self.state = "idle"
+
+    def after(self):
+        self.app_state.save_config_file()
 
     def handle_events(self):
         if self.state == "idle":
@@ -57,7 +63,8 @@ class ScreenVideoSettings(Screen):
         if self.state == "idle":
             self.menu.render(surface)
         elif self.state == "select_res" :
-            message = "Select Resolution for HDMI. Currently 1280 x 720" #f"Connecting to {self.target_ssid}..."
+            reso = self.app_state.RESOLUTIONS[self.app_state.config["video_resolution"]]["name"]
+            message = f"Select Resolution for HDMI. Currently {reso} "
             rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
             self.menu_select_res.render(surface)

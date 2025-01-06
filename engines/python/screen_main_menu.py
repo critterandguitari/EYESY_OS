@@ -10,14 +10,14 @@ class ScreenMainMenu(Screen):
         self.menu = WidgetMenu(app_state, [
             MenuItem('MIDI Ch 16', self.exit_menu),
             MenuItem('Gain 100%', self.exit_menu),
-            MenuItem('Screen Size  ▶', self.goto_res),
+            MenuItem('Video Settings  ▶', self.goto_video_settings),
             MenuItem('WiFi  ▶', self.goto_wifi),
-            MenuItem('Test  ▶', self.goto_test),
             MenuItem('Color Palette  ▶', self.goto_palette),
+            MenuItem('Hardware Test  ▶', self.goto_test),
             MenuItem('◀  Exit', self.exit_menu)
         ])
         self.menu.visible_items = 8
-        self.menu.off_y = 55
+        self.menu.off_y = 43
 
     def handle_events(self):
         self.menu.handle_events()
@@ -29,8 +29,8 @@ class ScreenMainMenu(Screen):
     def goto_palette(self):
         self.app_state.switch_menu_screen("palette")
 
-    def goto_res(self):
-        self.app_state.switch_menu_screen("res")
+    def goto_video_settings(self):
+        self.app_state.switch_menu_screen("video_settings")
 
     def goto_test(self):
         self.app_state.switch_menu_screen("test")

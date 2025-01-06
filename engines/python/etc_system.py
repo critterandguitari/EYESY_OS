@@ -16,6 +16,23 @@ class System:
     GRABS_PATH = "/sdcard/Grabs/"
     MODES_PATH = "/sdcard/Modes/Python/"
     SCENES_PATH = "/sdcard/Scenes.csv"
+    resolutions = [
+        { "name" : "640 x 480",
+          "res"  : (640,480)
+        },
+        { "name" : "720 x 480",
+          "res"  : (720,480)
+        },
+        { "name" : "800 x 600",
+          "res"  : (800,600)
+        },
+        { "name" : "1280 x 720",
+          "res"  : (1280,720)
+        },
+        { "name" : "1920 x 1080 - slow",
+          "res"  : (1920,1080)
+        }
+    ]
 
     #RES =  (720,480)
     #RES =  (800,600)

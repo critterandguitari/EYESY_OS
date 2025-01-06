@@ -74,19 +74,6 @@ time.sleep(2)
 etc.screen = screen
 print(str(etc.screen) + " " +  str(screen))
 
-# menu screens
-from screen_main_menu import ScreenMainMenu
-from screen_test import ScreenTest
-from screen_res import ScreenRes
-from screen_palette import ScreenPalette
-from screen_wifi import ScreenWiFi
-etc.menu_screens["home"] = ScreenMainMenu(etc)
-etc.menu_screens["test"] = ScreenTest(etc)
-etc.menu_screens["res"] = ScreenRes(etc)
-etc.menu_screens["palette"] = ScreenPalette(etc)
-etc.menu_screens["wifi"] = ScreenWiFi(etc)
-etc.switch_menu_screen("home")
-
 # load modes, post banner if none found
 if not (etc.load_modes()) :
     print("no modes found.")
@@ -149,6 +136,25 @@ def exitexit() :
     print("closing audio")
     audio_process.close()
     sys.exit()
+
+# menu screens
+osd.loading_banner(hwscreen,"Loading menu")
+try :
+    from screen_main_menu import ScreenMainMenu
+    from screen_test import ScreenTest
+    from screen_video_settings import ScreenVideoSettings
+    from screen_palette import ScreenPalette
+    from screen_wifi import ScreenWiFi
+
+    etc.menu_screens["home"] = ScreenMainMenu(etc)
+    etc.menu_screens["test"] = ScreenTest(etc)
+    etc.menu_screens["video_settings"] = ScreenVideoSettings(etc)
+    etc.menu_screens["palette"] = ScreenPalette(etc)
+    etc.menu_screens["wifi"] = ScreenWiFi(etc)
+    etc.switch_menu_screen("home")
+except :
+    print("error loading menu screens")
+    exitexit()
 
 # We'll use a simple state machine for the sequencer:
 # States:

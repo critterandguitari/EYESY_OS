@@ -133,15 +133,29 @@ mode = sys.modules[etc.mode]
 
 midi_led_flashing = False
 
-def exitexit() :
+def exitexit():
     print("EXIT exiting\n")
     pygame.display.quit()
     pygame.quit()
     print("stopping audio process")
-    audio_process.terminate()
+    if audio_process.is_alive():  # Check if the process is still running
+        audio_process.terminate()  # Terminate the process
+        audio_process.join()       # Ensure the process has fully terminated
     print("closing audio")
-    audio_process.close()
-    sys.exit()
+    audio_process.close()  # Now it's safe to close the process
+    sys.exit(0)
+
+def exitexit_restart():
+    print("EXIT for restart\n")
+    pygame.display.quit()
+    pygame.quit()
+    print("stopping audio process")
+    if audio_process.is_alive():  # Check if the process is still running
+        audio_process.terminate()  # Terminate the process
+        audio_process.join()       # Ensure the process has fully terminated
+    print("closing audio")
+    audio_process.close()  # Now it's safe to close the process
+    sys.exit(1)
 
 # menu screens
 osd.loading_banner(hwscreen,"Loading menu")
@@ -339,14 +353,14 @@ while 1:
         try: 
             etc.current_screen.handle_events()
             etc.current_screen.render_with_title(hwscreen)
-            # a menu may cause shutdown, i.e. changing resolution
-            if etc.quit :
-                exitexit()
         except Exception as e:   
             etc.error = traceback.format_exc()
             print("error with Menu: " + etc.error)
             pygame.time.wait(200)
-       
+        if etc.restart :
+            print("video res changed, restarting")
+            exitexit_restart()
+      
     pygame.display.flip()
 
     if etc.quit :

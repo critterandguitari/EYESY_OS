@@ -138,6 +138,7 @@ class System:
     auto_clear = True
     bg_color = (0, 0, 0)
     quit = False
+    restart = False
     show_osd = False
     show_menu = False
     osd_menu_select = 0  # 0 for regular, 1 for OSD overlay, 2 for settings menu

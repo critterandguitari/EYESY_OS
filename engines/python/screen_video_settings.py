@@ -37,7 +37,7 @@ class ScreenVideoSettings(Screen):
             #self.set_res(res)
             self.app_state.config["video_resolution"] = res
             self.app_state.save_config_file()
-            self.app_state.quit = True
+            self.app_state.restart = True
         return callback
 
     def before(self):

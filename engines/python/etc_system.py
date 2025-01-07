@@ -8,6 +8,7 @@ import os
 import glob
 import sys
 import time
+import json
 import helpers
 import csv
 import color_palettes
@@ -492,11 +493,36 @@ class System:
             "fg_palette": self.fg_palette
         })
         scene_file = self.SYSTEM_PATH + "scenes.json"
-        config.save_config(scene_file, self.scenes)
-
+        # save it
+        try:
+            with open(scene_file, 'w') as f:
+                json.dump(self.scenes, f, indent=4)
+            print(f"Config saved to {scene_file}")
+        except Exception as e:
+            print(f"Failed to save scene file: {e}")
+           
         '''self.write_all_scenes()
         # and set it to most recent
         self.recall_scene(len(self.scenes) - 1)'''
+
+    def recall_scene(self, index) :
+        print("recalling scene " + str(index))
+        try :
+            scene = self.scenes[index]
+            self.scene_index = index
+            self.override_all_knobs()
+            self.knob[0] = scene["knob1"]
+            self.knob[1] = scene["knob2"]
+            self.knob[2] = scene["knob3"]
+            self.knob[3] = scene["knob4"]
+            self.knob[4] = scene["knob5"]
+            self.auto_clear = scene["auto_clear"]
+            self.bg_palette = scene["bg_palette"]
+            self.fg_palette = scene["fg_palette"]
+            self.set_mode_by_name(scene["mode"])
+            self.scene_set = True
+        except :
+            print("probably no scenes")
 
     def write_all_scenes(self):
         print("writing scenes")
@@ -509,7 +535,8 @@ class System:
     def load_scenes(self):
         print("loading scenes")
         # create scene file if doesn't exits
-        if not os.path.exists(self.SCENES_PATH):
+
+        '''if not os.path.exists(self.SCENES_PATH):
             f = open(self.SCENES_PATH, "w")
             f.close()
         
@@ -533,7 +560,7 @@ class System:
                     scene.append(False)
                 self.scenes.append(scene)
         except:
-            print("error parsing scene file")
+            print("error parsing scene file")'''
 
     def next_scene(self):
         self.scene_index += 1
@@ -549,23 +576,6 @@ class System:
             else :
                 self.scene_index = 0
         self.recall_scene(self.scene_index)
-
-    def recall_scene(self, index) :
-        print("recalling scene " + str(index))
-        '''try :
-            scene = self.scenes[index]
-            self.scene_index = index
-            self.override_all_knobs()
-            self.knob[0] = scene[1]
-            self.knob[1] = scene[2]
-            self.knob[2] = scene[3]
-            self.knob[3] = scene[4]
-            self.knob[4] = scene[5]
-            self.auto_clear = scene[6]
-            self.set_mode_by_name(scene[0])
-            self.scene_set = True
-        except :
-            print("probably no scenes")'''
 
     def get_color_from_palette(self, t, a, b, c, d):
         # a, b, c, and d should be iterables of length 3: (x, y, z)

@@ -41,6 +41,7 @@ class ScreenVideoSettings(Screen):
 
     def before(self):
         self.menu_select_res.set_selected_index(self.app_state.config["video_resolution"])
+        self.menu_confirm_res.set_selected_index(1)
         self.state = "idle"
 
     def after(self):

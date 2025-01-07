@@ -111,23 +111,9 @@ class ScreenWiFi(Screen):
 
     def before(self):
         
-        self.netlogs.before()
-
-        # re get info only if we are in idle state 
-        if self.state == "idle" or self.state == "select_net":
-            # Check if connected
-            print("checking connection...")
-            self.connected = is_connected()
-            print("getting ssid...")
-            self.current_ssid = get_current_network()
-            if self.connected:
-                # Build menu for connected state
-                self.build_connected_menu()
-                self.state = "idle"
-            else:
-                # Not connected, start scanning
-                self.start_scanning()
-                self.state = "scanning"
+        #self.netlogs.before()
+        # return state to init unless there is an operation happening
+        if self.state not in {"scanning", "connecting", "disconnecting"} : self.state = "init"
 
     def render(self, surface):
         
@@ -215,7 +201,7 @@ class ScreenWiFi(Screen):
             MenuItem('Disconnect', self.disconnect_confirm_callback),
             MenuItem('◀  Exit', self.exit_menu)
         ]
-        self.menu.set_selected_index(0)
+        self.menu.set_selected_index(1)
 
     def build_not_connected_menu(self):
         # Insert SSIDs plus Exit

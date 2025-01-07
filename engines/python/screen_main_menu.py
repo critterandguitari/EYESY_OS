@@ -8,12 +8,13 @@ class ScreenMainMenu(Screen):
         super().__init__(app_state)
         self.title = "Settings"
         self.menu = WidgetMenu(app_state, [
-            MenuItem('MIDI Ch 16', self.exit_menu),
-            MenuItem('Gain 100%', self.exit_menu),
+#            MenuItem('MIDI Ch 16', self.exit_menu),
+#            MenuItem('Gain 100%', self.exit_menu),
             MenuItem('Video Settings  ▶', self.goto_video_settings),
             MenuItem('WiFi  ▶', self.goto_wifi),
             MenuItem('Color Palette  ▶', self.goto_palette),
             MenuItem('Hardware Test  ▶', self.goto_test),
+            MenuItem('Logs  ▶', self.goto_applogs),
             MenuItem('◀  Exit', self.exit_menu)
         ])
         self.menu.visible_items = 8
@@ -35,6 +36,8 @@ class ScreenMainMenu(Screen):
     def goto_test(self):
         self.app_state.switch_menu_screen("test")
 
+    def goto_applogs(self):
+        self.app_state.switch_menu_screen("applogs")
 
     def goto_wifi(self):
         self.app_state.switch_menu_screen("wifi")

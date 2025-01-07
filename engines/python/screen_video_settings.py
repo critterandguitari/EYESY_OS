@@ -6,6 +6,7 @@ class ScreenVideoSettings(Screen):
         super().__init__(app_state)
         self.state = "idle" 
         self.title = "Video Settings"
+        self.new_video_res = 0
 
         self.menu = WidgetMenu(app_state, [
             MenuItem('HDMI Resolution  ▶', self.select_res),
@@ -31,14 +32,12 @@ class ScreenVideoSettings(Screen):
             MenuItem('◀  Exit', self.goto_home)
         ])
         self.menu_select_compvid.off_y = 75
-
-    def select_res_callback(self, res):
-        def callback():
-            #self.set_res(res)
-            self.app_state.config["video_resolution"] = res
-            self.app_state.save_config_file()
-            self.app_state.restart = True
-        return callback
+         
+        self.menu_confirm_res = WidgetMenu(app_state, [
+            MenuItem('Yes', self.confirm_res),
+            MenuItem('◀  Cancel', self.goto_home)
+        ])
+        self.menu_confirm_res.off_y = 75
 
     def before(self):
         self.menu_select_res.set_selected_index(self.app_state.config["video_resolution"])
@@ -54,6 +53,8 @@ class ScreenVideoSettings(Screen):
             self.menu_select_res.handle_events()
         elif self.state == "select_compvid":
             self.menu_select_compvid.handle_events()
+        elif self.state == "confirm_res":
+            self.menu_confirm_res.handle_events()
 
     def render(self, surface):
 
@@ -69,10 +70,28 @@ class ScreenVideoSettings(Screen):
             surface.blit(rendered_text, msg_xy)
             self.menu_select_res.render(surface)
         elif self.state == "select_compvid" :
-            message = "Select Composite Video Settings"#f"Connecting to {self.target_ssid}..."
+            message = "Select Composite Video Settings"
             rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
             self.menu_select_compvid.render(surface)
+        elif self.state == "confirm_res" :
+            message = "New screen resolution selected, restart video?"
+            rendered_text = font.render(message, True, color)
+            surface.blit(rendered_text, msg_xy)
+            self.menu_confirm_res.render(surface)
+
+    def select_res_callback(self, res):
+        def callback():
+            if res != self.app_state.config["video_resolution"] :
+                self.new_video_res = res
+                self.state = "confirm_res"
+        return callback
+
+    def confirm_res(self):
+        self.app_state.config["video_resolution"] = self.new_video_res
+        self.app_state.save_config_file()
+        self.app_state.restart = True
+
 
     def select_res(self):
         self.state = "select_res"

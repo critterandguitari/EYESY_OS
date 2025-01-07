@@ -7,6 +7,7 @@ import imp
 import os
 import glob
 import sys
+import time
 import helpers
 import csv
 import color_palettes
@@ -99,7 +100,7 @@ class System:
     scenes = []     # 
     scene_index = 0
     save_key_status = False
-    save_key_count = 0
+    save_key_time = 0  # for timing how long save key held 
     scene_set = False
     
     # audio
@@ -450,15 +451,15 @@ class System:
     # called from main loop
     def update_scene_save_key(self):
         if self.save_key_status :
-            self.save_key_count += 1
-            if (self.save_key_count > 30) : # held down for 60 frames, delete the scene
+            elapsed_time = time.time() - self.save_key_time
+            if (elapsed_time > 1) : # held down for 1 seconds, delete the scene
                 self.delete_current_scene()
                 self.save_key_status = False
 
     def save_or_delete_scene(self, key_stat):
         if key_stat > 0 :
             self.save_key_status = True
-            self.save_key_count = 0
+            self.save_key_time = time.time()  # start timer
         else :
             if (self.save_key_status) :  # key release before delete happens
                 self.save_scene()
@@ -466,37 +467,52 @@ class System:
                 
     def delete_current_scene(self):
         print("deleting scene")
-        if len(self.scenes) > 0:
+        '''if len(self.scenes) > 0:
             del self.scenes[self.scene_index]
+            self.write_all_scenes()
             if self.scene_index >= len(self.scenes):
                 self.scene_index = len(self.scenes) - 1
-            self.recall_scene(self.scene_index)
-            self.write_all_scenes()
-        #print "deleted scene: " + str(self.scene_index)
+            if self.scene_index < 0:  # deleted last scene
+                self.scene_index = 0
+                self.scene_set = False
+            else:
+                self.recall_scene(self.scene_index)'''
 
     def save_scene(self):
         print("saving scene")
-        self.scenes.append([self.mode, self.knob1, self.knob2, self.knob3, self.knob4, self.knob5, self.auto_clear])
-        self.write_all_scenes()
+        self.scenes.append({
+            "mode": self.mode,
+            "knob1": self.knob1,
+            "knob2": self.knob2,
+            "knob3": self.knob3,
+            "knob4": self.knob4,
+            "knob5": self.knob5,
+            "auto_clear": self.auto_clear,
+            "bg_palette": self.bg_palette,
+            "fg_palette": self.fg_palette
+        })
+        scene_file = self.SYSTEM_PATH + "scenes.json"
+        config.save_config(scene_file, self.scenes)
+
+        '''self.write_all_scenes()
         # and set it to most recent
-        self.recall_scene(len(self.scenes) - 1)
+        self.recall_scene(len(self.scenes) - 1)'''
 
     def write_all_scenes(self):
+        print("writing scenes")
             # write it
-        with open(self.SCENES_PATH, "wb") as f:
+        '''with open(self.SCENES_PATH, "w") as f:
             writer = csv.writer(f,quoting=csv.QUOTE_MINIMAL)
             writer.writerows(self.scenes) 
-        #print "saved scenes: " + str(self.scenes)
-        # make sure it is saved as 'music' user, uid=gid=1000
-        os.chown(self.SCENES_PATH, 1000, 1000)
+        #print "saved scenes: " + str(self.scenes)'''
 
     def load_scenes(self):
+        print("loading scenes")
         # create scene file if doesn't exits
         if not os.path.exists(self.SCENES_PATH):
             f = open(self.SCENES_PATH, "w")
             f.close()
-        # make sure it is saved as 'music' user, uid=gid=1000
-        os.chown(self.SCENES_PATH, 1000, 1000)
+        
         # open it
         with open(self.SCENES_PATH, 'r') as f:
             reader = csv.reader(f)
@@ -518,7 +534,6 @@ class System:
                 self.scenes.append(scene)
         except:
             print("error parsing scene file")
-        print("loaded scenes: " + str(self.scenes))
 
     def next_scene(self):
         self.scene_index += 1
@@ -537,7 +552,7 @@ class System:
 
     def recall_scene(self, index) :
         print("recalling scene " + str(index))
-        try :
+        '''try :
             scene = self.scenes[index]
             self.scene_index = index
             self.override_all_knobs()
@@ -550,7 +565,7 @@ class System:
             self.set_mode_by_name(scene[0])
             self.scene_set = True
         except :
-            print("probably no scenes")
+            print("probably no scenes")'''
 
     def get_color_from_palette(self, t, a, b, c, d):
         # a, b, c, and d should be iterables of length 3: (x, y, z)

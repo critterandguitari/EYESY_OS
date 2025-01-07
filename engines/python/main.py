@@ -167,12 +167,14 @@ try :
     from screen_video_settings import ScreenVideoSettings
     from screen_palette import ScreenPalette
     from screen_wifi import ScreenWiFi
+    from screen_applogs import ScreenApplogs
 
     etc.menu_screens["home"] = ScreenMainMenu(etc)
     etc.menu_screens["test"] = ScreenTest(etc)
     etc.menu_screens["video_settings"] = ScreenVideoSettings(etc)
     etc.menu_screens["palette"] = ScreenPalette(etc)
     etc.menu_screens["wifi"] = ScreenWiFi(etc)
+    etc.menu_screens["applogs"] = ScreenApplogs(etc)
     etc.switch_menu_screen("home")
 except :
     print("error loading menu screens")

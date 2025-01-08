@@ -186,8 +186,41 @@ class System:
             print("Using all default values.")
             self.config = self.DEFAULT_CONFIG
 
-        # Modify or access configuration
+        self.validate_config()
+       
         print("Current Configuration:", self.config)
+
+    def validate_config(self):
+        # Validate each field in self.config, falling back to defaults if needed
+        self.config["midi_channel"] = (
+            self.config.get("midi_channel")
+            if isinstance(self.config.get("midi_channel"), int) and 1 <= self.config["midi_channel"] <= 16
+            else self.DEFAULT_CONFIG["midi_channel"]
+        )
+
+        self.config["video_resolution"] = (
+            self.config.get("video_resolution")
+            if isinstance(self.config.get("video_resolution"), int) and 0 <= self.config["video_resolution"] < len(self.RESOLUTIONS)
+            else self.DEFAULT_CONFIG["video_resolution"]
+        )
+
+        self.config["audio_gain"] = (
+            self.config.get("audio_gain")
+            if isinstance(self.config.get("audio_gain"), int) and 0 <= self.config["audio_gain"] <= 300
+            else self.DEFAULT_CONFIG["audio_gain"]
+        )
+
+        self.config["fg_palette"] = (
+            self.config.get("fg_palette")
+            if isinstance(self.config.get("fg_palette"), int) and 0 <= self.config["fg_palette"] < len(self.palettes)
+            else self.DEFAULT_CONFIG["fg_palette"]
+        )
+
+        self.config["bg_palette"] = (
+            self.config.get("bg_palette")
+            if isinstance(self.config.get("bg_palette"), int) and 0 <= self.config["bg_palette"] < len(self.palettes)
+            else self.DEFAULT_CONFIG["bg_palette"]
+        )
 
     def save_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"

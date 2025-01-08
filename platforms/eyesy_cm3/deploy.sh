@@ -12,4 +12,4 @@ sync
 # configure systemd stuff
 #systemctl enable splashscreen.service  
 #systemctl enable ttymidi.service  
-#systemctl daemon-reload
+systemctl daemon-reload

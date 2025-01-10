@@ -11,6 +11,7 @@ class ScreenMainMenu(Screen):
 #            MenuItem('MIDI Ch 16', self.exit_menu),
 #            MenuItem('Gain 100%', self.exit_menu),
             MenuItem('Video Settings  ▶', self.goto_video_settings),
+            MenuItem('MIDI Settings  ▶', self.goto_midi_settings),
             MenuItem('WiFi  ▶', self.goto_wifi),
             MenuItem('Color Palette  ▶', self.goto_palette),
             MenuItem('Hardware Test  ▶', self.goto_test),
@@ -29,6 +30,9 @@ class ScreenMainMenu(Screen):
 
     def goto_palette(self):
         self.app_state.switch_menu_screen("palette")
+
+    def goto_midi_settings(self):
+        self.app_state.switch_menu_screen("midi_settings")
 
     def goto_video_settings(self):
         self.app_state.switch_menu_screen("video_settings")

@@ -75,18 +75,19 @@ def loading_banner(screen, stuff) :
     screen.blit(text, text_rect)
     pygame.display.flip()
 
+
 def render_overlay_480(screen, etc) :
 
-    font = pygame.font.Font("font.ttf", 16)
+    font = etc.font
 
     #pygame.draw.line(screen, etc.LGRAY, [0,480], [720,480], 1)
     #pygame.draw.line(screen, etc.LGRAY, [720,480], [720,0], 1)
     
     # first time through, gather some info
-    if etc.osd_first :
+    '''if etc.osd_first :
         etc.ip = socket.gethostbyname(socket.gethostname())
-        etc.osd_first = False
-
+       etc.osd_first = False
+'''
     # mode
     mode_str = " Mode:  "   + str(etc.mode) + " (" + str(etc.mode_index + 1) +" of "+str(len(etc.mode_names)) + ")"
     text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
@@ -105,7 +106,7 @@ def render_overlay_480(screen, etc) :
     text_rect.x = 20
     text_rect.centery = 68
     screen.blit(text, text_rect)   
-    
+''' 
     # midi notes
     pygame.draw.rect(screen, etc.BLACK, (20, 85, 299, 33))
     text = font.render(" MIDI Notes:", True, etc.LGRAY, etc.BLACK)
@@ -228,17 +229,17 @@ def render_overlay_480(screen, etc) :
     screen.blit(text, text_rect)
     
     # grabs
-    pygame.draw.rect(screen, etc.BLACK, (486, 20, 155, 435))
-    text = font.render(" Recent Grabs", True, etc.LGRAY, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 500
-    text_rect.centery = 37
-    screen.blit(text, text_rect)
-    screen.blit(etc.tengrabs_thumbs[0], (500, 78 * 0 + 50))
-    screen.blit(etc.tengrabs_thumbs[1], (500, 78 * 1 + 50))
-    screen.blit(etc.tengrabs_thumbs[2], (500, 78 * 2 + 50))
-    screen.blit(etc.tengrabs_thumbs[3], (500, 78 * 3 + 50))
-    screen.blit(etc.tengrabs_thumbs[4], (500, 78 * 4 + 50))
+    #pygame.draw.rect(screen, etc.BLACK, (486, 20, 155, 435))
+    #text = font.render(" Recent Grabs", True, etc.LGRAY, etc.BLACK)
+    #text_rect = text.get_rect()
+    #text_rect.x = 500
+    #text_rect.centery = 37
+    #screen.blit(text, text_rect)
+    #screen.blit(etc.tengrabs_thumbs[0], (500, 78 * 0 + 50))
+    #screen.blit(etc.tengrabs_thumbs[1], (500, 78 * 1 + 50))
+    #screen.blit(etc.tengrabs_thumbs[2], (500, 78 * 2 + 50))
+    #screen.blit(etc.tengrabs_thumbs[3], (500, 78 * 3 + 50))
+    #screen.blit(etc.tengrabs_thumbs[4], (500, 78 * 4 + 50))
     
     # osd, errors
     i = 0
@@ -249,5 +250,5 @@ def render_overlay_480(screen, etc) :
         text_rect.y = 60 + (i * 20)
         screen.blit(errormsg, text_rect)
         i += 1
-
+'''
 

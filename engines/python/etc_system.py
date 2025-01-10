@@ -63,9 +63,6 @@ class System:
     #RES =  (640,480)
     RES =  (0,0)
 
-    # this is just an alias to the screen in main loop
-    screen = None
-
     fps = 0
     frame_count = 0
     
@@ -80,6 +77,8 @@ class System:
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     OSDBG = (0,0,255)
+
+    font = None
 
     # screen grabs
     lastgrab = None
@@ -386,21 +385,19 @@ class System:
                 self.set_mode_by_index(self.mode_index)
 
     # save a screenshot
-    def screengrab(self):
+    def screengrab(self, screen):
         filenum = 0
         imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
         while os.path.isfile(imagepath):
             filenum += 1
             imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
-        pygame.image.save(self.screen,imagepath)
-        # make sure it is saved as 'music' user, uid=gid=1000
-        os.chown(imagepath, 1000, 1000)
+        pygame.image.save(screen,imagepath)
         # add to the grabs array
-        self.grabindex += 1
-        self.grabindex %= 5
-        pygame.transform.scale(self.screen, (128, 72), self.tengrabs_thumbs[self.grabindex] )
-        self.lastgrab = self.screen.copy()
-        self.lastgrab_thumb = self.tengrabs_thumbs[self.grabindex]
+        #self.grabindex += 1
+        #self.grabindex %= 5
+        #pygame.transform.scale(screen, (128, 72), self.tengrabs_thumbs[self.grabindex] )
+        #self.lastgrab = screen.copy()
+        #self.lastgrab_thumb = self.tengrabs_thumbs[self.grabindex]
         print("grabbed " + imagepath)
 
     # load modes,  check if modes are found

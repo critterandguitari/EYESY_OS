@@ -66,21 +66,21 @@ os.putenv('SDL_VIDEODRIVER', "directfb")
 #hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED, 32)
 #hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.HWSURFACE, 32)
 hwscreen = pygame.display.set_mode(etc.RES)
-screen = pygame.Surface(hwscreen.get_size())
+#screen = pygame.Surface(hwscreen.get_size())
 etc.xres=hwscreen.get_width()
 etc.yres=hwscreen.get_height()
 print("opened screen at: " + str(hwscreen.get_size()))
-screen.fill((0,0,0)) 
-hwscreen.blit(screen, (0,0))
-pygame.display.flip()
-hwscreen.blit(screen, (0,0))
+hwscreen.fill((0,0,0)) 
+#hwscreen.blit(screen, (0,0))
+#pygame.display.flip()
+#hwscreen.blit(screen, (0,0))
 pygame.display.flip()
 osd.loading_banner(hwscreen, "")
 time.sleep(2)
 
 # etc gets a refrence to screen so it can save screen grabs 
-etc.screen = screen
-print(str(etc.screen) + " " +  str(screen))
+#etc.screen = screen
+#print(str(etc.screen) + " " +  str(screen))
 
 # load modes, post banner if none found
 if not (etc.load_modes()) :
@@ -109,7 +109,7 @@ for i in range(0, len(etc.mode_names)) :
     try : 
         osd.loading_banner(hwscreen,"Loading " + str(etc.mode) )
         print("setup " + str(etc.mode))
-        mode.setup(screen, etc)
+        mode.setup(hwscreen, etc)
         etc.memory_used = psutil.virtual_memory()[2]
     except :
         print("error in setup, or setup not found")
@@ -123,6 +123,8 @@ etc.load_scenes()
 
 # used to measure fps
 start = time.time()
+
+etc.font = pygame.font.Font("font.ttf", 16)
 
 # get total memory consumed, cap at 75%
 etc.memory_used = psutil.virtual_memory()[2]
@@ -168,6 +170,7 @@ try :
     from screen_palette import ScreenPalette
     from screen_wifi import ScreenWiFi
     from screen_applogs import ScreenApplogs
+    from screen_midi_settings import ScreenMIDISettings
 
     etc.menu_screens["home"] = ScreenMainMenu(etc)
     etc.menu_screens["test"] = ScreenTest(etc)
@@ -175,8 +178,10 @@ try :
     etc.menu_screens["palette"] = ScreenPalette(etc)
     etc.menu_screens["wifi"] = ScreenWiFi(etc)
     etc.menu_screens["applogs"] = ScreenApplogs(etc)
+    etc.menu_screens["midi_settings"] = ScreenMIDISettings(etc)
     etc.switch_menu_screen("home")
-except :
+except Exception as e:
+    print(traceback.format_exc())
     print("error loading menu screens")
     exitexit()
 
@@ -310,7 +315,7 @@ while 1:
     # save a screen shot before drawing stuff
     if (etc.screengrab_flag):
         osc.send("/led", 3) # flash led yellow
-        etc.screengrab()
+        etc.screengrab(hwscreen)
         osc.send("/led", 7)
         
     # see if save is being held down for deleting scene
@@ -321,13 +326,13 @@ while 1:
 
     # clear it with bg color if auto clear enabled
     if etc.auto_clear :
-        screen.fill(etc.bg_color) 
+        hwscreen.fill(etc.bg_color) 
     
     # run setup (usually if the mode was reloaded)
     if etc.run_setup :
         etc.error = ''
         try :
-            mode.setup(screen, etc)
+            mode.setup(hwscreen, etc)
         except Exception as e:
             etc.error = traceback.format_exc()
             print("error with setup: " + etc.error)
@@ -335,14 +340,14 @@ while 1:
     # draw it
     if not etc.show_menu :
         try :
-            mode.draw(screen, etc)
+            mode.draw(hwscreen, etc)
         except Exception as e:   
             etc.error = traceback.format_exc()
             print("error with draw: " + etc.error)
             # no use spitting these errors out at 30 fps
             pygame.time.wait(200)
             
-        hwscreen.blit(screen, (0,0))
+        #hwscreen.blit(screen, (0,0))
         
     # osd
     if etc.show_osd :
@@ -364,7 +369,10 @@ while 1:
         if etc.restart :
             print("video res changed, restarting")
             exitexit_restart()
-      
+        if etc.key8_press:
+            print("menu screenshot")
+            etc.screengrab(hwscreen)
+ 
     pygame.display.flip()
 
     if etc.quit :

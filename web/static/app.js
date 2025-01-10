@@ -8,13 +8,12 @@ var editor = null
 var openFiles = []; // Array to hold open files and their editor sessions
 var currentFile = null; // Currently active file
 
-
 function getFile(fpath) {
     $.get(appBaseURL + '/get_file?fpath='+encodeURIComponent(fpath), function(data) {
         editor.setValue(data)
         editor.gotoLine(1)
         $("#title").html(fpath)
-    });
+    }, 'text');  // force respose to be treated as text
 }
 
 
@@ -49,7 +48,7 @@ function openFile(path) {
             // Create a new tab
             var fileName = path.split('/').pop();
             addTab(path, fileName, data);
-        });
+        }, 'text');
     }
 }
 

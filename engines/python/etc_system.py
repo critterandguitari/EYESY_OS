@@ -24,7 +24,7 @@ class System:
 
     GRABS_PATH = "/sdcard/Grabs/"
     MODES_PATH = "/sdcard/Modes/Python/"
-    SCENES_PATH = "/sdcard/Scenes.csv"
+    SCENES_PATH = "/sdcard/Scenes/"
     SYSTEM_PATH = "/sdcard/System/"
     
     RESOLUTIONS = [
@@ -87,7 +87,8 @@ class System:
     grabcount = 0
     grabindex = 0
     screengrab_flag = False
-    
+    screen = None  # ref to main surface, for doing screenshots
+
     # modes
     mode_names = []  # list of mode names pupulated from Modes folder on USB drive
     mode_index = 0   # index of current mode
@@ -102,6 +103,7 @@ class System:
     save_key_status = False
     save_key_time = 0  # for timing how long save key held 
     scene_set = False
+    next_numbered_scene = 1
     
     # audio
     audio_in = [0] * 100
@@ -172,6 +174,10 @@ class System:
 
     def load_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
+        if not(os.path.isdir(self.SYSTEM_PATH)) :
+            print('No system folder, creating...')
+            os.system('mkdir ' + self.SYSTEM_PATH)
+
         try:
             # Load configuration, raising errors for file or JSON issues
             self.config = config.load_config(config_file, self.DEFAULT_CONFIG)
@@ -385,19 +391,13 @@ class System:
                 self.set_mode_by_index(self.mode_index)
 
     # save a screenshot
-    def screengrab(self, screen):
+    def screengrab(self):
         filenum = 0
         imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
         while os.path.isfile(imagepath):
             filenum += 1
             imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
-        pygame.image.save(screen,imagepath)
-        # add to the grabs array
-        #self.grabindex += 1
-        #self.grabindex %= 5
-        #pygame.transform.scale(screen, (128, 72), self.tengrabs_thumbs[self.grabindex] )
-        #self.lastgrab = screen.copy()
-        #self.lastgrab_thumb = self.tengrabs_thumbs[self.grabindex]
+        pygame.image.save( self.screen ,imagepath)
         print("grabbed " + imagepath)
 
     # load modes,  check if modes are found
@@ -493,6 +493,7 @@ class System:
             self.save_key_time = time.time()  # start timer
         else :
             if (self.save_key_status) :  # key release before delete happens
+                self.save_key_status = False
                 self.save_scene()
             self.save_key_status = False
                 
@@ -510,8 +511,10 @@ class System:
                 self.recall_scene(self.scene_index)'''
 
     def save_scene(self):
-        print("saving scene")
-        self.scenes.append({
+        print("Saving scene")
+
+        # Add the current scene to the list
+        new_scene = {
             "mode": self.mode,
             "knob1": self.knob1,
             "knob2": self.knob2,
@@ -521,20 +524,39 @@ class System:
             "auto_clear": self.auto_clear,
             "bg_palette": self.bg_palette,
             "fg_palette": self.fg_palette
-        })
-        scene_file = self.SYSTEM_PATH + "scenes.json"
-        # save it
+        }
+        self.scenes.append(new_scene)
+
+        # Create the Scenes directory if it doesn't exist
+        os.makedirs(self.SYSTEM_PATH, exist_ok=True)
+
+        # Determine the next available numbered folder
+        while True:
+            folder_path = os.path.join(self.SYSTEM_PATH, str(self.next_numbered_scene))
+            if not os.path.exists(folder_path):
+                break
+            self.next_numbered_scene += 1
+
+        # Create the folder
+        os.makedirs(folder_path)
+
+        # Save the scene as scene.json in the folder
+        scene_file = os.path.join(folder_path, "scene.json")
         try:
             with open(scene_file, 'w') as f:
-                json.dump(self.scenes, f, indent=4)
-            print(f"Config saved to {scene_file}")
+                json.dump(new_scene, f, indent=4)
+            print(f"Scene saved to {scene_file}")
         except Exception as e:
             print(f"Failed to save scene file: {e}")
-           
-        '''self.write_all_scenes()
-        # and set it to most recent
-        self.recall_scene(len(self.scenes) - 1)'''
 
+        # save a screenshot of the scene in the folder too
+        imagepath = folder_path + "/scene.jpg"
+        thumb = pygame.Surface((128, 72))
+        pygame.transform.scale(self.screen, (128, 72), thumb )
+        pygame.image.save(thumb, imagepath)
+        print("saved screenshot " + imagepath)
+
+    
     def recall_scene(self, index) :
         print("recalling scene " + str(index))
         try :
@@ -553,14 +575,6 @@ class System:
             self.scene_set = True
         except :
             print("probably no scenes")
-
-    def write_all_scenes(self):
-        print("writing scenes")
-            # write it
-        '''with open(self.SCENES_PATH, "w") as f:
-            writer = csv.writer(f,quoting=csv.QUOTE_MINIMAL)
-            writer.writerows(self.scenes) 
-        #print "saved scenes: " + str(self.scenes)'''
 
     def load_scenes(self):
         print("loading scenes")

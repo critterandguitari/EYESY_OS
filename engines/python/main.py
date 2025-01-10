@@ -63,24 +63,18 @@ osc.send("/led", 7) # set led to running
 # init fb and main surfaces
 print("opening frame buffer...")
 os.putenv('SDL_VIDEODRIVER', "directfb")
-#hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED, 32)
-#hwscreen = pygame.display.set_mode(etc.RES,  pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.HWSURFACE, 32)
 hwscreen = pygame.display.set_mode(etc.RES)
-#screen = pygame.Surface(hwscreen.get_size())
-etc.xres=hwscreen.get_width()
-etc.yres=hwscreen.get_height()
+etc.xres = hwscreen.get_width()
+etc.yres = hwscreen.get_height()
 print("opened screen at: " + str(hwscreen.get_size()))
 hwscreen.fill((0,0,0)) 
-#hwscreen.blit(screen, (0,0))
-#pygame.display.flip()
-#hwscreen.blit(screen, (0,0))
 pygame.display.flip()
 osd.loading_banner(hwscreen, "")
 time.sleep(2)
 
 # etc gets a refrence to screen so it can save screen grabs 
-#etc.screen = screen
-#print(str(etc.screen) + " " +  str(screen))
+etc.screen = hwscreen
+print(str(etc.screen) + " " +  str(hwscreen))
 
 # load modes, post banner if none found
 if not (etc.load_modes()) :
@@ -315,7 +309,7 @@ while 1:
     # save a screen shot before drawing stuff
     if (etc.screengrab_flag):
         osc.send("/led", 3) # flash led yellow
-        etc.screengrab(hwscreen)
+        etc.screengrab()
         osc.send("/led", 7)
         
     # see if save is being held down for deleting scene
@@ -369,9 +363,9 @@ while 1:
         if etc.restart :
             print("video res changed, restarting")
             exitexit_restart()
-        if etc.key8_press:
-            print("menu screenshot")
-            etc.screengrab(hwscreen)
+        #if etc.key8_press:
+        #    print("menu screenshot")
+        #    etc.screengrab()
  
     pygame.display.flip()
 

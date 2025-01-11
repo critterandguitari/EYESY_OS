@@ -14,12 +14,6 @@ import csv
 import color_palettes
 import config
 
-DEFAULT_CONFIG = {
-    "midi_channel": 1,
-    "video_resolution": 0,
-    "audio_gain": 50
-}
-
 class System:
 
     GRABS_PATH = "/sdcard/Grabs/"
@@ -55,12 +49,6 @@ class System:
     
     config = {}
 
-    #RES =  (720,480)
-    #RES =  (800,600)
-    #RES =  (320,240)
-    #RES =  (1280,720)
-    #RES =  (1920,1080)
-    #RES =  (640,480)
     RES =  (0,0)
 
     fps = 0
@@ -194,6 +182,11 @@ class System:
         self.validate_config()
        
         print("Current Configuration:", self.config)
+
+        # set values from configg
+        self.RES = self.RESOLUTIONS[self.config["video_resolution"]]["res"]
+        self.bg_palette = self.config["bg_palette"]
+        self.fg_palette = self.config["fg_palette"]
 
     def validate_config(self):
         # Validate each field in self.config, falling back to defaults if needed
@@ -631,7 +624,10 @@ class System:
         ]
     
     def color_picker( self, val ):
-        # convert knob to 0-1
+
+        # first slot legacy color pickers
+        if self.fg_palette == 0 : return self.color_picker_original(val)
+        
         c = float(val)
 
         t = c
@@ -650,15 +646,9 @@ class System:
         return color2
  
     def color_picker_bg( self, val):
-        #c = float(val)
-        #r = (1 - (math.cos(c * 3 * math.pi) * .5 + .5)) * c
-        #g = (1 - (math.cos(c * 7 * math.pi) * .5 + .5)) * c
-        #b = (1 - (math.cos(c * 11 * math.pi) * .5 + .5)) * c
-        
-        #color = (r * 255,g * 255,b * 255)
-        
-        #self.bg_color = color
-        #return color
+
+        # first slot legacy color pickers
+        if self.bg_palette == 0 : return self.color_picker_bg_original(val)
 
         c = float(val)
 
@@ -677,7 +667,73 @@ class System:
         self.bg_color = color2
         return color2
         
+    # legacy color picker used for first palette slot 
+    def color_picker_original( self, val ):
+        # convert knob to 0-1
+        c = float(val)
+
+        # all the way down random bw
+        rando = random.randrange(0, 2)
+        color = (rando * 255, rando * 255, rando * 255)
+
+        # random greys
+        if c > .02 :
+            rando = random.randrange(0,255)
+            color = (rando, rando, rando)
+        # grey 1
+        if c > .04 :
+            color = (50, 50, 50)
+        # grey 2
+        if c > .06 :
+            color = (100, 100 ,100)
+        # grey 3
+        if c > .08 :
+            color = (150, 150 ,150)
+        # grey 4
+        if c > .10 :
+            color = (150, 150 ,150)
+            
+        # grey 5
+        if c > .12 :
+            color = (200, 200 ,200)
+        # white
+        if c > .14 :
+            color = (250, 250 ,250)
+        #colors
+        if c > .16 :
+            
+            #r = float(control) / 1024 * 255
+            #g = float((control * 2) % 1024) / 1024 * 255
+            #b = float((control * 4) % 1024) / 1024 * 255
+            
+            r = math.sin(c * 2 * math.pi) * .5 + .5
+            g = math.sin(c * 4 * math.pi) * .5 + .5
+            b = math.sin(c * 8 * math.pi) * .5 + .5
+            color = (r * 255,g * 255,b * 255)
+        # full ranoms
+        if c > .96 :
+            color = (random.randrange(0,255), random.randrange(0,255), random.randrange(0,255))
+        # primary randoms
+        if c > .98 :
+            r = random.randrange(0, 2) * 255
+            g = random.randrange(0, 2) * 255
+            b = random.randrange(0, 2) * 255
+            color = (r,g,b)
+        
+        color2 = (color[0], color[1], color[2])
+        return color2
  
+    # legacy color picker used for first palette slot 
+    def color_picker_bg_original( self, val):
+        c = float(val)
+        r = (1 - (math.cos(c * 3 * math.pi) * .5 + .5)) * c
+        g = (1 - (math.cos(c * 7 * math.pi) * .5 + .5)) * c
+        b = (1 - (math.cos(c * 11 * math.pi) * .5 + .5)) * c
+        
+        color = (r * 255,g * 255,b * 255)
+        
+        self.bg_color = color
+        return color 
 
     def dispatch_key_event(self, k, v):
         

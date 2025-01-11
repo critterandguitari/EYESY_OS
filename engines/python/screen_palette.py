@@ -26,36 +26,44 @@ def draw_color_palette(surface, app_state):
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 
-
-# Function to handle palette selection, not really necessary to set them since they get set with each selection anyway?
-def select_palette(app_state, index):
-    pass
-
-# Function to dynamically create a menu based on palettes
-def create_palette_menu(app_state):
-    menu_items = []
-    for i, palette in enumerate(app_state.palettes):
-        # Create a menu item for each palette
-        menu_items.append(MenuItem(palette['name'], lambda i=i: select_palette(app_state, i)))
-
-    # Return the menu object
-    return WidgetMenu(app_state, menu_items)
-
 class ScreenPalette(Screen):
     def __init__(self, app_state):
         super().__init__(app_state)
         self.title = "Color Palette"
-        self.fg_menu = create_palette_menu(app_state)
-        self.bg_menu = create_palette_menu(app_state)
+        self.fg_menu = self.create_fg_palette_menu()
+        self.bg_menu = self.create_bg_palette_menu()
         self.fg_menu.off_y = 50
         self.bg_menu.off_y = 250
         #self.menu.items.append(MenuItem('◀ Exit', self.goto_home))
+    
+    # Function to dynamically create a menu based on palettes
+    def create_fg_palette_menu(self):
+        menu_items = []
+        for i, palette in enumerate(self.app_state.palettes):
+            # Create a menu item for each palette
+            menu_items.append(MenuItem(palette['name'], self.select_fg_palette))
 
+        # Return the menu object
+        return WidgetMenu(self.app_state, menu_items)
+
+    def create_bg_palette_menu(self):
+        menu_items = []
+        for i, palette in enumerate(self.app_state.palettes):
+            # Create a menu item for each palette
+            menu_items.append(MenuItem(palette['name'], self.select_bg_palette))
+
+        # Return the menu object
+        return WidgetMenu(self.app_state, menu_items)
+
+    def select_fg_palette(self):
+        self.app_state.fg_palette = min(len(self.app_state.palettes)-1, self.fg_menu.selected_index)
+
+    def select_bg_palette(self):
+        self.app_state.bg_palette = min(len(self.app_state.palettes)-1, self.bg_menu.selected_index)
+     
     def handle_events(self):
         self.bg_menu.handle_events()
         self.fg_menu.handle_events_k4_k5()
-        self.app_state.fg_palette = min(len(self.app_state.palettes)-1, self.fg_menu.selected_index)
-        self.app_state.bg_palette = min(len(self.app_state.palettes)-1, self.bg_menu.selected_index)
         
         # save to config and exit on selection
         if self.app_state.key8_press:
@@ -68,7 +76,17 @@ class ScreenPalette(Screen):
     def render(self, surface):
         self.fg_menu.render(surface)
         self.bg_menu.render(surface)
+        
+        # in order to preview the palettes, we need to set temporarily and then restore
+        tmp_bg = self.app_state.bg_palette
+        tmp_fg = self.app_state.fg_palette
+        self.app_state.fg_palette =  min(len(self.app_state.palettes)-1, self.fg_menu.selected_index)
+        self.app_state.bg_palette =  min(len(self.app_state.palettes)-1, self.bg_menu.selected_index)
+        
         draw_color_palette(surface, self.app_state)
+
+        self.app_state.bg_palette = tmp_bg
+        self.app_state.fg_palette = tmp_fg
 
     def before(self):
         self.fg_menu.set_selected_index(self.app_state.fg_palette)

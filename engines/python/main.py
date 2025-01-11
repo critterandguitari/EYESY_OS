@@ -9,11 +9,11 @@ import traceback
 import liblo
 import pygame
 from pygame.locals import *
+import midi
 import etc_system
 import osc
 import sound
 import osd
-   
 
 print("starting...")
 
@@ -31,8 +31,10 @@ etc.load_config_file()
 # setup osc and callbacks
 osc.init(etc)
 
-# setup alsa sound
-# Shared resources
+# midi 
+midi.init()
+
+# setup alsa sound shared resources
 BUFFER_SIZE = 100
 shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer
 write_index = Value('i', 0)  # Write index for the buffer
@@ -44,8 +46,6 @@ audio_process.start()
 
 # init pygame, this has to happen after sound is setup
 # but before the graphics stuff below
-# os.environ["SDL_FBDEV"] = "/dev/fb0"
-# os.putenv("SDL_VIDEODRIVER", "rpi")
 pygame.init()
 pygame.mouse.set_visible(False)
 clocker = pygame.time.Clock() # for locking fps
@@ -113,6 +113,7 @@ etc.load_scenes()
 # used to measure fps
 start = time.time()
 
+# set font for system stuff
 etc.font = pygame.font.Font("font.ttf", 16)
 
 # get total memory consumed, cap at 75%
@@ -124,6 +125,7 @@ if (etc.memory_used > 100): etc.memory_used = 100
 etc.set_mode_by_index(0)
 mode = sys.modules[etc.mode]
 
+# for flashing the LED
 midi_led_flashing = False
 
 def exitexit():
@@ -136,6 +138,7 @@ def exitexit():
         audio_process.join()       # Ensure the process has fully terminated
     print("closing audio")
     audio_process.close()  # Now it's safe to close the process
+    midi.close()
     sys.exit(0)
 
 def exitexit_restart():
@@ -148,6 +151,7 @@ def exitexit_restart():
         audio_process.join()       # Ensure the process has fully terminated
     print("closing audio")
     audio_process.close()  # Now it's safe to close the process
+    midi.close()
     sys.exit(1)
 
 # menu screens
@@ -247,16 +251,22 @@ def knob_sequencer(etc):
 
     prev_key2_status = key2
 
-
-
 while 1:
-    
+ 
+    # quit on esc
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exitexit()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                exitexit()
+
     # check for OSC
     osc.recv()
 
-    # send get midi and knobs for next time
-    #osc.send("/nf", 1) 
-
+    # check MIDI
+    midi.recv()
+    
     # stop a midi led flash if one is hapenning
     if (midi_led_flashing):
         midi_led_flashing = False
@@ -271,15 +281,7 @@ while 1:
 
     # check for midi program change
     etc.check_pgm_change()
-
-    # quit on esc
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exitexit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                exitexit()
-
+    
     # measure fps
     etc.frame_count += 1
     if ((etc.frame_count % 50) == 0):

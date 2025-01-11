@@ -345,7 +345,6 @@ class System:
                 if abs(self.knob_snapshot[i] - self.knob_hardware[i]) > .05 :
                     self.knob_override[i] = False
                     self.knob[i] = self.knob_hardware[i]
-                    self.scene_set = False
             else : 
                 self.knob[i] = self.knob_hardware[i]
 

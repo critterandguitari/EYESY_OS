@@ -95,7 +95,7 @@ def render_overlay_480(screen, etc) :
     text_rect.x = 20
     text_rect.centery = 40
     screen.blit(text, text_rect)
-    
+     
     # scene
     if etc.scene_set :
         scene_str = " Scene:  " + str(etc.scene_index + 1) +" of "+str(len(etc.scenes)) + " "
@@ -104,6 +104,15 @@ def render_overlay_480(screen, etc) :
     text = font.render(scene_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
+    text_rect.centery = 68
+    screen.blit(text, text_rect)   
+
+    # res
+    reso = etc.RESOLUTIONS[etc.config["video_resolution"]]["name"]
+    message = f"Screen Size {reso} "
+    text =          font.render(message, True, etc.LGRAY, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 200
     text_rect.centery = 68
     screen.blit(text, text_rect)   
 ''' 

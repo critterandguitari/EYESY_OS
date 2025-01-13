@@ -40,11 +40,19 @@ class System:
     ]
 
     DEFAULT_CONFIG = {
-        "midi_channel": 1,
         "video_resolution": 0,
         "audio_gain": 50,
+        "trigger_source":0,
         "fg_palette": 0,
-        "bg_palette": 0
+        "bg_palette": 0,
+        "midi_channel": 1,
+        "knob1_cc": 20,
+        "knob2_cc": 21,
+        "knob3_cc": 22,
+        "knob4_cc": 23,
+        "knob5_cc": 24,
+        "auto_clear_cc": 25,
+        "pc_map": {}
     }
     
     config = {}
@@ -120,7 +128,6 @@ class System:
     midi_pgm = 0
     midi_pgm_last = 0
     midi_clk = 0
-    midi_ch = 1
     new_midi = False
     usb_midi_name = ''
     usb_midi_present = False
@@ -154,6 +161,8 @@ class System:
     key10_press = False
     
     key2_status = False  # shift key pressed or not
+    key6_status = False  
+    key7_status = False  
 
     # color stuff
     palettes = color_palettes.abcd_palettes
@@ -180,14 +189,16 @@ class System:
             self.config = self.DEFAULT_CONFIG
 
         self.validate_config()
-       
         print("Current Configuration:", self.config)
 
-        # set values from configg
-        self.RES = self.RESOLUTIONS[self.config["video_resolution"]]["res"]
-        self.bg_palette = self.config["bg_palette"]
-        self.fg_palette = self.config["fg_palette"]
-
+        try:
+            # set values from configg
+            self.RES = self.RESOLUTIONS[self.config["video_resolution"]]["res"]
+            self.bg_palette = self.config["bg_palette"]
+            self.fg_palette = self.config["fg_palette"]
+        except :
+            print("Error setting config value")
+    
     def validate_config(self):
         # Validate each field in self.config, falling back to defaults if needed
         self.config["midi_channel"] = (
@@ -359,11 +370,6 @@ class System:
         for i in range(0, 128):
             if self.midi_notes[i] > 0 and self.midi_notes_last[i] == 0:
                 self.midi_note_new = True
-
-        # very last midi note controls auto clear
-        if (self.midi_notes[127] > 0 and self.midi_notes_last[127] == 0):
-            if (self.auto_clear) : self.auto_clear = False
-            else : self.auto_clear = True
 
     def foot_pressed(self) :
         if (len(self.scenes) > 0) :
@@ -741,6 +747,13 @@ class System:
             if v > 0 : self.key2_status = True
             else : self.key2_status = False
         
+        if k == 6 :
+            if v > 0 : self.key6_status = True
+            else : self.key6_status = False
+        if k == 7 :
+            if v > 0 : self.key7_status = True
+            else : self.key7_status = False
+       
         # select osd or menu 
         if (k == 1 and v > 0) : 
             if self.key2_status: self.toggle_menu()

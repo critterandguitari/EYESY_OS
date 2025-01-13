@@ -115,7 +115,7 @@ def render_overlay_480(screen, etc) :
     text_rect.x = 200
     text_rect.centery = 68
     screen.blit(text, text_rect)   
-''' 
+ 
     # midi notes
     pygame.draw.rect(screen, etc.BLACK, (20, 85, 299, 33))
     text = font.render(" MIDI Notes:", True, etc.LGRAY, etc.BLACK)
@@ -132,7 +132,7 @@ def render_overlay_480(screen, etc) :
     for i in range(0,128):
         if (etc.midi_notes[i] > 0):
             pygame.draw.rect(screen, etc.LGRAY, (offx + 6 * (i % 32), offy + 6 * (i / 32), 6, 6))
-            
+    '''            
     # knobs
     pygame.draw.rect(screen, etc.BLACK, (20, 124, 144, 35))
     text = font.render(" Knobs:", True, etc.LGRAY, etc.BLACK)

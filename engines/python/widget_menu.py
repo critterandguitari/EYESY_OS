@@ -4,6 +4,9 @@ class MenuItem:
     def __init__(self, text, action):
         self.text = text
         self.action = action  # Function to call when item is selected
+        self.adjustable = False   # adjustable value in place
+        self.name = "none"
+        self.value = 0
 
 class WidgetMenu:
     
@@ -55,7 +58,6 @@ class WidgetMenu:
                 self._adjust_view()
         elif self.app_state.key8_press:
             self.items[self.selected_index].action()
-
 
     def _adjust_view(self):
         # Ensure the selected item is always visible

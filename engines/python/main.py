@@ -265,7 +265,7 @@ while 1:
     osc.recv()
 
     # check MIDI
-    midi.recv()
+    midi.recv(etc)
     
     # stop a midi led flash if one is hapenning
     if (midi_led_flashing):

@@ -155,7 +155,7 @@ class WidgetKeyboard():
         app_data = self.app_state
 
         # navigate using rows and columns
-        if app_data.key4_press:
+        '''if app_data.key4_press:
             if self.col_index > 0 :
                 self.col_index -= 1
 
@@ -189,7 +189,8 @@ class WidgetKeyboard():
             self.selected_index = 40 + self.col_index
         elif self.row_index == 5 : 
             self.selected_index = 43 + self.col_index
-
+        '''
+        self.selected_index = int(self.app_state.knob1 * (len(self.flat_keys_lower) - 1))
         # Key selection/activation
         if app_data.key8_press:
             selected_key = self.get_key(self.selected_index)

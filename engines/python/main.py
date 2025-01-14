@@ -164,6 +164,7 @@ try :
     from screen_wifi import ScreenWiFi
     from screen_applogs import ScreenApplogs
     from screen_midi_settings import ScreenMIDISettings
+    from screen_midi_pc_mapping import ScreenMIDIPCMapping
 
     etc.menu_screens["home"] = ScreenMainMenu(etc)
     etc.menu_screens["test"] = ScreenTest(etc)
@@ -172,6 +173,7 @@ try :
     etc.menu_screens["wifi"] = ScreenWiFi(etc)
     etc.menu_screens["applogs"] = ScreenApplogs(etc)
     etc.menu_screens["midi_settings"] = ScreenMIDISettings(etc)
+    etc.menu_screens["midi_pc_mapping"] = ScreenMIDIPCMapping(etc)
     etc.switch_menu_screen("home")
 except Exception as e:
     print(traceback.format_exc())

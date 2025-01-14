@@ -8,118 +8,81 @@ class ScreenMIDISettings(Screen):
 
     def __init__(self, app_state):
         super().__init__(app_state)
-        self.title = "MIDI PC Mapping"
-        self.pc_map = [0] * 128  # for holding mappings before saving
-        self.menu = self.create_midi_mapping_menu()
+        self.title = "MIDI Settings"
+        self.menu = WidgetMenu(app_state, [])
+        self.menu.items.append(MenuItem('MIDI PC Mapping  ▶', self.goto_midi_pc_mapping))
+        
+        self.menu.items.append(self.create_adjustable_menu_item("midi_channel", 0, 16,  "MIDI Channel: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob1_cc", 0, 127,  "Knob 1 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob2_cc", 0, 127,  "Knob 2 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob3_cc", 0, 127,  "Knob 3 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob4_cc", 0, 127,  "Knob 4 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob5_cc", 0, 127,  "Knob 5 CC: {value}"))
+
+        self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))
         self.menu.visible_items = 8
         self.menu.off_y = 43
-        self.menu.visible_items = 12  
-        self.key6_td = 0      # timer used for key repeats
-        self.key7_td = 0      # timer used for key repeats
-        self.update_thumb_flag = False
+
+    def create_adjustable_menu_item(self, name, minv, maxv, format_string) :
+        item = MenuItem("", self.save_config)
+        item.adjustable = True
+        item.name = name
+        item.min_value = minv
+        item.max_value = maxv
+        item.value = item.min_value
+        item.format_string = format_string
+        item.text = item.format_string.format(value=item.value)
+        return item
     
-    # see if scene name is in the current list of scenes
-    def get_scene_index(self, target_name):
-        for i, scene in enumerate(self.app_state.scenes):
-            if scene["name"] == target_name:
+    def get_item_index(self, target_name):
+        for i, item in enumerate(self.menu.items):
+            if item.name == target_name:
                 return i
         return -1
 
-    def create_midi_mapping_menu(self):
-        menu_items = []
-
-        for i in range(128):
-            item = MenuItem(f"wha", wha)
-            item.adjustable = True
-            menu_items.append(item)
-
-        # Return the menu object
-        return WidgetMenu(self.app_state, menu_items)
-
-    # called before entering screen.  item vaule is -1 if no mapping, otherwise it is the index of scenes list
-    def update_midi_mapping_menu(self):
-        for i,item in enumerate(self.menu.items) :
-            scene = self.app_state.config["pc_map"].get(f"pgm_{i}",None)
-            # -1 if scene not found
-            item.value = self.get_scene_index(scene)
-            # dump entries that aren't found
-            if scene is not None and item.value < 0 :
-                scene = None
-            item.text = f"pgm {i} -> {scene}"
-
+    # set from config
     def before(self):
-        self.update_midi_mapping_menu()
+        for key in self.app_state.config:
+            i = self.get_item_index(key)
+            if i >= 0:
+                item = self.menu.items[i]
+                item.value = self.app_state.config[key]
+                item.text = item.format_string.format(value=item.value)
 
     def render(self, surface):
         self.menu.render(surface)
-        if True: #self.update_thumb_flag:
-            self.update_thumb_flag = False
-            item = self.menu.items[self.menu.selected_index]
-            if item.value >= 0:
-                thumb_path = self.app_state.scenes[item.value]['thumbnail']
-                self.show_thumb(surface, (300,150), thumb_path)
-
-    def menu_dec(self):
-        if self.menu.selected_index > 0:
-            self.menu.selected_index -= 1
-            self.menu._adjust_view()
-
-    def menu_inc(self):
-        if self.menu.selected_index < len(self.menu.items) - 1:
-            self.menu.selected_index += 1
-            self.menu._adjust_view()
 
     def handle_events(self):
-        # press and hold speed around menu
-        if self.app_state.key6_press: 
-            self.menu_dec()
-            self.key6_td = 0
-        if self.app_state.key6_status:
-            self.key6_td += 1
-            if self.key6_td > 10 : self.menu_dec()
 
-        if self.app_state.key7_press: 
-            self.menu_inc()
-            self.key7_td = 0
-        if self.app_state.key7_status:
-            self.key7_td += 1
-            if self.key7_td > 10 : self.menu_inc()
+        self.menu.handle_events()
 
         item = self.menu.items[self.menu.selected_index]
-        if item.adjustable and len(self.app_state.scenes) > 0:
+        if item.adjustable :
             if self.app_state.key4_press:
                 item.value -= 1
-                if item.value < -1: item.value = -1
-                if item.value >= 0:
-                    item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
-                else:
-                    item.text = f"pgm {self.menu.selected_index} -> None"
+                if item.value < item.min_value: item.value = item.min_value
+                item.text = item.format_string.format(value=item.value)
             if self.app_state.key5_press:
                 item.value += 1
-                if item.value > len(self.app_state.scenes) - 1: item.value = len(self.app_state.scenes) - 1
-                item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
-                self.update_thumb_flag = True
+                if item.value > item.max_value: item.value = item.max_value
+                item.text = item.format_string.format(value=item.value)
 
-        self.menu._adjust_view()
       
-        # save to config, delete any unmapped
+        # save to config
         if self.app_state.key8_press:
-            for i,item in enumerate(self.menu.items) :
-                if item.value >= 0:
-                    self.app_state.config["pc_map"][f"pgm_{i}"] = self.app_state.scenes[item.value]["name"]
-                else:
-                    self.app_state.config["pc_map"].pop(f"pgm_{i}", None)
+            for key in self.app_state.config:
+                i = self.get_item_index(key)
+                if i >= 0:
+                    item = self.menu.items[i]
+                    self.app_state.config[key] = item.value
             self.app_state.save_config_file()
             self.exit_menu()
-     
-    def show_thumb(self, surface, position, filepath):
-        try:
-            image = pygame.image.load(filepath)
-            x, y = position
-            surface.blit(image, (x, y))
-        except pygame.error as e:
-            print(f"Error loading image at {filepath}: {e}")
     
+    def save_config(self):
+        pass
+    
+    def goto_midi_pc_mapping(self):
+        self.app_state.switch_menu_screen("midi_pc_mapping")
     def exit_menu(self):
         self.app_state.switch_menu_screen("home")
 

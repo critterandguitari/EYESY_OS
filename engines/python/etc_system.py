@@ -10,6 +10,7 @@ import sys
 import time
 import json
 import helpers
+import file_operations
 import csv
 import color_palettes
 import config
@@ -495,16 +496,19 @@ class System:
                 
     def delete_current_scene(self):
         print("deleting scene")
-        '''if len(self.scenes) > 0:
+        if len(self.scenes) > 0:    
+            # delete from list and delete folder
+            file_path = self.SCENES_PATH + self.scenes[self.scene_index]['name']
+            file_operations.delete(file_path)
+            print("deleted scene " + file_path)
             del self.scenes[self.scene_index]
-            self.write_all_scenes()
             if self.scene_index >= len(self.scenes):
                 self.scene_index = len(self.scenes) - 1
             if self.scene_index < 0:  # deleted last scene
                 self.scene_index = 0
                 self.scene_set = False
             else:
-                self.recall_scene(self.scene_index)'''
+                self.recall_scene(self.scene_index)
 
     def save_scene(self):
         print("Saving scene")

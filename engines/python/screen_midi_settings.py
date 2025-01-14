@@ -16,6 +16,7 @@ class ScreenMIDISettings(Screen):
         self.menu.visible_items = 12  
         self.key6_td = 0      # timer used for key repeats
         self.key7_td = 0      # timer used for key repeats
+        self.update_thumb_flag = False
     
     # see if scene name is in the current list of scenes
     def get_scene_index(self, target_name):
@@ -39,17 +40,24 @@ class ScreenMIDISettings(Screen):
     def update_midi_mapping_menu(self):
         for i,item in enumerate(self.menu.items) :
             scene = self.app_state.config["pc_map"].get(f"pgm_{i}",None)
+            # -1 if scene not found
             item.value = self.get_scene_index(scene)
+            # dump entries that aren't found
             if scene is not None and item.value < 0 :
-                item.text = f"pgm_{i} -> {scene} NOT FOUND"
-            else:
-                item.text = f"pgm_{i} -> {scene}"
+                scene = None
+            item.text = f"pgm {i} -> {scene}"
 
     def before(self):
         self.update_midi_mapping_menu()
 
     def render(self, surface):
         self.menu.render(surface)
+        if True: #self.update_thumb_flag:
+            self.update_thumb_flag = False
+            item = self.menu.items[self.menu.selected_index]
+            if item.value >= 0:
+                thumb_path = self.app_state.scenes[item.value]['thumbnail']
+                self.show_thumb(surface, (300,150), thumb_path)
 
     def menu_dec(self):
         if self.menu.selected_index > 0:
@@ -78,18 +86,19 @@ class ScreenMIDISettings(Screen):
             if self.key7_td > 10 : self.menu_inc()
 
         item = self.menu.items[self.menu.selected_index]
-        if item.adjustable:
+        if item.adjustable and len(self.app_state.scenes) > 0:
             if self.app_state.key4_press:
                 item.value -= 1
                 if item.value < -1: item.value = -1
                 if item.value >= 0:
-                    item.text = f"pgm_{self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
+                    item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
                 else:
-                    item.text = f"pgm_{self.menu.selected_index} -> None"
+                    item.text = f"pgm {self.menu.selected_index} -> None"
             if self.app_state.key5_press:
                 item.value += 1
                 if item.value > len(self.app_state.scenes) - 1: item.value = len(self.app_state.scenes) - 1
-                item.text = f"pgm_{self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
+                item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
+                self.update_thumb_flag = True
 
         self.menu._adjust_view()
       
@@ -102,7 +111,15 @@ class ScreenMIDISettings(Screen):
                     self.app_state.config["pc_map"].pop(f"pgm_{i}", None)
             self.app_state.save_config_file()
             self.exit_menu()
- 
+     
+    def show_thumb(self, surface, position, filepath):
+        try:
+            image = pygame.image.load(filepath)
+            x, y = position
+            surface.blit(image, (x, y))
+        except pygame.error as e:
+            print(f"Error loading image at {filepath}: {e}")
+    
     def exit_menu(self):
         self.app_state.switch_menu_screen("home")
 

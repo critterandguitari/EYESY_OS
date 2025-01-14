@@ -447,8 +447,6 @@ class System:
         if not(os.path.isdir(self.GRABS_PATH)) :
             print('No grab folder, creating...')
             os.system('mkdir ' + self.GRABS_PATH)
-        # make sure it is saved as 'music' user, uid=gid=1000
-        os.chown(self.GRABS_PATH, 1000, 1000)
         print('loading recent grabs...')
         self.lastgrab = None
         self.lastgrab_thumb = None
@@ -510,8 +508,20 @@ class System:
 
     def save_scene(self):
         print("Saving scene")
+       
+        # make scenes dir if no exist
+        os.makedirs(self.SCENES_PATH, exist_ok=True)
 
-        # Add the current scene to the list
+        # Use zero-padded numbering, e.g. scene-0001 for scene folder
+        while True:
+            folder_path = os.path.join(self.SCENES_PATH, f"scene-{self.next_numbered_scene:04d}")
+            if not os.path.exists(folder_path):
+                break
+            self.next_numbered_scene += 1
+        os.makedirs(folder_path)
+        scene_file = os.path.join(folder_path, "scene.json")
+        imagepath = os.path.join(folder_path, "scene.jpg")
+
         new_scene = {
             "mode": self.mode,
             "knob1": self.knob1,
@@ -521,25 +531,10 @@ class System:
             "knob5": self.knob5,
             "auto_clear": self.auto_clear,
             "bg_palette": self.bg_palette,
-            "fg_palette": self.fg_palette
+            "fg_palette": self.fg_palette,
         }
         self.scenes.append(new_scene)
-
-        # Create the Scenes directory if it doesn't exist
-        os.makedirs(self.SYSTEM_PATH, exist_ok=True)
-
-        # Determine the next available numbered folder
-        while True:
-            folder_path = os.path.join(self.SYSTEM_PATH, str(self.next_numbered_scene))
-            if not os.path.exists(folder_path):
-                break
-            self.next_numbered_scene += 1
-
-        # Create the folder
-        os.makedirs(folder_path)
-
-        # Save the scene as scene.json in the folder
-        scene_file = os.path.join(folder_path, "scene.json")
+        
         try:
             with open(scene_file, 'w') as f:
                 json.dump(new_scene, f, indent=4)
@@ -547,14 +542,97 @@ class System:
         except Exception as e:
             print(f"Failed to save scene file: {e}")
 
-        # save a screenshot of the scene in the folder too
-        imagepath = folder_path + "/scene.jpg"
         thumb = pygame.Surface((128, 72))
-        pygame.transform.scale(self.screen, (128, 72), thumb )
+        pygame.transform.scale(self.screen, (128, 72), thumb)
         pygame.image.save(thumb, imagepath)
-        print("saved screenshot " + imagepath)
+        print("saved scene screenshot " + imagepath)
 
-    
+        # add name and thumbnail fields after saving file (allows user to change scene folder names later)
+        self.scenes[-1]["name"] = os.path.basename(folder_path)
+        self.scenes[-1]["thumbnail"] = imagepath
+       
+
+    def _load_scene(self, folder_path):
+        scene_file = os.path.join(folder_path, "scene.json")
+        if not os.path.isfile(scene_file):
+            print(f"No scene.json in {folder_path}")
+            return None
+        
+        # Load JSON
+        try:
+            with open(scene_file, 'r') as f:
+                data = json.load(f)
+        except Exception as e:
+            print(f"Failed to read scene.json in {folder_path}: {e}")
+            return None
+        
+        # Validate
+        try:
+            if not (0 <= float(data["knob1"]) <= 1): print(f"knob1 invalid in {folder_path}"); return None
+            if not (0 <= float(data["knob2"]) <= 1): print(f"knob2 invalid in {folder_path}"); return None
+            if not (0 <= float(data["knob3"]) <= 1): print(f"knob3 invalid in {folder_path}"); return None
+            if not (0 <= float(data["knob4"]) <= 1): print(f"knob4 invalid in {folder_path}"); return None
+            if not (0 <= float(data["knob5"]) <= 1): print(f"knob5 invalid in {folder_path}"); return None
+            if not isinstance(data["auto_clear"], bool): print(f"auto_clear invalid in {folder_path}"); return None
+            if not isinstance(data["mode"], str): print(f"mode invalid in {folder_path}"); return None
+            if not (0 <= int(data["bg_palette"]) < len(self.palettes)): print(f"bg_palette invalid in {folder_path}"); return None
+            if not (0 <= int(data["fg_palette"]) < len(self.palettes)): print(f"fg_palette invalid in {folder_path}"); return None
+        except Exception as e:
+            print(f"Validation error in {folder_path}: {e}")
+            return None
+
+        # Build scene dict
+        new_scene = {
+            "mode": data["mode"],
+            "knob1": float(data["knob1"]),
+            "knob2": float(data["knob2"]),
+            "knob3": float(data["knob3"]),
+            "knob4": float(data["knob4"]),
+            "knob5": float(data["knob5"]),
+            "auto_clear": data["auto_clear"],
+            "bg_palette": int(data["bg_palette"]),
+            "fg_palette": int(data["fg_palette"]),
+            "name": os.path.basename(folder_path),
+            "thumbnail": os.path.join(folder_path, "scene.jpg")
+        }
+        return new_scene
+
+
+    def load_scenes(self):
+        self.scenes = []
+        self.next_numbered_scene = 1
+        
+        if not os.path.isdir(self.SCENES_PATH):
+            print(f"Scenes path {self.SCENES_PATH} does not exist.")
+            return
+        
+        try:
+            folders = os.listdir(self.SCENES_PATH)
+        except Exception as e:
+            print(f"Failed to list {self.SCENES_PATH}: {e}")
+            return
+
+        # Determine highest zero-padded "scene-####" number
+        for folder in folders:
+            if folder.startswith("scene-"):
+                try:
+                    number = int(folder.replace("scene-", ""))
+                    if number >= self.next_numbered_scene:
+                        self.next_numbered_scene = number + 1
+                except Exception as e:
+                    print(f"Bad folder name {folder}: {e}")
+
+        folders.sort()
+        for folder in folders:
+            folder_path = os.path.join(self.SCENES_PATH, folder)
+            if os.path.isdir(folder_path):
+                try:
+                    scene_data = self._load_scene(folder_path)
+                    if scene_data:
+                        self.scenes.append(scene_data)
+                except Exception as e:
+                    print(f"Failed loading scene from {folder_path}: {e}")
+
     def recall_scene(self, index) :
         print("recalling scene " + str(index))
         try :
@@ -573,36 +651,6 @@ class System:
             self.scene_set = True
         except :
             print("probably no scenes")
-
-    def load_scenes(self):
-        print("loading scenes")
-        # create scene file if doesn't exits
-
-        '''if not os.path.exists(self.SCENES_PATH):
-            f = open(self.SCENES_PATH, "w")
-            f.close()
-        
-        # open it
-        with open(self.SCENES_PATH, 'r') as f:
-            reader = csv.reader(f)
-            csvin = list(reader)
-        self.scenes = []
-        try :
-            for row in csvin :
-                scene = []
-                scene.append(str(row[0]))
-                scene.append(float(row[1]))
-                scene.append(float(row[2]))
-                scene.append(float(row[3]))
-                scene.append(float(row[4]))
-                scene.append(float(row[5]))
-                if row[6] == 'True':
-                    scene.append(True)
-                else :
-                    scene.append(False)
-                self.scenes.append(scene)
-        except:
-            print("error parsing scene file")'''
 
     def next_scene(self):
         self.scene_index += 1

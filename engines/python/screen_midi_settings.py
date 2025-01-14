@@ -67,19 +67,16 @@ class ScreenMIDISettings(Screen):
                 if item.value > item.max_value: item.value = item.max_value
                 item.text = item.format_string.format(value=item.value)
 
-      
-        # save to config
-        if self.app_state.key8_press:
-            for key in self.app_state.config:
-                i = self.get_item_index(key)
-                if i >= 0:
-                    item = self.menu.items[i]
-                    self.app_state.config[key] = item.value
-            self.app_state.save_config_file()
-            self.exit_menu()
-    
+   
     def save_config(self):
-        pass
+        # save to config
+        for key in self.app_state.config:
+            i = self.get_item_index(key)
+            if i >= 0:
+                item = self.menu.items[i]
+                self.app_state.config[key] = item.value
+        self.app_state.save_config_file()
+        self.exit_menu()
     
     def goto_midi_pc_mapping(self):
         self.app_state.switch_menu_screen("midi_pc_mapping")

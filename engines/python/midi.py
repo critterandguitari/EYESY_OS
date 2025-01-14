@@ -12,18 +12,28 @@ def close():
     input_port.close()
 
 def handle_note(etc, message):
-    print(f"Note message: {message}")
-    #ch = message.channel
-    #print(f"Note message: {ch}")
-    num = message.note 
-    val = message.velocity
-    if val > 0 :
-        etc.midi_notes[num] = 1
-    else :
-        etc.midi_notes[num] = 0
+    #print(f"Note message: {message}")
+    ch = message.channel
+    if ch == 0 or ch == etc.config["midi_channel"]:
+        num = message.note 
+        val = message.velocity
+        if val > 0 :
+            etc.midi_notes[num] = 1
+        else :
+            etc.midi_notes[num] = 0
 
 def handle_control_change(etc, message):
-    print(f"Control Change message: {message}")
+    #print(f"Control Change message: {message}")
+    ch = message.channel
+    if ch == 0 or ch == etc.config["midi_channel"]:
+        num = message.control
+        val = message.value
+        if message.control == etc.config["knob1_cc"] : etc.knob_hardware[0] = val / 127.
+        if message.control == etc.config["knob2_cc"] : etc.knob_hardware[1] = val / 127.
+        if message.control == etc.config["knob3_cc"] : etc.knob_hardware[2] = val / 127.
+        if message.control == etc.config["knob4_cc"] : etc.knob_hardware[3] = val / 127.
+        if message.control == etc.config["knob5_cc"] : etc.knob_hardware[4] = val / 127.
+        
 
 def handle_program_change(etc, message):
     print(f"Program Change message: {message}")

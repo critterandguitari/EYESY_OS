@@ -68,6 +68,20 @@ class ScreenMIDIPCMapping(Screen):
             self.menu.selected_index += 1
             self.menu._adjust_view()
 
+    def menu_inc_value(self, item):
+        item.value += 1
+        if item.value > len(self.app_state.scenes) - 1: item.value = len(self.app_state.scenes) - 1
+        item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
+        self.update_thumb_flag = True
+
+    def menu_dec_value(self, item):
+        item.value -= 1
+        if item.value < -1: item.value = -1
+        if item.value >= 0:
+            item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
+        else:
+            item.text = f"pgm {self.menu.selected_index} -> None"
+
     def handle_events(self):
         # press and hold speed around menu
         if self.app_state.key6_press: 
@@ -86,18 +100,8 @@ class ScreenMIDIPCMapping(Screen):
 
         item = self.menu.items[self.menu.selected_index]
         if item.adjustable and len(self.app_state.scenes) > 0:
-            if self.app_state.key4_press:
-                item.value -= 1
-                if item.value < -1: item.value = -1
-                if item.value >= 0:
-                    item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
-                else:
-                    item.text = f"pgm {self.menu.selected_index} -> None"
-            if self.app_state.key5_press:
-                item.value += 1
-                if item.value > len(self.app_state.scenes) - 1: item.value = len(self.app_state.scenes) - 1
-                item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
-                self.update_thumb_flag = True
+            if self.app_state.key4_press: self.menu_dec_value(item)
+            if self.app_state.key5_press: self.menu_inc_value(item)
 
         self.menu._adjust_view()
       

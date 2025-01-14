@@ -55,7 +55,8 @@ class System:
         "auto_clear_cc": 25,
         "pc_map": {}
     }
-    
+   
+    trigger_sources = ["MIDI Clock", "MIDI Note", "Audio"]
     config = {}
 
     RES =  (0,0)
@@ -200,37 +201,28 @@ class System:
         except :
             print("Error setting config value")
     
+    def _validate_config_int(self, field, minv, maxv) :
+        self.config[field] = (
+            self.config.get(field)
+            if isinstance(self.config.get(field), int) and minv <= self.config[field] <= maxv
+            else self.DEFAULT_CONFIG[field]
+        )
+
     def validate_config(self):
         # Validate each field in self.config, falling back to defaults if needed
-        self.config["midi_channel"] = (
-            self.config.get("midi_channel")
-            if isinstance(self.config.get("midi_channel"), int) and 1 <= self.config["midi_channel"] <= 16
-            else self.DEFAULT_CONFIG["midi_channel"]
-        )
+        self._validate_config_int("midi_channel", 1, 16)
+        self._validate_config_int("video_resolution", 0, len(self.RESOLUTIONS))
+        self._validate_config_int("audio_gain", 0, 300)
+        self._validate_config_int("fg_palette", 0, len(self.palettes)-1)
+        self._validate_config_int("bg_palette", 0, len(self.palettes)-1)
+        self._validate_config_int("trigger_source", 0, len(self.trigger_sources)-1)
+        self._validate_config_int("knob1_cc", 0, 127)
+        self._validate_config_int("knob2_cc", 0, 127)
+        self._validate_config_int("knob3_cc", 0, 127)
+        self._validate_config_int("knob4_cc", 0, 127)
+        self._validate_config_int("knob5_cc", 0, 127)
+        self._validate_config_int("auto_clear_cc", 0, 127)
 
-        self.config["video_resolution"] = (
-            self.config.get("video_resolution")
-            if isinstance(self.config.get("video_resolution"), int) and 0 <= self.config["video_resolution"] < len(self.RESOLUTIONS)
-            else self.DEFAULT_CONFIG["video_resolution"]
-        )
-
-        self.config["audio_gain"] = (
-            self.config.get("audio_gain")
-            if isinstance(self.config.get("audio_gain"), int) and 0 <= self.config["audio_gain"] <= 300
-            else self.DEFAULT_CONFIG["audio_gain"]
-        )
-
-        self.config["fg_palette"] = (
-            self.config.get("fg_palette")
-            if isinstance(self.config.get("fg_palette"), int) and 0 <= self.config["fg_palette"] < len(self.palettes)
-            else self.DEFAULT_CONFIG["fg_palette"]
-        )
-
-        self.config["bg_palette"] = (
-            self.config.get("bg_palette")
-            if isinstance(self.config.get("bg_palette"), int) and 0 <= self.config["bg_palette"] < len(self.palettes)
-            else self.DEFAULT_CONFIG["bg_palette"]
-        )
 
     def save_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"

@@ -194,7 +194,7 @@ class ScreenWiFi(Screen):
 
         # otherwise seclect from menu, but not during an action
         if self.state == "idle" or self.state == "select_net":
-            self.menu.handle_events()
+            self.menu.handle_events_speeder()
 
     def build_connected_menu(self):
         self.menu.items = [

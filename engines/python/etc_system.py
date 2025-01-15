@@ -163,6 +163,8 @@ class System:
     key10_press = False
     
     key2_status = False  # shift key pressed or not
+    key4_status = False  
+    key5_status = False  
     key6_status = False  
     key7_status = False  
 
@@ -797,7 +799,13 @@ class System:
         if k == 7 :
             if v > 0 : self.key7_status = True
             else : self.key7_status = False
-       
+        if k == 4 :
+            if v > 0 : self.key4_status = True
+            else : self.key4_status = False
+        if k == 5 :
+            if v > 0 : self.key5_status = True
+            else : self.key5_status = False
+ 
         # select osd or menu 
         if (k == 1 and v > 0) : 
             if self.key2_status: self.toggle_menu()

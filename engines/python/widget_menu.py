@@ -22,8 +22,10 @@ class WidgetMenu:
         self.off_y = 70
         self.visible_items = 6  # Number of menu items visible at a time
         
-        # Use a system font (like Arial) for the arrow indicators
-
+        self.key6_td = 0 # time pressed counters for repeating key
+        self.key7_td = 0
+        self.key4_td = 0
+        self.key5_td = 0
         # This determines which item in the list is at the top of the visible window
         self.start_index = 0
 
@@ -47,20 +49,54 @@ class WidgetMenu:
         elif self.app_state.key8_press:
             self.items[self.selected_index].action()
 
+    def handle_events_speeder(self):
+        if self.app_state.key6_press: 
+            self.menu_dec()
+            self.key6_td = 0
+        if self.app_state.key6_status:
+            self.key6_td += 1
+            if self.key6_td > 10 : self.menu_dec()
+
+        if self.app_state.key7_press: 
+            self.menu_inc()
+            self.key7_td = 0
+        if self.app_state.key7_status:
+            self.key7_td += 1
+            if self.key7_td > 10 : self.menu_inc()
+        if self.app_state.key8_press:
+            self.items[self.selected_index].action()
+
+    def menu_dec(self):
+        # Move up if not at the top already
+        if self.selected_index > 0:
+            self.selected_index -= 1
+            self._adjust_view()
+
+    def menu_inc(self):
+        # Move down if not at the bottom already
+        if self.selected_index < len(self.items) - 1:
+            self.selected_index += 1
+            self._adjust_view()
+
     # use key 4 and 5 for scrolling instead
     def handle_events_k4_k5(self):
-        if self.app_state.key4_press:
-            # Move up if not at the top already
-            if self.selected_index > 0:
-                self.selected_index -= 1
-                self._adjust_view()
-        elif self.app_state.key5_press:
-            # Move down if not at the bottom already
-            if self.selected_index < len(self.items) - 1:
-                self.selected_index += 1
-                self._adjust_view()
-        elif self.app_state.key8_press:
+        if self.app_state.key4_press: 
+            self.menu_dec()
+            self.key4_td = 0
+        if self.app_state.key4_status:
+            self.key4_td += 1
+            if self.key4_td > 10 : self.menu_dec()
+
+        if self.app_state.key5_press: 
+            self.menu_inc()
+            self.key5_td = 0
+        if self.app_state.key5_status:
+            self.key5_td += 1
+            if self.key5_td > 10 : self.menu_inc()
+        
+        if self.app_state.key8_press:
             self.items[self.selected_index].action()
+
 
     def _adjust_view(self):
         # Ensure the selected item is always visible

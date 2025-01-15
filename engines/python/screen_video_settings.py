@@ -51,7 +51,7 @@ class ScreenVideoSettings(Screen):
         if self.state == "idle":
             self.menu.handle_events()
         elif self.state == "select_res":
-            self.menu_select_res.handle_events_speeder()
+            self.menu_select_res.handle_events()
         elif self.state == "select_compvid":
             self.menu_select_compvid.handle_events()
         elif self.state == "confirm_res":

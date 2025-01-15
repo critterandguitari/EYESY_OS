@@ -13,8 +13,8 @@ class ScreenMIDIPCMapping(Screen):
         self.menu.visible_items = 8
         self.menu.off_y = 43
         self.menu.visible_items = 12  
-        self.key6_td = 0      # timer used for key repeats
-        self.key7_td = 0      # timer used for key repeats
+        self.key4_td = 0      # timer used for key repeats
+        self.key5_td = 0      # timer used for key repeats
         self.update_thumb_flag = False
     
     # see if scene name is in the current list of scenes
@@ -58,16 +58,6 @@ class ScreenMIDIPCMapping(Screen):
                 thumb_path = self.app_state.scenes[item.value]['thumbnail']
                 self.show_thumb(surface, (300,150), thumb_path)
 
-    def menu_dec(self):
-        if self.menu.selected_index > 0:
-            self.menu.selected_index -= 1
-            self.menu._adjust_view()
-
-    def menu_inc(self):
-        if self.menu.selected_index < len(self.menu.items) - 1:
-            self.menu.selected_index += 1
-            self.menu._adjust_view()
-
     def menu_inc_value(self, item):
         item.value += 1
         if item.value > len(self.app_state.scenes) - 1: item.value = len(self.app_state.scenes) - 1
@@ -83,27 +73,25 @@ class ScreenMIDIPCMapping(Screen):
             item.text = f"pgm {self.menu.selected_index} -> None"
 
     def handle_events(self):
-        # press and hold speed around menu
-        if self.app_state.key6_press: 
-            self.menu_dec()
-            self.key6_td = 0
-        if self.app_state.key6_status:
-            self.key6_td += 1
-            if self.key6_td > 10 : self.menu_dec()
 
-        if self.app_state.key7_press: 
-            self.menu_inc()
-            self.key7_td = 0
-        if self.app_state.key7_status:
-            self.key7_td += 1
-            if self.key7_td > 10 : self.menu_inc()
+        self.menu.handle_events()
 
         item = self.menu.items[self.menu.selected_index]
         if item.adjustable and len(self.app_state.scenes) > 0:
-            if self.app_state.key4_press: self.menu_dec_value(item)
-            if self.app_state.key5_press: self.menu_inc_value(item)
+            if self.app_state.key4_press: 
+                self.menu_dec_value(item)
+                self.key4_td = 0
+            if self.app_state.key4_status:
+                self.key4_td += 1
+                if self.key4_td > 10 : self.menu_dec_value(item)
 
-        self.menu._adjust_view()
+            if self.app_state.key5_press: 
+                self.menu_inc_value(item)
+                self.key5_td = 0
+            if self.app_state.key5_status:
+                self.key5_td += 1
+                if self.key5_td > 10 : self.menu_inc_value(item)
+     
       
         # save to config, delete any unmapped
         if self.app_state.key8_press:

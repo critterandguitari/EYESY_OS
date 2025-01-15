@@ -62,7 +62,7 @@ class ScreenPalette(Screen):
         self.app_state.bg_palette = min(len(self.app_state.palettes)-1, self.bg_menu.selected_index)
      
     def handle_events(self):
-        self.bg_menu.handle_events_speeder()
+        self.bg_menu.handle_events()
         self.fg_menu.handle_events_k4_k5()
         
         # save to config and exit on selection

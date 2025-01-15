@@ -35,21 +35,8 @@ class WidgetMenu:
             self.selected_index = index
             self._adjust_view()
 
+    # nav with key repeat
     def handle_events(self):
-        if self.app_state.key6_press:
-            # Move up if not at the top already
-            if self.selected_index > 0:
-                self.selected_index -= 1
-                self._adjust_view()
-        elif self.app_state.key7_press:
-            # Move down if not at the bottom already
-            if self.selected_index < len(self.items) - 1:
-                self.selected_index += 1
-                self._adjust_view()
-        elif self.app_state.key8_press:
-            self.items[self.selected_index].action()
-
-    def handle_events_speeder(self):
         if self.app_state.key6_press: 
             self.menu_dec()
             self.key6_td = 0

@@ -213,7 +213,7 @@ abcd_palettes = [
     },
     {
         "name": "Baja",
-"a": [0.498, -0.470, -0.680],
+        "a": [0.498, -0.470, -0.680],
         "b": [0.468, 1.028, 1.620],
         "c": [-1.150, 0.718, 0.450],
         "d": [-0.252, -0.487, 1.817],
@@ -301,13 +301,6 @@ abcd_palettes = [
         "b": [0.944, 0.346, 0.315],
         "c": [0.368, 0.980, 1.422],
         "d": [4.571, 2.412, 4.308],
-    },
-    {
-      "name": "Random",
-      "a": [random.uniform(0, 10) for _ in range(3)],
-      "b": [random.uniform(0, 10) for _ in range(3)],
-      "c": [random.uniform(0, 10) for _ in range(3)],
-      "d": [random.uniform(0, 10) for _ in range(3)],
     }
 ]
 

@@ -23,6 +23,10 @@ class ScreenMIDISettings(Screen):
         self.menu.visible_items = 8
         self.menu.off_y = 43
 
+        # key press timer for repeats
+        self.key4_td = 0
+        self.key5_td = 0
+
     def create_adjustable_menu_item(self, name, minv, maxv, format_string) :
         item = MenuItem("", self.save_config)
         item.adjustable = True
@@ -57,17 +61,31 @@ class ScreenMIDISettings(Screen):
         self.menu.handle_events()
 
         item = self.menu.items[self.menu.selected_index]
-        if item.adjustable :
-            if self.app_state.key4_press:
-                item.value -= 1
-                if item.value < item.min_value: item.value = item.min_value
-                item.text = item.format_string.format(value=item.value)
-            if self.app_state.key5_press:
-                item.value += 1
-                if item.value > item.max_value: item.value = item.max_value
-                item.text = item.format_string.format(value=item.value)
+        if item.adjustable:
+            if self.app_state.key4_press: 
+                self.menu_dec_value(item)
+                self.key4_td = 0
+            if self.app_state.key4_status:
+                self.key4_td += 1
+                if self.key4_td > 10 : self.menu_dec_value(item)
 
-   
+            if self.app_state.key5_press: 
+                self.menu_inc_value(item)
+                self.key5_td = 0
+            if self.app_state.key5_status:
+                self.key5_td += 1
+                if self.key5_td > 10 : self.menu_inc_value(item)
+     
+    def menu_dec_value(self, item):
+        item.value -= 1
+        if item.value < item.min_value: item.value = item.min_value
+        item.text = item.format_string.format(value=item.value)
+
+    def menu_inc_value(self, item):
+        item.value += 1
+        if item.value > item.max_value: item.value = item.max_value
+        item.text = item.format_string.format(value=item.value)
+
     def save_config(self):
         # save to config
         for key in self.app_state.config:

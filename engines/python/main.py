@@ -180,79 +180,6 @@ except Exception as e:
     print("error loading menu screens")
     exitexit()
 
-# We'll use a simple state machine for the sequencer:
-# States:
-#   "stopped": Doing nothing, knobs pass through normally.
-#   "recording": Key2 is held; we're recording each frame's knob values into knob_sequence.
-#   "playing": Playing back the recorded sequence in a loop.
-#
-# Transitions:
-#   stopped -> (Key2 press) -> recording (clear the old sequence and start a new one)
-#   recording -> (Key2 release) -> playing (if we have recorded data, otherwise back to stopped)
-#   playing -> (Key2 press) -> stopped
-#
-# In "stopped" state: do nothing special.
-# In "recording" state: record current knob values each frame.
-# In "playing" state: set knobs from the recorded sequence each frame.
-
-knob_sequence = []
-playback_index = 0
-prev_key2_status = False
-sequencer_state = "stopped"
-
-def knob_sequencer(etc):
-    global knob_sequence, playback_index, prev_key2_status, sequencer_state
-    
-    key2 = etc.key2_status
-
-    # Detect key2 transitions
-    key2_pressed = (key2 and not prev_key2_status)
-    key2_released = (not key2 and prev_key2_status)
-
-    if sequencer_state == "stopped":
-        # If stopped and key2 is pressed, start recording
-        if key2_pressed:
-            # Clear old sequence and start fresh
-            knob_sequence = []
-            sequencer_state = "recording"
-            playback_index = 0
-
-    elif sequencer_state == "recording":
-        # While recording, store knob values every frame
-        if key2_released:
-            # Key2 released, stop recording
-            if len(knob_sequence) > 0:
-                # If we have something recorded, start playing
-                sequencer_state = "playing"
-                playback_index = 0
-            else:
-                # Nothing recorded, go back to stopped
-                sequencer_state = "stopped"
-        else:
-            # Still recording - add current knob values
-            frame_values = (etc.knob1, etc.knob2, etc.knob3, etc.knob4, etc.knob5)
-            knob_sequence.append(frame_values)
-
-    elif sequencer_state == "playing":
-        # If playing back, set knobs to the recorded sequence
-        if key2_pressed:
-            # Key2 pressed while playing => stop
-            sequencer_state = "stopped"
-        else:
-            # Continue playback
-            if len(knob_sequence) > 0:
-                current_values = knob_sequence[playback_index]
-                etc.knob1, etc.knob2, etc.knob3, etc.knob4, etc.knob5 = current_values
-                
-                playback_index += 1
-                if playback_index >= len(knob_sequence):
-                    playback_index = 0
-            else:
-                # No sequence data? Just stop
-                sequencer_state = "stopped"
-
-    prev_key2_status = key2
-
 while 1:
  
     # quit on esc
@@ -315,7 +242,7 @@ while 1:
     etc.update_scene_save_key()
 
     # shift - sequence the knobs
-    #knob_sequencer(etc)
+    #etc.knob_sequencer()
 
     # clear it with bg color if auto clear enabled
     if etc.auto_clear :
@@ -329,7 +256,11 @@ while 1:
         except Exception as e:
             etc.error = traceback.format_exc()
             print("error with setup: " + etc.error)
-   
+  
+    if etc.key2_status :
+        etc.fg_palette = int(etc.knob4 * len(etc.palettes) - 1)
+        etc.bg_palette = int(etc.knob5 * len(etc.palettes) - 1)
+
     # draw it
     if not etc.show_menu :
         try :

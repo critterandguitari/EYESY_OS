@@ -75,6 +75,27 @@ def loading_banner(screen, stuff) :
     screen.blit(text, text_rect)
     pygame.display.flip()
 
+def draw_color_palette(surface, app_state):
+    
+    # bg
+    width, height = 100, 100  
+    xoff = 100
+    yoff = 100
+    for i in range(height):
+        # Get the color using the color_picker function
+        color = app_state.color_picker_bg(i / height)
+        # Draw a horizontal line (1 pixel high)
+        pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
+
+    # fg
+    width, height = 100, 100  
+    xoff = 210
+    yoff = 100
+    for i in range(height):
+        # Get the color using the color_picker function
+        color = app_state.color_picker(i / height)
+        # Draw a horizontal line (1 pixel high)
+        pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 
 def render_overlay_480(screen, etc) :
 
@@ -82,7 +103,9 @@ def render_overlay_480(screen, etc) :
 
     #pygame.draw.line(screen, etc.LGRAY, [0,480], [720,480], 1)
     #pygame.draw.line(screen, etc.LGRAY, [720,480], [720,0], 1)
-    
+    draw_color_palette(screen, etc)
+
+
     # first time through, gather some info
     '''if etc.osd_first :
         etc.ip = socket.gethostbyname(socket.gethostname())

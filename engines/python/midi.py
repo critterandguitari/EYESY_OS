@@ -11,7 +11,7 @@ def close():
     global input_port
     input_port.close()
 
-def handle_note(etc, message):
+def _handle_note(etc, message):
     #print(f"Note message: {message}")
     ch = message.channel
     if ch == 0 or ch == etc.config["midi_channel"]:
@@ -22,7 +22,7 @@ def handle_note(etc, message):
         else :
             etc.midi_notes[num] = 0
 
-def handle_control_change(etc, message):
+def _handle_control_change(etc, message):
     #print(f"Control Change message: {message}")
     ch = message.channel
     if ch == 0 or ch == etc.config["midi_channel"]:
@@ -33,9 +33,14 @@ def handle_control_change(etc, message):
         if message.control == etc.config["knob3_cc"] : etc.knob_hardware[2] = val / 127.
         if message.control == etc.config["knob4_cc"] : etc.knob_hardware[3] = val / 127.
         if message.control == etc.config["knob5_cc"] : etc.knob_hardware[4] = val / 127.
+        if message.control == etc.config["knob5_cc"] : 
+            if val > 64 :
+                etc.auto_clear = True
+            else:
+                etc.auto_clear = False
         
 
-def handle_program_change(etc, message):
+def _handle_program_change(etc, message):
     print(f"Program Change message: {message}")
 
 def recv(etc):
@@ -45,9 +50,9 @@ def recv(etc):
         messages.append(message)
     for message in messages:
         if message.type == 'note_on' or message.type == 'note_off':
-            handle_note(etc, message)
+            _handle_note(etc, message)
         elif message.type == 'control_change':
-            handle_control_change(etc, message)
+            _handle_control_change(etc, message)
         elif message.type == 'program_change':
-            handle_program_change(etc, message)
+            _handle_program_change(etc, message)
 

@@ -836,7 +836,71 @@ class System:
                 if (k == 5 and v > 0) : self.next_fg_palette()
                 if (k == 6 and v > 0) : self.prev_bg_palette()
                 if (k == 7 and v > 0) : self.next_bg_palette()
+                if (k == 3 and v > 0) : self.knob_seq_control()
                  
+
+# We'll use a simple state machine for the sequencer:
+# States:
+#   "stopped": Doing nothing, knobs pass through normally.
+#   "recording": Key2 is held; we're recording each frame's knob values into knob_sequence.
+#   "playing": Playing back the recorded sequence in a loop.
+#
+# Transitions:
+#   stopped -> (Key2 press) -> recording (clear the old sequence and start a new one)
+#   recording -> (Key2 release) -> playing (if we have recorded data, otherwise back to stopped)
+#   playing -> (Key2 press) -> stopped
+#
+# In "stopped" state: do nothing special.
+# In "recording" state: record current knob values each frame.
+# In "playing" state: set knobs from the recorded sequence each frame.
+
+    knob_seq = []
+    knob_seq_index = 0
+    knob_seq_state = "stopped"
+
+    def knob_sequencer(self):
+
+        if self.knob_seq_state == "stopped":
+            # If stopped and key2 is pressed, start recording
+            if False:#self.key2_pressed:
+                # Clear old sequence and start fresh
+                self.knob_seq = []
+                self.knob_seq_state = "recording"
+                self.knob_seq_index = 0
+
+        elif self.knob_seq_state == "recording":
+            # While recording, store knob values every frame
+            if False:#key2_released:
+                # Key2 released, stop recording
+                if len(self.knob_seq) > 0:
+                    # If we have something recorded, start playing
+                    self.knob_seq_state = "playing"
+                    self.knob_seq_index = 0
+                else:
+                    # Nothing recorded, go back to stopped
+                    self.knob_seq_state = "stopped"
+            else:
+                # Still recording - add current knob values
+                frame_values = (etc.knob1, etc.knob2, etc.knob3, etc.knob4, etc.knob5)
+                self.knob_seq.append(frame_values)
+
+        elif self.knob_seq_state == "playing":
+            # If playing back, set knobs to the recorded sequence
+            if False:#key2_pressed:
+                # Key2 pressed while playing => stop
+                self.knob_seq_state = "stopped"
+            else:
+                # Continue playback
+                if len(self.knob_seq) > 0:
+                    current_values = self.knob_seq[self.knob_seq_index]
+                    etc.knob1, etc.knob2, etc.knob3, etc.knob4, etc.knob5 = current_values
+                    
+                    self.knob_seq_index += 1
+                    if self.knob_seq_index >= len(self.knob_seq):
+                        self.knob_seq_index = 0
+                else:
+                    # No sequence data? Just stop
+                    self.knob_seq_state = "stopped"
 
     def clear_flags(self):
         self.new_midi = False

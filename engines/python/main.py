@@ -139,6 +139,7 @@ def exitexit():
     print("closing audio")
     audio_process.close()  # Now it's safe to close the process
     midi.close()
+    osc.close()
     sys.exit(0)
 
 def exitexit_restart():
@@ -152,6 +153,7 @@ def exitexit_restart():
     print("closing audio")
     audio_process.close()  # Now it's safe to close the process
     midi.close()
+    osc.close()
     sys.exit(1)
 
 # menu screens

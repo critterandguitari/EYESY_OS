@@ -70,3 +70,10 @@ def send(addr, args) :
     global osc_target
     liblo.send(osc_target, addr, args)
 
+def close():
+    global osc_server
+    if osc_server:
+        osc_server.free()  # Free the resources used by the OSC server
+        osc_server = None
+        print("OSC server closed successfully.")
+

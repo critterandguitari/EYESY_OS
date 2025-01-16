@@ -27,18 +27,19 @@ def list_wifi_ssids():
 
 def get_current_network():
     try:
+        # Run iwconfig and capture the output
         result = subprocess.run(
-            ["nmcli", "-t", "-f", "ACTIVE,SSID", "dev", "wifi"],
+            ["iwconfig"],
             capture_output=True,
             text=True,
             check=True
         )
-
+        # Search for the ESSID in the output
         for line in result.stdout.splitlines():
-            line = line.strip()
-            if line.startswith("yes:"):
-                ssid = line.split(":", 1)[1]
-                return ssid
+            if "ESSID" in line:
+                essid = line.split("ESSID:")[-1].strip().strip('"')
+                if essid and essid != "off/any":
+                    return essid
         return "Not Connected"
     except subprocess.CalledProcessError as e:
         print(f"Error getting current network: {e}")
@@ -46,15 +47,19 @@ def get_current_network():
 
 def is_connected():
     try:
+        # Run iwconfig and capture the output
         result = subprocess.run(
-            ["nmcli", "-t", "-f", "ACTIVE", "dev", "wifi"],
+            ["iwconfig"],
             capture_output=True,
             text=True,
             check=True
         )
+        # Search for ESSID and check if connected
         for line in result.stdout.splitlines():
-            if line.strip() == "yes":
-                return True
+            if "ESSID" in line:
+                essid = line.split("ESSID:")[-1].strip().strip('"')
+                if essid and essid != "off/any":
+                    return True
         return False
     except subprocess.CalledProcessError as e:
         print(f"Error checking connection status: {e}")

@@ -1,6 +1,8 @@
 [Unit]
 Description=EYESY Video Engine
-After=eyesyhw.service
+After=eyesyhw.service ttymidi.service
+Requires=eyesyhw.service ttymidi.service
+
 
 [Service]
 Type=simple

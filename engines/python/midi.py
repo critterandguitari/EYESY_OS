@@ -3,14 +3,6 @@ import mido
 
 input_port = None
 
-def init():
-    global input_port
-    input_port = mido.open_input('ttymidi:MIDI in 128:0')  # Replace with your actual MIDI port name
-
-def close():
-    global input_port
-    input_port.close()
-
 def _handle_note(etc, message):
     #print(f"Note message: {message}")
     ch = message.channel
@@ -43,16 +35,43 @@ def _handle_control_change(etc, message):
 def _handle_program_change(etc, message):
     print(f"Program Change message: {message}")
 
+def init():
+    global input_port
+    try:
+        input_port = mido.open_input('ttymidi:MIDI in 128:0')  # Replace with your actual MIDI port name
+    except Exception as e:
+        print(f"Error initializing input port: {e}")
+        input_port = None
+
+def close():
+    global input_port
+    try:
+        if input_port:
+            input_port.close()
+    except Exception as e:
+        print(f"Error closing input port: {e}")
+
 def recv(etc):
     global input_port
-    messages = []
-    for message in input_port.iter_pending():  # Non-blocking iteration
-        messages.append(message)
-    for message in messages:
-        if message.type == 'note_on' or message.type == 'note_off':
-            _handle_note(etc, message)
-        elif message.type == 'control_change':
-            _handle_control_change(etc, message)
-        elif message.type == 'program_change':
-            _handle_program_change(etc, message)
+    if not input_port:
+        #print("Input port is not initialized.")
+        return
+
+    try:
+        messages = []
+        for message in input_port.iter_pending():  # Non-blocking iteration
+            messages.append(message)
+
+        for message in messages:
+            try:
+                if message.type == 'note_on' or message.type == 'note_off':
+                    _handle_note(etc, message)
+                elif message.type == 'control_change':
+                    _handle_control_change(etc, message)
+                elif message.type == 'program_change':
+                    _handle_program_change(etc, message)
+            except Exception as e:
+                print(f"Error processing message {message}: {e}")
+    except Exception as e:
+        print(f"Error receiving messages: {e}")
 

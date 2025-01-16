@@ -1,10 +1,21 @@
-[Unit] 
-Description=ttymidi
-DefaultDependencies=no
-After=local-fs.target
+[Unit]
+Description=Start ttymidi
+After=eyesysetup.service
 
 [Service]
-ExecStart=/home/music/EYESY_OS/system/ttymidi -s /dev/ttyAMA0 -b 38400 &
+Type=simple
+WorkingDirectory=/home/music/
+# Run as the 'music' user and group if desired
+User=music
+Group=music
+
+# Directly run python with unbuffered output
+ExecStart=/usr/local/bin/ttymidi -s /dev/ttyAMA0 -b 38400 
+
+# Restart on failure if needed
+#Restart=on-failure
+#RestartSec=5
 
 [Install]
-WantedBy=sysinit.target
+WantedBy=multi-user.target
+

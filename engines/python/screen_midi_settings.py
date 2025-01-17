@@ -12,12 +12,13 @@ class ScreenMIDISettings(Screen):
         self.menu = WidgetMenu(app_state, [])
         self.menu.items.append(MenuItem('MIDI PC Mapping  ▶', self.goto_midi_pc_mapping))
         
-        self.menu.items.append(self.create_adjustable_menu_item("midi_channel", 0, 16,  "MIDI Channel: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("midi_channel", 1, 16,  "MIDI Channel: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob1_cc", 0, 127,  "Knob 1 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob2_cc", 0, 127,  "Knob 2 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob3_cc", 0, 127,  "Knob 3 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob4_cc", 0, 127,  "Knob 4 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob5_cc", 0, 127,  "Knob 5 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("auto_clear_cc", 0, 127,  "Screen Clear On/Off CC: {value}"))
 
         self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))
         self.menu.visible_items = 8

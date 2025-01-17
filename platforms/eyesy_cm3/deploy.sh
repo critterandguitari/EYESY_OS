@@ -16,4 +16,8 @@ systemctl enable eyesyhw.service
 systemctl enable eyesysetup.service
 systemctl enable eyesypy.service
 systemctl enable eyesypower.service
+
+# configure other stuff
+systemctl disable NetworkManager-wait-online.service
+
 systemctl daemon-reload

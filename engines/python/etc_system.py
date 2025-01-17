@@ -618,6 +618,20 @@ class System:
                         self.scenes.append(scene_data)
                 except Exception as e:
                     print(f"Failed loading scene from {folder_path}: {e}")
+        
+    # see if scene name is in the current list of scenes
+    def _get_scene_index(self, target_name):
+        for i, scene in enumerate(self.scenes):
+            if scene["name"] == target_name:
+                return i
+        return -1
+
+    def recall_scene_by_name(self, name) :
+        i = self._get_scene_index(name) 
+        if i >= 0:
+            self.recall_scene(i)
+        else:
+            print(f"{name} not found")
 
     def recall_scene(self, index) :
         print("recalling scene " + str(index))

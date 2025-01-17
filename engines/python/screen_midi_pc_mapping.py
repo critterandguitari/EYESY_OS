@@ -38,13 +38,13 @@ class ScreenMIDIPCMapping(Screen):
     # called before entering screen.  item vaule is -1 if no mapping, otherwise it is the index of scenes list
     def update_midi_mapping_menu(self):
         for i,item in enumerate(self.menu.items) :
-            scene = self.app_state.config["pc_map"].get(f"pgm_{i}",None)
+            scene = self.app_state.config["pc_map"].get(f"pgm_{i + 1}",None)
             # -1 if scene not found
             item.value = self.get_scene_index(scene)
             # dump entries that aren't found
             if scene is not None and item.value < 0 :
                 scene = None
-            item.text = f"pgm {i} -> {scene}"
+            item.text = f"pgm {i + 1} -> {scene}"
 
     def before(self):
         self.update_midi_mapping_menu()
@@ -61,16 +61,16 @@ class ScreenMIDIPCMapping(Screen):
     def menu_inc_value(self, item):
         item.value += 1
         if item.value > len(self.app_state.scenes) - 1: item.value = len(self.app_state.scenes) - 1
-        item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
+        item.text = f"pgm {self.menu.selected_index + 1} -> {self.app_state.scenes[item.value]['name']}"
         self.update_thumb_flag = True
 
     def menu_dec_value(self, item):
         item.value -= 1
         if item.value < -1: item.value = -1
         if item.value >= 0:
-            item.text = f"pgm {self.menu.selected_index} -> {self.app_state.scenes[item.value]['name']}"
+            item.text = f"pgm {self.menu.selected_index + 1} -> {self.app_state.scenes[item.value]['name']}"
         else:
-            item.text = f"pgm {self.menu.selected_index} -> None"
+            item.text = f"pgm {self.menu.selected_index + 1} -> None"
 
     def handle_events(self):
 
@@ -97,9 +97,9 @@ class ScreenMIDIPCMapping(Screen):
         if self.app_state.key8_press:
             for i,item in enumerate(self.menu.items) :
                 if item.value >= 0:
-                    self.app_state.config["pc_map"][f"pgm_{i}"] = self.app_state.scenes[item.value]["name"]
+                    self.app_state.config["pc_map"][f"pgm_{i + 1}"] = self.app_state.scenes[item.value]["name"]
                 else:
-                    self.app_state.config["pc_map"].pop(f"pgm_{i}", None)
+                    self.app_state.config["pc_map"].pop(f"pgm_{i + 1}", None)
             self.app_state.save_config_file()
             self.exit_menu()
      

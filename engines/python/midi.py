@@ -1,12 +1,12 @@
 import time
+import traceback
 import mido
 
 input_port = None
 
 def _handle_note(etc, message):
     #print(f"Note message: {message}")
-    ch = message.channel
-    if ch == 0 or ch == etc.config["midi_channel"]:
+    if (message.channel + 1) == etc.config["midi_channel"]:
         num = message.note 
         val = message.velocity
         if val > 0 :
@@ -16,8 +16,7 @@ def _handle_note(etc, message):
 
 def _handle_control_change(etc, message):
     #print(f"Control Change message: {message}")
-    ch = message.channel
-    if ch == 0 or ch == etc.config["midi_channel"]:
+    if (message.channel + 1) == etc.config["midi_channel"]:
         num = message.control
         val = message.value
         if message.control == etc.config["knob1_cc"] : etc.knob_hardware[0] = val / 127.
@@ -25,15 +24,19 @@ def _handle_control_change(etc, message):
         if message.control == etc.config["knob3_cc"] : etc.knob_hardware[2] = val / 127.
         if message.control == etc.config["knob4_cc"] : etc.knob_hardware[3] = val / 127.
         if message.control == etc.config["knob5_cc"] : etc.knob_hardware[4] = val / 127.
-        if message.control == etc.config["knob5_cc"] : 
+        if message.control == etc.config["auto_clear_cc"] : 
             if val > 64 :
                 etc.auto_clear = True
             else:
                 etc.auto_clear = False
-        
-
+       
 def _handle_program_change(etc, message):
-    print(f"Program Change message: {message}")
+    #print(f"Program Change message: {message}")
+    if (message.channel + 1) == etc.config["midi_channel"]:
+        if f"pgm_{message.program + 1}" in etc.config["pc_map"]:
+            scene = etc.config["pc_map"][f"pgm_{message.program + 1}"]
+            print(f"attempting to load scene {scene}")
+            etc.recall_scene_by_name(scene)
 
 def init():
     global input_port
@@ -71,6 +74,7 @@ def recv(etc):
                 elif message.type == 'program_change':
                     _handle_program_change(etc, message)
             except Exception as e:
+                print(traceback.format_exc())
                 print(f"Error processing message {message}: {e}")
     except Exception as e:
         print(f"Error receiving messages: {e}")

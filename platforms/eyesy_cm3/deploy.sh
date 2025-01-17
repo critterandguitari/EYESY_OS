@@ -9,10 +9,11 @@ rm -fr tmp
 sync
 
 # configure systemd stuff
-systemctl enable splashscreen.service  
+systemctl disable splashscreen.service  
 systemctl enable ttymidi.service  
 systemctl enable eyesyweb.service
 systemctl enable eyesyhw.service
 systemctl enable eyesysetup.service
 systemctl enable eyesypy.service
+systemctl enable eyesypower.service
 systemctl daemon-reload

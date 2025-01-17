@@ -1,0 +1,20 @@
+[Unit]
+Description=Start EYESY power switch monitor
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/music/
+# Run as the 'music' user and group if desired
+User=root
+
+# Directly run python with unbuffered output
+ExecStart=/usr/bin/python -u /usr/local/bin/power_switch_monitor.py
+
+# Restart on failure if needed
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

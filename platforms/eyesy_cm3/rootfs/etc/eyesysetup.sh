@@ -6,9 +6,6 @@ echo -n performance | sudo tee /sys/devices/system/cpu/cpu0/cpufreq/scaling_gove
 # disable status led after bootup
 #echo none > /sys/class/leds/led0/trigger
 
-# monitor power switch
-#/usr/bin/python /home/music/EYESY_OS/system/power_switch_monitor.py &
-
 # redirect 80 to 8080 for the web server
 iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-ports 8080
 

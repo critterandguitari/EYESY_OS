@@ -12,7 +12,7 @@ def draw_color_palette(surface, app_state):
     yoff = 100
     for i in range(height):
         # Get the color using the color_picker function
-        color = app_state.color_picker_bg(i / height)
+        color = app_state.color_picker_bg_preview(i / height)
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 
@@ -96,6 +96,5 @@ class ScreenPalette(Screen):
         self.app_state.current_screen = self.app_state.menu_screens["home"]
 
     def exit_menu(self):
-        self.app_state.show_osd = False
-        self.app_state.show_menu = False
+        self.app_state.exit_menu()
 

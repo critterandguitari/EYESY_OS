@@ -83,7 +83,7 @@ def draw_color_palette(surface, app_state):
     yoff = 100
     for i in range(height):
         # Get the color using the color_picker function
-        color = app_state.color_picker_bg(i / height)
+        color = app_state.color_picker_bg_preview(i / height)
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 

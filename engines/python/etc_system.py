@@ -245,27 +245,37 @@ class System:
     def set_osd(self, stat) :
         self.show_osd = stat
         self.osd_first = True
+  
+    # run the pre and post logic function for a screen when entering / leaving
+    def switch_menu_screen(self,s) :
+        if self.current_screen is not None: self.current_screen.after()
+        self.current_screen = self.menu_screens[s]
+        self.current_screen.before()
+        #self.screen.fill(self.bg_color) 
+
+    def exit_menu(self):
+        self.screen.fill(self.bg_color) 
+        self.show_menu = False
+        self.set_osd(False)
 
     def toggle_menu(self) :
         if self.show_menu:
+            self.screen.fill(self.bg_color) 
             self.show_menu = False
             self.set_osd(False)
         else :
             self.set_osd(False)
             self.show_menu = True
             self.switch_menu_screen("home")
-       
-    # run the pre and post logic function for a screen when entering / leaving
-    def switch_menu_screen(self,s) :
-        if self.current_screen is not None: self.current_screen.after()
-        self.current_screen = self.menu_screens[s]
-        self.current_screen.before()
-
+ 
     def toggle_osd(self) :
+        # if on osd or menu screen, exit out of both
         if self.show_osd or self.show_menu:
+            self.screen.fill(self.bg_color) 
             self.show_menu = False
             self.set_osd(False)
         else :
+            self.screen.fill(self.bg_color) 
             self.set_osd(True)
             self.show_menu = False
 
@@ -668,59 +678,48 @@ class System:
                 self.scene_index = 0
         self.recall_scene(self.scene_index)
 
-    def get_color_from_palette(self, t, a, b, c, d):
-        # a, b, c, and d should be iterables of length 3: (x, y, z)
-        # t is a float.
-        # The formula: a + b * cos( 2π * (c*t + d) )
-        return [
+    def get_color_from_phase(self, val, palette_index) :
+        c = float(val)
+
+        t = c
+
+        ci = palette_index
+        a = self.palettes[ci]["a"]
+        b = self.palettes[ci]["b"]
+        c = self.palettes[ci]["c"]
+        d = self.palettes[ci]["d"]
+   
+        #print(self.palettes[ci]["name"])
+        color = [
             a[i] + b[i] * math.cos(6.283185 * (c[i] * t + d[i]))
             for i in range(3)
         ]
-    
+ 
+        color = (max(0, min(1,color[0])) * 255, max(0, min(1,color[1])) * 255, max(0, min(1,color[2])) * 255)
+        return color
+
+
     def color_picker( self, val ):
 
         # first slot legacy color pickers
         if self.fg_palette == 0 : return self.color_picker_original(val)
-        
-        c = float(val)
+        return self.get_color_from_phase(val, self.fg_palette)
 
-        t = c
-
-        ci = self.fg_palette
-        a = self.palettes[ci]["a"]
-        b = self.palettes[ci]["b"]
-        c = self.palettes[ci]["c"]
-        d = self.palettes[ci]["d"]
-   
-        #print(self.palettes[ci]["name"])
-        color = self.get_color_from_palette(t, a, b, c, d)
-
-        color2 = (max(0, min(1,color[0])) * 255, max(0, min(1,color[1])) * 255, max(0, min(1,color[2])) * 255)
-        #print(color2)
-        return color2
- 
+    # sets bg_color
     def color_picker_bg( self, val):
-
         # first slot legacy color pickers
-        if self.bg_palette == 0 : return self.color_picker_bg_original(val)
+        if self.bg_palette == 0 : 
+            self.bg_color = self.color_picker_bg_original(val)          
+            return self.bg_color
+        self.bg_color = self.get_color_from_phase(val, self.bg_palette)
+        return self.bg_color
 
-        c = float(val)
+    # returns but doen'st sent bg_color
+    def color_picker_bg_preview( self, val):
+        # first slot legacy color pickers
+        if self.bg_palette == 0 : return self.color_picker_bg_original(val)          
+        return self.get_color_from_phase(val, self.bg_palette)
 
-        t = c
-
-        ci = self.bg_palette
-        a = self.palettes[ci]["a"]
-        b = self.palettes[ci]["b"]
-        c = self.palettes[ci]["c"]
-        d = self.palettes[ci]["d"]
-   
-        #print(self.palettes[ci]["name"])
-        color = self.get_color_from_palette(t, a, b, c, d)
-
-        color2 = (max(0, min(1,color[0])) * 255, max(0, min(1,color[1])) * 255, max(0, min(1,color[2])) * 255)
-        self.bg_color = color2
-        return color2
-        
     # legacy color picker used for first palette slot 
     def color_picker_original( self, val ):
         # convert knob to 0-1
@@ -786,7 +785,6 @@ class System:
         
         color = (r * 255,g * 255,b * 255)
         
-        self.bg_color = color
         return color 
 
     def dispatch_key_event(self, k, v):
@@ -868,32 +866,33 @@ class System:
                 if (k == 10)          : self.update_trig_button(v)
 
     def update_key_repeater(self) :
-        if self.key2_status : 
-            if self.key4_status :
-                self.key4_td += 1
-                if (self.key4_td > 10) : self.prev_fg_palette()
-            if self.key5_status :
-                self.key5_td += 1
-                if (self.key5_td > 10) : self.next_fg_palette()
-            if self.key6_status :
-                self.key6_td += 1
-                if (self.key6_td > 10) : self.prev_bg_palette()
-            if self.key7_status :
-                self.key7_td += 1
-                if (self.key7_td > 10) : self.next_bg_palette()
-        else :
-            if self.key4_status :
-                self.key4_td += 1
-                if (self.key4_td > 10) : self.prev_mode()
-            if self.key5_status :
-                self.key5_td += 1
-                if (self.key5_td > 10) : self.next_mode()
-            if self.key6_status :
-                self.key6_td += 1
-                if (self.key6_td > 10) : self.prev_scene()
-            if self.key7_status :
-                self.key7_td += 1
-                if (self.key7_td > 10) : self.next_scene()
+        if not self.show_menu :
+            if self.key2_status : 
+                if self.key4_status :
+                    self.key4_td += 1
+                    if (self.key4_td > 10) : self.prev_fg_palette()
+                if self.key5_status :
+                    self.key5_td += 1
+                    if (self.key5_td > 10) : self.next_fg_palette()
+                if self.key6_status :
+                    self.key6_td += 1
+                    if (self.key6_td > 10) : self.prev_bg_palette()
+                if self.key7_status :
+                    self.key7_td += 1
+                    if (self.key7_td > 10) : self.next_bg_palette()
+            else :
+                if self.key4_status :
+                    self.key4_td += 1
+                    if (self.key4_td > 10) : self.prev_mode()
+                if self.key5_status :
+                    self.key5_td += 1
+                    if (self.key5_td > 10) : self.next_mode()
+                if self.key6_status :
+                    self.key6_td += 1
+                    if (self.key6_td > 10) : self.prev_scene()
+                if self.key7_status :
+                    self.key7_td += 1
+                    if (self.key7_td > 10) : self.next_scene()
 
 # We'll use a simple state machine for the sequencer:
 # States:

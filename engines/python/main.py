@@ -212,9 +212,6 @@ while 1:
     # get knobs, checking for override, and check for new note on
     etc.update_knobs_and_notes()
 
-    # check for midi program change
-    etc.check_pgm_change()
-    
     # measure fps
     etc.frame_count += 1
     if ((etc.frame_count % 50) == 0):
@@ -290,12 +287,13 @@ while 1:
             etc.error = traceback.format_exc()
             print("error with Menu: " + etc.error)
             pygame.time.wait(200)
+        # menu might signal restart
         if etc.restart :
             print("video res changed, restarting")
             exitexit_restart()
-        #if etc.key8_press:
-        #    print("menu screenshot")
-        #    etc.screengrab()
+        # menu exits, clear screen
+        if not etc.menu_mode :
+            hwscreen.fill(etc.bg_color) 
  
     pygame.display.flip()
 

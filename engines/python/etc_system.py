@@ -128,8 +128,6 @@ class System:
     midi_notes = [0] * 128
     midi_notes_last = [0] * 128
     midi_note_new = False
-    midi_pgm = 0
-    midi_pgm_last = 0
     midi_clk = 0
     new_midi = False
     usb_midi_name = ''
@@ -370,17 +368,6 @@ class System:
             self.next_scene()
         else :
             self.next_mode()
-
-    def check_pgm_change(self):
-        if (self.midi_pgm != self.midi_pgm_last):
-            print("got pgm " + str(self.midi_pgm))
-            self.midi_pgm_last = self.midi_pgm
-            if (len(self.scenes) > 0) :
-                self.scene_index = self.midi_pgm % len(self.scenes)
-                self.recall_scene(self.scene_index)
-            else :
-                self.mode_index = self.midi_pgm % len(self.mode_names)
-                self.set_mode_by_index(self.mode_index)
 
     # save a screenshot
     def screengrab(self):

@@ -27,13 +27,12 @@ def reload_callback(path, args):
 
 def knobs_callback(path, args):
     global etc
-    k1, k2, k3, k4, k5, k6 = args
-    #print ("received message: " + str(args))
-    etc.knob_hardware[0] = float(k1) / 1023
-    etc.knob_hardware[1] = float(k2) / 1023
-    etc.knob_hardware[2] = float(k3) / 1023
-    etc.knob_hardware[3] = float(k4) / 1023
-    etc.knob_hardware[4] = float(k5) / 1023
+    #print ("received message: " + str(args[0]))
+    for i,v in enumerate(etc.knob_last):
+        if args[i] != etc.knob_last[i]:
+            etc.knob_last[i] = args[i]
+            etc.knob_hardware[i] = float(args[i] / 1023)
+            #print(f"knob {i} {etc.knob_hardware[i]}")
 
 def keys_callback(path, args) :
     global etc

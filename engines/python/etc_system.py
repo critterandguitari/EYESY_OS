@@ -122,6 +122,7 @@ class System:
     knob_hardware = [.2] * 5
     knob_snapshot = [.2] * 5
     knob_override = [False] * 5
+    knob_last = [-1] * 5      # used to filter repetitive knob osc messages, but we always want to first one so set to -1
 
     # midi stuff (CC gets updated into knobs
     midi_notes = [0] * 128

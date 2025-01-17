@@ -16,6 +16,7 @@
 
 // knob stuff
 void knobsInput(void);
+void sendKnobs(void);
 void keysInput(void);
 static const unsigned int MAX_KNOBS = 6;
 static int16_t knobs_[MAX_KNOBS];
@@ -103,10 +104,11 @@ int main(int argc, char* argv[]) {
             // send a ping in case MCU resets
             pingTimer.reset();
             controls.ping();
+            sendKnobs();
         }
 
         // poll knobs every 40 ms
-        if (knobPollTimer.getElapsed() > 10.f) {
+        if (knobPollTimer.getElapsed() > 20.f) {
             knobPollTimer.reset();
             controls.pollKnobs();
         }
@@ -168,6 +170,15 @@ void knobsInput() {
         msgOut.send(oscBuf);
         udpSock.writeBuffer(oscBuf.buffer, oscBuf.length);        
     }
+}
+
+void sendKnobs() {
+    OSCMessage msgOut("/knobs");
+    for(unsigned i = 0; i < MAX_KNOBS;i++) {
+        msgOut.add(knobs_[i]);
+    }
+    msgOut.send(oscBuf);
+    udpSock.writeBuffer(oscBuf.buffer, oscBuf.length);        
 }
 
 void keysInput(void) {

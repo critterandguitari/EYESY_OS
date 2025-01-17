@@ -143,7 +143,6 @@ class System:
     restart = False
     show_osd = False
     show_menu = False
-    osd_menu_select = 0  # 0 for regular, 1 for OSD overlay, 2 for settings menu
     osd_first = False # when osd is first turned on this is used to gather info
     trig_button = False # if the button is held down or not
 
@@ -167,6 +166,12 @@ class System:
     key5_status = False  
     key6_status = False  
     key7_status = False  
+
+    # counters for key repeaters
+    key4_td = 0
+    key5_td = 0
+    key6_td = 0
+    key7_td = 0
 
     # color stuff
     palettes = color_palettes.abcd_palettes
@@ -225,7 +230,6 @@ class System:
         self._validate_config_int("knob5_cc", 0, 127)
         self._validate_config_int("auto_clear_cc", 0, 127)
 
-
     def save_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
         config.save_config(config_file, self.config)
@@ -249,7 +253,6 @@ class System:
             self.set_osd(False)
             self.show_menu = True
             self.switch_menu_screen("home")
-            print("enable menu home screen")
        
     # run the pre and post logic function for a screen when entering / leaving
     def switch_menu_screen(self,s) :
@@ -264,21 +267,6 @@ class System:
         else :
             self.set_osd(True)
             self.show_menu = False
-
-        #self.osd_menu_select += 1
-        #if self.osd_menu_select == 3: self.osd_menu_select = 0
-
-        #if self.osd_menu_select == 0:
-        #    self.set_osd(False)
-        #    self.show_menu = False
-
-        #if self.osd_menu_select == 1:
-        #    self.set_osd(True)
-        #    self.show_menu = False
-
-        #if self.osd_menu_select == 2:
-        #    self.set_osd(False)
-        #    self.show_menu = True
 
     def toggle_auto_clear(self):
         if not self.auto_clear :
@@ -788,11 +776,18 @@ class System:
 
     def dispatch_key_event(self, k, v):
         
-        # the shift key
+        # the shift key status, also resets all repeater key timers (or not)
         if k == 2 :
-            if v > 0 : self.key2_status = True
-            else : self.key2_status = False
+            if v > 0 : 
+                self.key2_status = True
+                #self.key4_td = 0
+                #self.key5_td = 0
+                #self.key6_td = 0
+                #self.key7_td = 0
+            else : 
+                self.key2_status = False
         
+        # status of these keys also used for key repeating
         if k == 6 :
             if v > 0 : self.key6_status = True
             else : self.key6_status = False
@@ -806,11 +801,12 @@ class System:
             if v > 0 : self.key5_status = True
             else : self.key5_status = False
  
-        # select osd or menu 
+        # toggle osd or menu depending on shift
         if (k == 1 and v > 0) : 
             if self.key2_status: self.toggle_menu()
             else : self.toggle_osd()
        
+        # set key press events for menu navigation
         if self.show_menu :
             if (k == 2 and v > 0) : self.key2_press = True
             if (k == 3 and v > 0) : self.key3_press = True
@@ -821,23 +817,68 @@ class System:
             if (k == 8 and v > 0) : self.key8_press = True
             if (k == 9 and v > 0) : self.key9_press = True
             if (k == 10 and v > 0) : self.key10_press = True
+        # in regular mode, check if shift button is down
+        # some keys also have repeater, so we reset those timers when keys presssed
         else :
-            if not self.key2_status :  
+            if self.key2_status :  
+                if (k == 4 and v > 0) : 
+                    self.prev_fg_palette()
+                    self.key4_td = 0
+                if (k == 5 and v > 0) : 
+                    self.next_fg_palette()
+                    self.key5_td = 0
+                if (k == 6 and v > 0) : 
+                    self.prev_bg_palette()
+                    self.key6_td = 0
+                if (k == 7 and v > 0) : 
+                    self.next_bg_palette()
+                    self.key7_td = 0
+                if (k == 3 and v > 0) : self.knob_seq_control()
+            else :
                 if (k == 3 and v > 0) : self.toggle_auto_clear()
-                if (k == 4 and v > 0) : self.prev_mode()
-                if (k == 5 and v > 0) : self.next_mode()
-                if (k == 6 and v > 0) : self.prev_scene()
-                if (k == 7 and v > 0) : self.next_scene()
+                if (k == 4 and v > 0) : 
+                    self.prev_mode()
+                    self.key4_td = 0
+                if (k == 5 and v > 0) : 
+                    self.next_mode()
+                    self.key5_td = 0
+                if (k == 6 and v > 0) : 
+                    self.prev_scene()
+                    self.key6_td = 0
+                if (k == 7 and v > 0) : 
+                    self.next_scene()
+                    self.key7_td = 0
                 if (k == 8)           : self.save_or_delete_scene(v)
                 if (k == 9 and v > 0) : self.screengrab_flag = True
                 if (k == 10)          : self.update_trig_button(v)
-            else :      # shift key down
-                if (k == 4 and v > 0) : self.prev_fg_palette()
-                if (k == 5 and v > 0) : self.next_fg_palette()
-                if (k == 6 and v > 0) : self.prev_bg_palette()
-                if (k == 7 and v > 0) : self.next_bg_palette()
-                if (k == 3 and v > 0) : self.knob_seq_control()
-                 
+
+    def update_key_repeater(self) :
+        if self.key2_status : 
+            if self.key4_status :
+                self.key4_td += 1
+                if (self.key4_td > 10) : self.prev_fg_palette()
+            if self.key5_status :
+                self.key5_td += 1
+                if (self.key5_td > 10) : self.next_fg_palette()
+            if self.key6_status :
+                self.key6_td += 1
+                if (self.key6_td > 10) : self.prev_bg_palette()
+            if self.key7_status :
+                self.key7_td += 1
+                if (self.key7_td > 10) : self.next_bg_palette()
+        else :
+            if self.key4_status :
+                self.key4_td += 1
+                if (self.key4_td > 10) : self.prev_mode()
+            if self.key5_status :
+                self.key5_td += 1
+                if (self.key5_td > 10) : self.next_mode()
+            if self.key6_status :
+                self.key6_td += 1
+                if (self.key6_td > 10) : self.prev_scene()
+            if self.key7_status :
+                self.key7_td += 1
+                if (self.key7_td > 10) : self.next_scene()
 
 # We'll use a simple state machine for the sequencer:
 # States:

@@ -47,7 +47,6 @@ class ScreenMainMenu(Screen):
         self.app_state.switch_menu_screen("wifi")
 
     def exit_menu(self):
-        self.app_state.osd_menu_select = 0
         self.app_state.show_osd = False
         self.app_state.show_menu = False
 

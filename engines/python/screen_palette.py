@@ -96,7 +96,6 @@ class ScreenPalette(Screen):
         self.app_state.current_screen = self.app_state.menu_screens["home"]
 
     def exit_menu(self):
-        self.app_state.osd_menu_select = 0
         self.app_state.show_osd = False
         self.app_state.show_menu = False
 

@@ -112,7 +112,7 @@ def render_overlay_480(screen, etc) :
        etc.osd_first = False
 '''
     # mode
-    mode_str = " Mode:  "   + str(etc.mode) + " (" + str(etc.mode_index + 1) +" of "+str(len(etc.mode_names)) + ")"
+    mode_str = " Mode: (" + str(etc.mode_index + 1) +" of "+str(len(etc.mode_names)) + ")" + str(etc.mode)      
     text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
@@ -121,7 +121,7 @@ def render_overlay_480(screen, etc) :
      
     # scene
     if etc.scene_set :
-        scene_str = " Scene:  " + str(etc.scene_index + 1) +" of "+str(len(etc.scenes)) + " "
+        scene_str = " Scene: (" + str(etc.scene_index + 1) +" of "+str(len(etc.scenes)) + ")"
     else:
         scene_str = " Scene: Not Set "
     text = font.render(scene_str, True, etc.LGRAY, etc.BLACK)

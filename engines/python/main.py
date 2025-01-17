@@ -195,6 +195,8 @@ while 1:
     # check for OSC
     osc.recv()
 
+    etc.update_key_repeater()
+
     # check MIDI
     midi.recv(etc)
     
@@ -259,10 +261,6 @@ while 1:
             etc.error = traceback.format_exc()
             print("error with setup: " + etc.error)
   
-    if etc.key2_status :
-        etc.fg_palette = int(etc.knob4 * len(etc.palettes) - 1)
-        etc.bg_palette = int(etc.knob5 * len(etc.palettes) - 1)
-
     # draw it
     if not etc.show_menu :
         try :

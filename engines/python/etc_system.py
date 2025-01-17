@@ -143,7 +143,7 @@ class System:
     quit = False
     restart = False
     show_osd = False
-    show_menu = False
+    menu_mode = False
     osd_first = False # when osd is first turned on this is used to gather info
     trig_button = False # if the button is held down or not
 
@@ -255,29 +255,29 @@ class System:
 
     def exit_menu(self):
         self.screen.fill(self.bg_color) 
-        self.show_menu = False
+        self.menu_mode = False
         self.set_osd(False)
 
     def toggle_menu(self) :
-        if self.show_menu:
+        if self.menu_mode:
             self.screen.fill(self.bg_color) 
-            self.show_menu = False
+            self.menu_mode = False
             self.set_osd(False)
         else :
             self.set_osd(False)
-            self.show_menu = True
+            self.menu_mode = True
             self.switch_menu_screen("home")
  
     def toggle_osd(self) :
         # if on osd or menu screen, exit out of both
-        if self.show_osd or self.show_menu:
+        if self.show_osd or self.menu_mode:
             self.screen.fill(self.bg_color) 
-            self.show_menu = False
+            self.menu_mode = False
             self.set_osd(False)
         else :
             self.screen.fill(self.bg_color) 
             self.set_osd(True)
-            self.show_menu = False
+            self.menu_mode = False
 
     def toggle_auto_clear(self):
         if not self.auto_clear :
@@ -820,7 +820,7 @@ class System:
             else : self.toggle_osd()
        
         # set key press events for menu navigation
-        if self.show_menu :
+        if self.menu_mode :
             if (k == 2 and v > 0) : self.key2_press = True
             if (k == 3 and v > 0) : self.key3_press = True
             if (k == 4 and v > 0) : self.key4_press = True
@@ -866,7 +866,7 @@ class System:
                 if (k == 10)          : self.update_trig_button(v)
 
     def update_key_repeater(self) :
-        if not self.show_menu :
+        if not self.menu_mode :
             if self.key2_status : 
                 if self.key4_status :
                     self.key4_td += 1

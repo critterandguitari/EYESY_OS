@@ -262,7 +262,7 @@ while 1:
             print("error with setup: " + etc.error)
   
     # draw it
-    if not etc.show_menu :
+    if not etc.menu_mode :
         try :
             mode.draw(hwscreen, etc)
         except Exception as e:   
@@ -282,7 +282,7 @@ while 1:
             print("error with OSD: " + etc.error)
             pygame.time.wait(200)
 
-    if etc.show_menu :
+    if etc.menu_mode :
         try: 
             etc.current_screen.handle_events()
             etc.current_screen.render_with_title(hwscreen)

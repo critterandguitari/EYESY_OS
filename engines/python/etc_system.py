@@ -165,6 +165,7 @@ class System:
     key5_status = False  
     key6_status = False  
     key7_status = False  
+    key10_status = False  
 
     # counters for key repeaters
     key4_td = 0
@@ -800,7 +801,15 @@ class System:
         if k == 5 :
             if v > 0 : self.key5_status = True
             else : self.key5_status = False
- 
+        if k == 10 :
+            if v > 0 : self.key10_status = True
+            else : self.key10_status = False
+
+
+        # basic trig
+        if k == 10 : 
+            if v > 0 : self.audio_trig = True
+
         # toggle osd or menu depending on shift
         if (k == 1 and v > 0) : 
             if self.key2_status: self.toggle_menu()
@@ -853,6 +862,8 @@ class System:
                 if (k == 10)          : self.update_trig_button(v)
 
     def update_key_repeater(self) :
+        if self.key10_status : 
+            self.audio_trig = True
         if not self.menu_mode :
             if self.key2_status : 
                 if self.key4_status :

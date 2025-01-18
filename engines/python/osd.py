@@ -1,6 +1,9 @@
 import pygame
 import socket
 import imp
+import subprocess
+import re
+
 
 def draw_knob_slider(screen, etc, offx, offy, index) :
     if etc.knob_override[index]:
@@ -78,9 +81,9 @@ def loading_banner(screen, stuff) :
 def draw_color_palette(surface, app_state):
     
     # bg
-    width, height = 100, 100  
-    xoff = 100
-    yoff = 100
+    width, height = 125, 125  
+    xoff = 400
+    yoff = 10
     for i in range(height):
         # Get the color using the color_picker function
         color = app_state.color_picker_bg_preview(i / height)
@@ -88,14 +91,35 @@ def draw_color_palette(surface, app_state):
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 
     # fg
-    width, height = 100, 100  
-    xoff = 210
-    yoff = 100
+    width, height = 75, 75  
+    xoff = 440
+    yoff = 30
     for i in range(height):
         # Get the color using the color_picker function
         color = app_state.color_picker(i / height)
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
+
+
+def get_local_ip_ifconfig():
+    try:
+        # Run the `ifconfig` command and get the output
+        result = subprocess.run(['ifconfig'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if result.returncode != 0:
+            raise Exception(result.stderr.strip())
+
+        # Extract IP addresses using a regex (looks for IPv4 addresses)
+        ip_pattern = re.compile(r'inet\s+(\d+\.\d+\.\d+\.\d+)')
+        ips = ip_pattern.findall(result.stdout)
+
+        # Exclude 127.0.0.1 (loopback) and return the first match
+        for ip in ips:
+            if ip != '127.0.0.1':
+                return ip
+        return "No non-loopback IP found."
+    except Exception as e:
+        return f"Error: {e}"
+
 
 def render_overlay_480(screen, etc) :
 
@@ -105,12 +129,11 @@ def render_overlay_480(screen, etc) :
     #pygame.draw.line(screen, etc.LGRAY, [720,480], [720,0], 1)
     draw_color_palette(screen, etc)
 
-
     # first time through, gather some info
-    '''if etc.osd_first :
-        etc.ip = socket.gethostbyname(socket.gethostname())
-       etc.osd_first = False
-'''
+    if etc.osd_first :
+        etc.ip = get_local_ip_ifconfig()
+        etc.osd_first = False
+
     # mode
     mode_str = " Mode: (" + str(etc.mode_index + 1) +" of "+str(len(etc.mode_names)) + ")" + str(etc.mode)      
     text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
@@ -155,6 +178,23 @@ def render_overlay_480(screen, etc) :
     for i in range(0,128):
         if (etc.midi_notes[i] > 0):
             pygame.draw.rect(screen, etc.LGRAY, (offx + 6 * (i % 32), offy + 6 * (i / 32), 6, 6))
+        
+    # trigger
+    pygame.draw.rect(screen, etc.BLACK, (20, 166, 105, 30))
+    pygame.draw.rect(screen, etc.LGRAY, (98, 169, 24, 24), 1)
+    if etc.audio_trig:
+        pygame.draw.rect(screen, (255,255,0), (98, 169, 24, 24))
+  
+    # ip    
+    mode_str = f" IP Address:  {etc.ip} "
+    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 20
+    text_rect.centery = 150
+    screen.blit(text, text_rect)
+    
+
+
     '''            
     # knobs
     pygame.draw.rect(screen, etc.BLACK, (20, 124, 144, 35))
@@ -168,18 +208,7 @@ def render_overlay_480(screen, etc) :
     draw_knob_slider_480(screen, etc, 115, 128, 2)
     draw_knob_slider_480(screen, etc, 130, 128, 3)
     draw_knob_slider_480(screen, etc, 145, 128, 4)
-    
-    # trigger
-    pygame.draw.rect(screen, etc.BLACK, (20, 166, 105, 30))
-    text = font.render(" Trigger:", True, etc.LGRAY, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 20
-    text_rect.centery = 180
-    screen.blit(text, text_rect)
-    pygame.draw.rect(screen, etc.LGRAY, (98, 169, 24, 24), 1)
-    if etc.audio_trig:
-        pygame.draw.rect(screen, (255,255,0), (98, 169, 24, 24))
-    
+   
     # input level 
     pygame.draw.rect(screen, etc.BLACK, (20, 205, 220, 30))
     mode_str = " Input Level:"
@@ -227,16 +256,7 @@ def render_overlay_480(screen, etc) :
 #    text_rect.x = 20
 #    text_rect.centery = 362
 #    screen.blit(text, text_rect)
-      
-    # ip    
-    mode_str = " IP Address:  FIX ME "
-    text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 20
-    text_rect.centery = 390
-    screen.blit(text, text_rect)
-    
-    # SSID    
+         # SSID    
     mode_str = " Network: FIX ME "
     text = font.render(mode_str, True, etc.LGRAY, etc.BLACK)
     text_rect = text.get_rect()

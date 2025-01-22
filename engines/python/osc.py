@@ -1,7 +1,7 @@
 import sys
 import liblo
 
-etc = None 
+eyesy = None 
 osc_server = None
 osc_target = None
 
@@ -10,38 +10,38 @@ def fallback(path, args):
     pass
 
 def set_callback(path, args):
-    global etc
+    global eyesy
     name = args[0]
-    etc.set_mode_by_name(name)
-    print("set patch to: " + str(etc.mode) + " with index " + str(etc.mode_index))
+    eyesy.set_mode_by_name(name)
+    print("set patch to: " + str(eyesy.mode) + " with index " + str(eyesy.mode_index))
  
 def new_callback(path, args):
-    global etc
+    global eyesy
     name = args[0]
-    etc.load_new_mode(name)
+    eyesy.load_new_mode(name)
    
 def reload_callback(path, args):
-    global etc
-    print("reloading: " + str(etc.mode))
-    etc.reload_mode()
+    global eyesy
+    print("reloading: " + str(eyesy.mode))
+    eyesy.reload_mode()
 
 def knobs_callback(path, args):
-    global etc
+    global eyesy
     #print ("received message: " + str(args[0]))
-    for i,v in enumerate(etc.knob_last):
-        if args[i] != etc.knob_last[i]:
-            etc.knob_last[i] = args[i]
-            etc.knob_hardware[i] = float(args[i] / 1023)
-            #print(f"knob {i} {etc.knob_hardware[i]}")
+    for i,v in enumerate(eyesy.knob_last):
+        if args[i] != eyesy.knob_last[i]:
+            eyesy.knob_last[i] = args[i]
+            eyesy.knob_hardware[i] = float(args[i] / 1023)
+            #print(f"knob {i} {eyesy.knob_hardware[i]}")
 
 def keys_callback(path, args) :
-    global etc
+    global eyesy
     k, v = args
-    etc.dispatch_key_event(k,v)
+    eyesy.dispatch_key_event(k,v)
 
-def init (etc_object) :
-    global osc_server, osc_target, etc
-    etc = etc_object
+def init (eyesy_object) :
+    global osc_server, osc_target, eyesy
+    eyesy = eyesy_object
     
     # OSC init server and client
     try:

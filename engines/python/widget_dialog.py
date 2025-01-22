@@ -10,7 +10,7 @@ class WidgetDialog():
 
     def __init__(self, eyesy, ok_callback=ok_callback, cancel_callback=cancel_callback):
         self.eyesy = eyesy
-        # Initialize text, surfaces, fonts, etc.
+        # Initialize text, surfaces, fonts, eyesy.
         self.message = "Disconnect from Dogs?"
         self.keyboard_surface = pygame.Surface((300, 50))
         self.dialog_surface = pygame.Surface((300, 100))

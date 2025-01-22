@@ -13,7 +13,7 @@ class WidgetNetlogs():
         self.y_offset = 10
 
     def fetch_logs(self):
-        """Fetch logs from journalctl."""
+        """fetch logs from journalctl."""
         try:
             result = subprocess.run(
                 ["journalctl", "-u", "NetworkManager", "-n", "10", "--no-pager", "--output=cat"],
@@ -35,7 +35,7 @@ class WidgetNetlogs():
 
     def render(self, surface):
         current_time = time.time()
-        if current_time - self.last_log_time > 1:  # Fetch logs once per second
+        if current_time - self.last_log_time > 1:  # fetch logs once per second
             self.fetch_logs()
             self.last_log_time = current_time
 

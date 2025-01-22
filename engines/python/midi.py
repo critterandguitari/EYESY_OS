@@ -4,39 +4,39 @@ import mido
 
 input_port = None
 
-def _handle_note(etc, message):
+def _handle_note(eyesy, message):
     #print(f"Note message: {message}")
-    if (message.channel + 1) == etc.config["midi_channel"]:
+    if (message.channel + 1) == eyesy.config["midi_channel"]:
         num = message.note 
         val = message.velocity
         if val > 0 :
-            etc.midi_notes[num] = 1
+            eyesy.midi_notes[num] = 1
         else :
-            etc.midi_notes[num] = 0
+            eyesy.midi_notes[num] = 0
 
-def _handle_control_change(etc, message):
+def _handle_control_change(eyesy, message):
     #print(f"Control Change message: {message}")
-    if (message.channel + 1) == etc.config["midi_channel"]:
+    if (message.channel + 1) == eyesy.config["midi_channel"]:
         num = message.control
         val = message.value
-        if message.control == etc.config["knob1_cc"] : etc.knob_hardware[0] = val / 127.
-        if message.control == etc.config["knob2_cc"] : etc.knob_hardware[1] = val / 127.
-        if message.control == etc.config["knob3_cc"] : etc.knob_hardware[2] = val / 127.
-        if message.control == etc.config["knob4_cc"] : etc.knob_hardware[3] = val / 127.
-        if message.control == etc.config["knob5_cc"] : etc.knob_hardware[4] = val / 127.
-        if message.control == etc.config["auto_clear_cc"] : 
+        if message.control == eyesy.config["knob1_cc"] : eyesy.knob_hardware[0] = val / 127.
+        if message.control == eyesy.config["knob2_cc"] : eyesy.knob_hardware[1] = val / 127.
+        if message.control == eyesy.config["knob3_cc"] : eyesy.knob_hardware[2] = val / 127.
+        if message.control == eyesy.config["knob4_cc"] : eyesy.knob_hardware[3] = val / 127.
+        if message.control == eyesy.config["knob5_cc"] : eyesy.knob_hardware[4] = val / 127.
+        if message.control == eyesy.config["auto_clear_cc"] : 
             if val > 64 :
-                etc.auto_clear = True
+                eyesy.auto_clear = True
             else:
-                etc.auto_clear = False
+                eyesy.auto_clear = False
        
-def _handle_program_change(etc, message):
+def _handle_program_change(eyesy, message):
     #print(f"Program Change message: {message}")
-    if (message.channel + 1) == etc.config["midi_channel"]:
-        if f"pgm_{message.program + 1}" in etc.config["pc_map"]:
-            scene = etc.config["pc_map"][f"pgm_{message.program + 1}"]
+    if (message.channel + 1) == eyesy.config["midi_channel"]:
+        if f"pgm_{message.program + 1}" in eyesy.config["pc_map"]:
+            scene = eyesy.config["pc_map"][f"pgm_{message.program + 1}"]
             print(f"attempting to load scene {scene}")
-            etc.recall_scene_by_name(scene)
+            eyesy.recall_scene_by_name(scene)
 
 def init():
     global input_port
@@ -54,7 +54,7 @@ def close():
     except Exception as e:
         print(f"Error closing input port: {e}")
 
-def recv(etc):
+def recv(eyesy):
     global input_port
     if not input_port:
         #print("Input port is not initialized.")
@@ -68,11 +68,11 @@ def recv(etc):
         for message in messages:
             try:
                 if message.type == 'note_on' or message.type == 'note_off':
-                    _handle_note(etc, message)
+                    _handle_note(eyesy, message)
                 elif message.type == 'control_change':
-                    _handle_control_change(etc, message)
+                    _handle_control_change(eyesy, message)
                 elif message.type == 'program_change':
-                    _handle_program_change(etc, message)
+                    _handle_program_change(eyesy, message)
             except Exception as e:
                 print(traceback.format_exc())
                 print(f"Error processing message {message}: {e}")

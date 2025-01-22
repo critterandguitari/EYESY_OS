@@ -363,12 +363,6 @@ class Eyesy:
             if self.midi_notes[i] > 0 and self.midi_notes_last[i] == 0:
                 self.midi_note_new = True
 
-    def foot_pressed(self) :
-        if (len(self.scenes) > 0) :
-            self.next_scene()
-        else :
-            self.next_mode()
-
     # save a screenshot
     def screengrab(self):
         filenum = 0
@@ -933,7 +927,7 @@ class Eyesy:
                     self.knob_seq_state = "stopped"
             else:
                 # Still recording - add current knob values
-                frame_values = (etc.knob1, etc.knob2, etc.knob3, etc.knob4, etc.knob5)
+                frame_values = (eyesy.knob1, eyesy.knob2, eyesy.knob3, eyesy.knob4, eyesy.knob5)
                 self.knob_seq.append(frame_values)
 
         elif self.knob_seq_state == "playing":
@@ -945,7 +939,7 @@ class Eyesy:
                 # Continue playback
                 if len(self.knob_seq) > 0:
                     current_values = self.knob_seq[self.knob_seq_index]
-                    etc.knob1, etc.knob2, etc.knob3, etc.knob4, etc.knob5 = current_values
+                    eyesy.knob1, eyesy.knob2, eyesy.knob3, eyesy.knob4, eyesy.knob5 = current_values
                     
                     self.knob_seq_index += 1
                     if self.knob_seq_index >= len(self.knob_seq):

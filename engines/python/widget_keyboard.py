@@ -4,7 +4,7 @@ class WidgetKeyboard():
 
     def __init__(self, eyesy, connect_callback=None, cancel_callback=None):
         self.eyesy = eyesy
-        # Initialize text, surfaces, fonts, etc.
+        # Initialize text, surfaces, fonts, eyesy.
         self.text_box_text = ""
         self.keyboard_surface = pygame.Surface((400, 200))
         self.keyboard_surface.fill((0, 0, 0))

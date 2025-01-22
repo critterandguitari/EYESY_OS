@@ -4,10 +4,10 @@ from widget_applogs import WidgetApplogs
 
 class ScreenApplogs(Screen):
 
-    def __init__(self, app_state):
-        super().__init__(app_state)
+    def __init__(self, eyesy):
+        super().__init__(eyesy)
         self.title = "Logs"
-        self.applogs = WidgetApplogs(app_state)
+        self.applogs = WidgetApplogs(eyesy)
         self.applogs.x_offset = 50
         self.applogs.y_offset = 50
 
@@ -21,5 +21,5 @@ class ScreenApplogs(Screen):
         pass
 
     def exit_menu(self):
-        self.app_state.switch_menu_screen("home")
+        self.eyesy.switch_menu_screen("home")
 

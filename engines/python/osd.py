@@ -78,7 +78,7 @@ def loading_banner(screen, stuff) :
     screen.blit(text, text_rect)
     pygame.display.flip()
 
-def draw_color_palette(surface, app_state):
+def draw_color_palette(surface, eyesy):
     
     # bg
     width, height = 125, 125  
@@ -86,7 +86,7 @@ def draw_color_palette(surface, app_state):
     yoff = 10
     for i in range(height):
         # Get the color using the color_picker function
-        color = app_state.color_picker_bg_preview(i / height)
+        color = eyesy.color_picker_bg_preview(i / height)
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 
@@ -96,7 +96,7 @@ def draw_color_palette(surface, app_state):
     yoff = 30
     for i in range(height):
         # Get the color using the color_picker function
-        color = app_state.color_picker(i / height)
+        color = eyesy.color_picker(i / height)
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 

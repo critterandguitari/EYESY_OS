@@ -8,8 +8,8 @@ def cancel_callback():
 
 class WidgetDialog():
 
-    def __init__(self, app_state, ok_callback=ok_callback, cancel_callback=cancel_callback):
-        self.app_state = app_state
+    def __init__(self, eyesy, ok_callback=ok_callback, cancel_callback=cancel_callback):
+        self.eyesy = eyesy
         # Initialize text, surfaces, fonts, etc.
         self.message = "Disconnect from Dogs?"
         self.keyboard_surface = pygame.Surface((300, 50))
@@ -93,12 +93,12 @@ class WidgetDialog():
 
     def handle_events(self):
         # Handle other events if needed
-        app_data = self.app_state
+        eyesy = self.eyesy
 
-        # Example navigation (assuming app_data.keyX_press are booleans):
-        if app_data.key6_press:
+        # Example navigation (assuming eyesy.keyX_press are booleans):
+        if eyesy.key6_press:
             self.selected_index -= 1
-        if app_data.key7_press:
+        if eyesy.key7_press:
             self.selected_index += 1
 
         # Wrap around
@@ -108,7 +108,7 @@ class WidgetDialog():
             self.selected_index = self.total_keys - 1
 
         # Key selection/activation
-        if app_data.key8_press:
+        if eyesy.key8_press:
             selected_key = self.get_key(self.selected_index)
             if selected_key:
                 if self.selected_index == 0:
@@ -140,5 +140,5 @@ class WidgetDialog():
 
     def goto_home(self):
         pass
-        # self.app_state.current_screen = self.app_state.menu_screens["info"]
+        # self.eyesy.current_screen = self.eyesy.menu_screens["info"]
 

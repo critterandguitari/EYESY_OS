@@ -2,8 +2,8 @@ from screen import Screen
 import pygame
 
 class ScreenTest(Screen):
-    def __init__(self, app_state):
-        super().__init__(app_state)
+    def __init__(self, eyesy):
+        super().__init__(eyesy)
         self.title = "Factory Test"
 
         # State previously stored globally
@@ -23,7 +23,7 @@ class ScreenTest(Screen):
         self.knob_max_reached = {"knob0": False, "knob1": False, "knob2": False, "knob3": False, "knob4": False}
 
     def handle_events(self):
-        self.handle_control_events(self.app_state)
+        self.handle_control_events(self.eyesy)
 
     def handle_control_events(self, events):
         # Mappings

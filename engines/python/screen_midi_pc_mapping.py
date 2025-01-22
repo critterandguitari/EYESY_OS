@@ -6,8 +6,8 @@ def wha(): print("wha")
 
 class ScreenMIDIPCMapping(Screen):
 
-    def __init__(self, app_state):
-        super().__init__(app_state)
+    def __init__(self, eyesy):
+        super().__init__(eyesy)
         self.title = "MIDI PC Mapping"
         self.menu = self.create_midi_mapping_menu()
         self.menu.visible_items = 8
@@ -19,7 +19,7 @@ class ScreenMIDIPCMapping(Screen):
     
     # see if scene name is in the current list of scenes
     def get_scene_index(self, target_name):
-        for i, scene in enumerate(self.app_state.scenes):
+        for i, scene in enumerate(self.eyesy.scenes):
             if scene["name"] == target_name:
                 return i
         return -1
@@ -33,12 +33,12 @@ class ScreenMIDIPCMapping(Screen):
             menu_items.append(item)
 
         # Return the menu object
-        return WidgetMenu(self.app_state, menu_items)
+        return WidgetMenu(self.eyesy, menu_items)
 
     # called before entering screen.  item vaule is -1 if no mapping, otherwise it is the index of scenes list
     def update_midi_mapping_menu(self):
         for i,item in enumerate(self.menu.items) :
-            scene = self.app_state.config["pc_map"].get(f"pgm_{i + 1}",None)
+            scene = self.eyesy.config["pc_map"].get(f"pgm_{i + 1}",None)
             # -1 if scene not found
             item.value = self.get_scene_index(scene)
             # dump entries that aren't found
@@ -55,20 +55,20 @@ class ScreenMIDIPCMapping(Screen):
             self.update_thumb_flag = False
             item = self.menu.items[self.menu.selected_index]
             if item.value >= 0:
-                thumb_path = self.app_state.scenes[item.value]['thumbnail']
+                thumb_path = self.eyesy.scenes[item.value]['thumbnail']
                 self.show_thumb(surface, (300,150), thumb_path)
 
     def menu_inc_value(self, item):
         item.value += 1
-        if item.value > len(self.app_state.scenes) - 1: item.value = len(self.app_state.scenes) - 1
-        item.text = f"pgm {self.menu.selected_index + 1} -> {self.app_state.scenes[item.value]['name']}"
+        if item.value > len(self.eyesy.scenes) - 1: item.value = len(self.eyesy.scenes) - 1
+        item.text = f"pgm {self.menu.selected_index + 1} -> {self.eyesy.scenes[item.value]['name']}"
         self.update_thumb_flag = True
 
     def menu_dec_value(self, item):
         item.value -= 1
         if item.value < -1: item.value = -1
         if item.value >= 0:
-            item.text = f"pgm {self.menu.selected_index + 1} -> {self.app_state.scenes[item.value]['name']}"
+            item.text = f"pgm {self.menu.selected_index + 1} -> {self.eyesy.scenes[item.value]['name']}"
         else:
             item.text = f"pgm {self.menu.selected_index + 1} -> None"
 
@@ -77,30 +77,30 @@ class ScreenMIDIPCMapping(Screen):
         self.menu.handle_events()
 
         item = self.menu.items[self.menu.selected_index]
-        if item.adjustable and len(self.app_state.scenes) > 0:
-            if self.app_state.key4_press: 
+        if item.adjustable and len(self.eyesy.scenes) > 0:
+            if self.eyesy.key4_press: 
                 self.menu_dec_value(item)
                 self.key4_td = 0
-            if self.app_state.key4_status:
+            if self.eyesy.key4_status:
                 self.key4_td += 1
                 if self.key4_td > 10 : self.menu_dec_value(item)
 
-            if self.app_state.key5_press: 
+            if self.eyesy.key5_press: 
                 self.menu_inc_value(item)
                 self.key5_td = 0
-            if self.app_state.key5_status:
+            if self.eyesy.key5_status:
                 self.key5_td += 1
                 if self.key5_td > 10 : self.menu_inc_value(item)
      
       
         # save to config, delete any unmapped
-        if self.app_state.key8_press:
+        if self.eyesy.key8_press:
             for i,item in enumerate(self.menu.items) :
                 if item.value >= 0:
-                    self.app_state.config["pc_map"][f"pgm_{i + 1}"] = self.app_state.scenes[item.value]["name"]
+                    self.eyesy.config["pc_map"][f"pgm_{i + 1}"] = self.eyesy.scenes[item.value]["name"]
                 else:
-                    self.app_state.config["pc_map"].pop(f"pgm_{i + 1}", None)
-            self.app_state.save_config_file()
+                    self.eyesy.config["pc_map"].pop(f"pgm_{i + 1}", None)
+            self.eyesy.save_config_file()
             self.exit_menu()
      
     def show_thumb(self, surface, position, filepath):
@@ -112,5 +112,5 @@ class ScreenMIDIPCMapping(Screen):
             print(f"Error loading image at {filepath}: {e}")
     
     def exit_menu(self):
-        self.app_state.switch_menu_screen("home")
+        self.eyesy.switch_menu_screen("home")
 

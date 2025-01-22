@@ -2,8 +2,8 @@
 import pygame
 
 class Screen:
-    def __init__(self, app_state):
-        self.app_state = app_state
+    def __init__(self, eyesy):
+        self.eyesy = eyesy
         self.title = "My Cool Screen"
         self.font = pygame.font.Font("font.ttf", 16)
 

@@ -97,10 +97,10 @@ def connect(ssid, device='wlan0'):
 
 class ScreenWiFi(Screen):
 
-    def __init__(self, app_state):
-        super().__init__(app_state)
+    def __init__(self, eyesy):
+        super().__init__(eyesy)
         self.title = "WiFi Setup"
-        self.menu = WidgetMenu(app_state, [])
+        self.menu = WidgetMenu(eyesy, [])
         self.ssids = []
         self.connected = False
         self.state = "init"  
@@ -109,7 +109,7 @@ class ScreenWiFi(Screen):
         self.connection_error = None
         self.pending_password = None
         self.keyboard = None  # Will hold the KeyboardScreen instance when needed
-        self.netlogs = WidgetNetlogs(app_state)
+        self.netlogs = WidgetNetlogs(eyesy)
         self.netlogs.x_offset = 50
         self.netlogs.y_offset = 300
         self.menu.off_y = 75
@@ -294,7 +294,7 @@ class ScreenWiFi(Screen):
 
     def request_password(self):
         # Create the keyboard screen, passing a callback that will be called when password is entered
-        self.keyboard = WidgetKeyboard(self.app_state, connect_callback=self.password_entered_callback, cancel_callback=self.password_cancel_callback)
+        self.keyboard = WidgetKeyboard(self.eyesy, connect_callback=self.password_entered_callback, cancel_callback=self.password_cancel_callback)
         self.state = "enter_password"
 
     def password_cancel_callback(self):
@@ -331,5 +331,5 @@ class ScreenWiFi(Screen):
         return callback
 
     def exit_menu(self):
-        self.app_state.switch_menu_screen("home")
+        self.eyesy.switch_menu_screen("home")
 

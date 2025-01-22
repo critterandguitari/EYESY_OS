@@ -6,10 +6,10 @@ def wha(): print("wha")
 
 class ScreenMIDISettings(Screen):
 
-    def __init__(self, app_state):
-        super().__init__(app_state)
+    def __init__(self, eyesy):
+        super().__init__(eyesy)
         self.title = "MIDI Settings"
-        self.menu = WidgetMenu(app_state, [])
+        self.menu = WidgetMenu(eyesy, [])
         self.menu.items.append(MenuItem('MIDI PC Mapping  ▶', self.goto_midi_pc_mapping))
         
         self.menu.items.append(self.create_adjustable_menu_item("midi_channel", 1, 16,  "MIDI Channel: {value}"))
@@ -47,11 +47,11 @@ class ScreenMIDISettings(Screen):
 
     # set from config
     def before(self):
-        for key in self.app_state.config:
+        for key in self.eyesy.config:
             i = self.get_item_index(key)
             if i >= 0:
                 item = self.menu.items[i]
-                item.value = self.app_state.config[key]
+                item.value = self.eyesy.config[key]
                 item.text = item.format_string.format(value=item.value)
 
     def render(self, surface):
@@ -63,17 +63,17 @@ class ScreenMIDISettings(Screen):
 
         item = self.menu.items[self.menu.selected_index]
         if item.adjustable:
-            if self.app_state.key4_press: 
+            if self.eyesy.key4_press: 
                 self.menu_dec_value(item)
                 self.key4_td = 0
-            if self.app_state.key4_status:
+            if self.eyesy.key4_status:
                 self.key4_td += 1
                 if self.key4_td > 10 : self.menu_dec_value(item)
 
-            if self.app_state.key5_press: 
+            if self.eyesy.key5_press: 
                 self.menu_inc_value(item)
                 self.key5_td = 0
-            if self.app_state.key5_status:
+            if self.eyesy.key5_status:
                 self.key5_td += 1
                 if self.key5_td > 10 : self.menu_inc_value(item)
      
@@ -89,16 +89,16 @@ class ScreenMIDISettings(Screen):
 
     def save_config(self):
         # save to config
-        for key in self.app_state.config:
+        for key in self.eyesy.config:
             i = self.get_item_index(key)
             if i >= 0:
                 item = self.menu.items[i]
-                self.app_state.config[key] = item.value
-        self.app_state.save_config_file()
+                self.eyesy.config[key] = item.value
+        self.eyesy.save_config_file()
         self.exit_menu()
     
     def goto_midi_pc_mapping(self):
-        self.app_state.switch_menu_screen("midi_pc_mapping")
+        self.eyesy.switch_menu_screen("midi_pc_mapping")
     def exit_menu(self):
-        self.app_state.switch_menu_screen("home")
+        self.eyesy.switch_menu_screen("home")
 

@@ -4,8 +4,8 @@ import time
 import re
 
 class WidgetApplogs():
-    def __init__(self, app_state):
-        self.app_state = app_state
+    def __init__(self, eyesy):
+        self.eyesy = eyesy
         self.font = pygame.font.Font("font.ttf", 10)
         self.logs = []
         self.last_log_time = 0  # Timestamp of the last log fetch

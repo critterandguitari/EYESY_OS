@@ -4,10 +4,10 @@ from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
 
 class ScreenMainMenu(Screen):
-    def __init__(self, app_state):
-        super().__init__(app_state)
+    def __init__(self, eyesy):
+        super().__init__(eyesy)
         self.title = "Settings         " + chr(0x2680) + "           " + chr(0x2681) + "         " + chr(0x2682) + "          " + chr(0x2683)
-        self.menu = WidgetMenu(app_state, [
+        self.menu = WidgetMenu(eyesy, [
 #            MenuItem('MIDI Ch 16', self.exit_menu),
 #            MenuItem('Gain 100%', self.exit_menu),
             MenuItem('Video Settings  ▶', self.goto_video_settings),
@@ -29,23 +29,23 @@ class ScreenMainMenu(Screen):
         self.menu.render(surface)
 
     def goto_palette(self):
-        self.app_state.switch_menu_screen("palette")
+        self.eyesy.switch_menu_screen("palette")
 
     def goto_midi_settings(self):
-        self.app_state.switch_menu_screen("midi_settings")
+        self.eyesy.switch_menu_screen("midi_settings")
 
     def goto_video_settings(self):
-        self.app_state.switch_menu_screen("video_settings")
+        self.eyesy.switch_menu_screen("video_settings")
 
     def goto_test(self):
-        self.app_state.switch_menu_screen("test")
+        self.eyesy.switch_menu_screen("test")
 
     def goto_applogs(self):
-        self.app_state.switch_menu_screen("applogs")
+        self.eyesy.switch_menu_screen("applogs")
 
     def goto_wifi(self):
-        self.app_state.switch_menu_screen("wifi")
+        self.eyesy.switch_menu_screen("wifi")
 
     def exit_menu(self):
-        self.app_state.exit_menu()
+        self.eyesy.exit_menu()
 

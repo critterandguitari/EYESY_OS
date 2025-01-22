@@ -2,8 +2,8 @@ import pygame
 
 class WidgetKeyboard():
 
-    def __init__(self, app_state, connect_callback=None, cancel_callback=None):
-        self.app_state = app_state
+    def __init__(self, eyesy, connect_callback=None, cancel_callback=None):
+        self.eyesy = eyesy
         # Initialize text, surfaces, fonts, etc.
         self.text_box_text = ""
         self.keyboard_surface = pygame.Surface((400, 200))
@@ -152,18 +152,18 @@ class WidgetKeyboard():
 
     def handle_events(self):
         # Handle other events if needed
-        app_data = self.app_state
+        eyesy = self.eyesy
 
         # navigate using rows and columns
-        '''if app_data.key4_press:
+        '''if eyesy.key4_press:
             if self.col_index > 0 :
                 self.col_index -= 1
 
-        if app_data.key5_press:
+        if eyesy.key5_press:
             if self.col_index < len(self.lower_keys[self.row_index])-1 :
                 self.col_index += 1
 
-        if app_data.key6_press:
+        if eyesy.key6_press:
             if self.row_index > 0 :
                 self.row_index -= 1
                 # correct column when moving to new row with dif len
@@ -172,7 +172,7 @@ class WidgetKeyboard():
                 if self.row_index == 4:
                     self.col_index = int(self.col_index * (3/2))
 
-        if app_data.key7_press:
+        if eyesy.key7_press:
             if self.row_index < 5 :
                 self.row_index += 1 
                 # correct column when moving to new row with dif len
@@ -190,9 +190,9 @@ class WidgetKeyboard():
         elif self.row_index == 5 : 
             self.selected_index = 43 + self.col_index
         '''
-        self.selected_index = int(self.app_state.knob1 * (len(self.flat_keys_lower) - 1))
+        self.selected_index = int(self.eyesy.knob1 * (len(self.flat_keys_lower) - 1))
         # Key selection/activation
-        if app_data.key8_press:
+        if eyesy.key8_press:
             selected_key = self.get_key(self.selected_index)
             if selected_key:
                 lower_key = selected_key.lower()
@@ -239,5 +239,5 @@ class WidgetKeyboard():
 
     def goto_home(self):
         pass
-        # self.app_state.current_screen = self.app_state.menu_screens["info"]
+        # self.eyesy.current_screen = self.eyesy.menu_screens["info"]
 

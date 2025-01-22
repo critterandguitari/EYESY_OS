@@ -13,8 +13,8 @@ class MenuItem:
 
 class WidgetMenu:
     
-    def __init__(self, app_state, items):
-        self.app_state = app_state
+    def __init__(self, eyesy, items):
+        self.eyesy = eyesy
         self.items = items  # List of MenuItem instances
         self.selected_index = 0
         self.font = pygame.font.Font("font.ttf", 16)
@@ -37,20 +37,20 @@ class WidgetMenu:
 
     # nav with key repeat
     def handle_events(self):
-        if self.app_state.key6_press: 
+        if self.eyesy.key6_press: 
             self.menu_dec()
             self.key6_td = 0
-        if self.app_state.key6_status:
+        if self.eyesy.key6_status:
             self.key6_td += 1
             if self.key6_td > 10 : self.menu_dec()
 
-        if self.app_state.key7_press: 
+        if self.eyesy.key7_press: 
             self.menu_inc()
             self.key7_td = 0
-        if self.app_state.key7_status:
+        if self.eyesy.key7_status:
             self.key7_td += 1
             if self.key7_td > 10 : self.menu_inc()
-        if self.app_state.key8_press:
+        if self.eyesy.key8_press:
             self.items[self.selected_index].action()
 
     def menu_dec(self):
@@ -67,21 +67,21 @@ class WidgetMenu:
 
     # use key 4 and 5 for scrolling instead
     def handle_events_k4_k5(self):
-        if self.app_state.key4_press: 
+        if self.eyesy.key4_press: 
             self.menu_dec()
             self.key4_td = 0
-        if self.app_state.key4_status:
+        if self.eyesy.key4_status:
             self.key4_td += 1
             if self.key4_td > 10 : self.menu_dec()
 
-        if self.app_state.key5_press: 
+        if self.eyesy.key5_press: 
             self.menu_inc()
             self.key5_td = 0
-        if self.app_state.key5_status:
+        if self.eyesy.key5_status:
             self.key5_td += 1
             if self.key5_td > 10 : self.menu_inc()
         
-        if self.app_state.key8_press:
+        if self.eyesy.key8_press:
             self.items[self.selected_index].action()
 
 

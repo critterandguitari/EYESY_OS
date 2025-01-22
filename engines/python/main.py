@@ -10,7 +10,7 @@ import liblo
 import pygame
 from pygame.locals import *
 import midi
-import etc_system
+import eyesy
 import osc
 import sound
 import osd
@@ -20,7 +20,7 @@ print("starting...")
 # create etc object
 # this holds all the data (mode and preset names, knob values, midi input, sound input, current states, etc...)
 # it gets passed to the modes which use the audio midi and knob values
-etc = etc_system.System()
+etc = eyesy.Eyesy()
 
 # just to make sure
 etc.clear_flags()

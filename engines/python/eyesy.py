@@ -221,7 +221,7 @@ class Eyesy:
         self._validate_config_int("audio_gain", 0, 300)
         self._validate_config_int("fg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("bg_palette", 0, len(self.palettes)-1)
-        self._validate_config_int("trigger_source", 0, len(self.trigger_sources)-1)
+        self._validate_config_int("trigger_source", 0, len(self.TRIGGER_SOURCES)-1)
         self._validate_config_int("knob1_cc", 0, 127)
         self._validate_config_int("knob2_cc", 0, 127)
         self._validate_config_int("knob3_cc", 0, 127)

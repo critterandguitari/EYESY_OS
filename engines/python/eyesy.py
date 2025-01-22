@@ -15,8 +15,9 @@ import csv
 import color_palettes
 import config
 
-class System:
+class Eyesy:
 
+    # config stuff 
     GRABS_PATH = "/sdcard/Grabs/"
     MODES_PATH = "/sdcard/Modes/Python/"
     SCENES_PATH = "/sdcard/Scenes/"
@@ -39,6 +40,8 @@ class System:
           "res"  : (1920,1080)
         }
     ]
+    
+    RES =  (0,0)
 
     DEFAULT_CONFIG = {
         "video_resolution": 0,
@@ -55,17 +58,10 @@ class System:
         "auto_clear_cc": 25,
         "pc_map": {}
     }
-   
-    trigger_sources = ["MIDI Clock", "MIDI Note", "Audio"]
-    config = {}
-
-    RES =  (0,0)
-
-    fps = 0
-    frame_count = 0
     
-    xres = 1280
-    yres = 720
+    config = {}
+   
+    TRIGGER_SOURCES = ["MIDI Clock", "MIDI Note", "Audio"]
 
     # some colors we use
     BLACK = (0, 0, 0)
@@ -75,8 +71,6 @@ class System:
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     OSDBG = (0,0,255)
-
-    font = None
 
     # screen grabs
     lastgrab = None
@@ -95,7 +89,7 @@ class System:
     error = ''       # errors that happend during setup() or run()
     run_setup = False # flag to signal main loop to run setup() usually if a mode was reloaded
 
-    #scenes
+    # scenes
     scenes = []     # 
     scene_index = 0
     save_key_status = False
@@ -124,7 +118,7 @@ class System:
     knob_override = [False] * 5
     knob_last = [-1] * 5      # used to filter repetitive knob osc messages, but we always want to first one so set to -1
 
-    # midi stuff (CC gets updated into knobs
+    # midi stuff 
     midi_notes = [0] * 128
     midi_notes_last = [0] * 128
     midi_note_new = False
@@ -138,17 +132,22 @@ class System:
     ip = ''
     auto_clear = True
     bg_color = (0, 0, 0)
-    quit = False
     restart = False
     show_osd = False
     menu_mode = False
     osd_first = False # when osd is first turned on this is used to gather info
     trig_button = False # if the button is held down or not
+    fps = 0
+    frame_count = 0
+    xres = 1280
+    yres = 720
+    font = None
 
     # menu stuff
     current_screen = None
     menu_screens = {}
-    # Key flags
+    
+    # key stuff
     key1_press = False
     key2_press = False
     key3_press = False

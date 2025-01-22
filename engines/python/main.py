@@ -296,9 +296,6 @@ while 1:
             hwscreen.fill(etc.bg_color) 
  
     pygame.display.flip()
-
-    if etc.quit :
-        exitexit()
     
     # clear all the events
     etc.clear_flags()

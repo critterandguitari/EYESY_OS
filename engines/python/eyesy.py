@@ -17,165 +17,165 @@ import config
 
 class Eyesy:
 
-    # config stuff 
-    GRABS_PATH = "/sdcard/Grabs/"
-    MODES_PATH = "/sdcard/Modes/Python/"
-    SCENES_PATH = "/sdcard/Scenes/"
-    SYSTEM_PATH = "/sdcard/System/"
-    
-    RESOLUTIONS = [
-        { "name" : "640 x 480",
-          "res"  : (640,480)
-        },
-        { "name" : "720 x 480",
-          "res"  : (720,480)
-        },
-        { "name" : "800 x 600",
-          "res"  : (800,600)
-        },
-        { "name" : "1280 x 720",
-          "res"  : (1280,720)
-        },
-        { "name" : "1920 x 1080 - slow",
-          "res"  : (1920,1080)
+    def __init__(self):
+        # config stuff 
+        self.GRABS_PATH = "/sdcard/Grabs/"
+        self.MODES_PATH = "/sdcard/Modes/Python/"
+        self.SCENES_PATH = "/sdcard/Scenes/"
+        self.SYSTEM_PATH = "/sdcard/System/"
+        
+        self.RESOLUTIONS = [
+            { "name" : "640 x 480",
+              "res"  : (640,480)
+            },
+            { "name" : "720 x 480",
+              "res"  : (720,480)
+            },
+            { "name" : "800 x 600",
+              "res"  : (800,600)
+            },
+            { "name" : "1280 x 720",
+              "res"  : (1280,720)
+            },
+            { "name" : "1920 x 1080 - slow",
+              "res"  : (1920,1080)
+            }
+        ]
+        
+        self.RES =  (0,0)
+        
+        self.TRIGGER_SOURCES = ["Audio", "MIDI Note", "MIDI Clock ", "MIDI Clock 16th Note", "MIDI Clock 8th Note", "MIDI Clock 1/4 Note", "MIDI Clock Whole Note"]
+
+        self.DEFAULT_CONFIG = {
+            "video_resolution": 0,
+            "audio_gain": 50,
+            "trigger_source":0,
+            "fg_palette": 0,
+            "bg_palette": 0,
+            "midi_channel": 1,
+            "knob1_cc": 20,
+            "knob2_cc": 21,
+            "knob3_cc": 22,
+            "knob4_cc": 23,
+            "knob5_cc": 24,
+            "auto_clear_cc": 25,
+            "pc_map": {}
         }
-    ]
-    
-    RES =  (0,0)
+        
+        self.config = {}
 
-    DEFAULT_CONFIG = {
-        "video_resolution": 0,
-        "audio_gain": 50,
-        "trigger_source":0,
-        "fg_palette": 0,
-        "bg_palette": 0,
-        "midi_channel": 1,
-        "knob1_cc": 20,
-        "knob2_cc": 21,
-        "knob3_cc": 22,
-        "knob4_cc": 23,
-        "knob5_cc": 24,
-        "auto_clear_cc": 25,
-        "pc_map": {}
-    }
-    
-    config = {}
-   
-    TRIGGER_SOURCES = ["MIDI Clock", "MIDI Note", "Audio"]
+        # some colors we use
+        self.BLACK = (0, 0, 0)
+        self.WHITE = (255, 255, 255)
+        self.LGRAY = (200, 200, 200)
+        self.RED = (255, 0, 0)
+        self.GREEN = (0, 255, 0)
+        self.BLUE = (0, 0, 255)
+        self.OSDBG = (0,0,255)
 
-    # some colors we use
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    LGRAY = (200, 200, 200)
-    RED = (255, 0, 0)
-    GREEN = (0, 255, 0)
-    BLUE = (0, 0, 255)
-    OSDBG = (0,0,255)
+        # screen grabs
+        self.lastgrab = None
+        self.lastgrab_thumb = None
+        self.tengrabs_thumbs = []
+        self.grabcount = 0
+        self.grabindex = 0
+        self.screengrab_flag = False
 
-    # screen grabs
-    lastgrab = None
-    lastgrab_thumb = None
-    tengrabs_thumbs = []
-    grabcount = 0
-    grabindex = 0
-    screengrab_flag = False
-    screen = None  # ref to main surface, for doing screenshots
+        # modes
+        self.mode_names = []  # list of mode names pupulated from Modes folder on USB drive
+        self.mode_index = 0   # index of current mode
+        self.mode = ''        # name of current mode
+        self.mode_root = ''   # root path of current mode
+        self.error = ''       # errors that happend during setup() or run()
+        self.run_setup = False # flag to signal main loop to run setup() usually if a mode was reloaded
 
-    # modes
-    mode_names = []  # list of mode names pupulated from Modes folder on USB drive
-    mode_index = 0   # index of current mode
-    mode = ''        # name of current mode
-    mode_root = ''   # root path of current mode
-    error = ''       # errors that happend during setup() or run()
-    run_setup = False # flag to signal main loop to run setup() usually if a mode was reloaded
+        # scenes
+        self.scenes = []     # 
+        self.scene_index = 0
+        self.save_key_status = False
+        self.save_key_time = 0  # for timing how long save key held 
+        self.scene_set = False
+        self.next_numbered_scene = 1
+        
+        # audio
+        self.audio_in = [0] * 100
+        self.audio_peak = 0
+        self.audio_trig = False
+        self.audio_scale = 1.0
 
-    # scenes
-    scenes = []     # 
-    scene_index = 0
-    save_key_status = False
-    save_key_time = 0  # for timing how long save key held 
-    scene_set = False
-    next_numbered_scene = 1
-    
-    # audio
-    audio_in = [0] * 100
-    audio_peak = 0
-    audio_trig = False
-    audio_scale = 1.0
-    audio_trig_enable = True
+        # knobs a used by mode 
+        self.knob1 = 0
+        self.knob2 = 1
+        self.knob3 = 1
+        self.knob4 = 1
+        self.knob5 = 1
+       
+        # knob values used internally
+        self.knob = [.2] * 5
+        self.knob_hardware = [.2] * 5
+        self.knob_snapshot = [.2] * 5
+        self.knob_override = [False] * 5
+        self.knob_last = [-1] * 5      # used to filter repetitive knob osc messages, but we always want to first one so set to -1
 
-    # knobs a used by mode 
-    knob1 = 0
-    knob2 = 1
-    knob3 = 1
-    knob4 = 1
-    knob5 = 1
-   
-    # knob values used internally
-    knob = [.2] * 5
-    knob_hardware = [.2] * 5
-    knob_snapshot = [.2] * 5
-    knob_override = [False] * 5
-    knob_last = [-1] * 5      # used to filter repetitive knob osc messages, but we always want to first one so set to -1
+        # midi stuff 
+        self.midi_notes = [0] * 128
+        self.midi_notes_last = [0] * 128
+        self.midi_note_new = False
+        self.midi_clk = 0
+        self.new_midi = False
+        self.usb_midi_name = ''
+        self.usb_midi_present = False
 
-    # midi stuff 
-    midi_notes = [0] * 128
-    midi_notes_last = [0] * 128
-    midi_note_new = False
-    midi_clk = 0
-    new_midi = False
-    usb_midi_name = ''
-    usb_midi_present = False
+        # system stuff 
+        self.screen = None  # ref to main surface, for doing screenshots
+        self.xres = 1280
+        self.yres = 720
+        self.bg_color = (0, 0, 0)
+        self.memory_used = 0
+        self.ip = ''
+        self.auto_clear = True
+        self.restart = False
+        self.show_osd = False
+        self.menu_mode = False
+        self.osd_first = False # when osd is first turned on this is used to gather info
+        self.trig_button = False # if the button is held down or not
+        self.fps = 0
+        self.frame_count = 0
+        self.font = None 
 
-    # system stuff 
-    memory_used = 0
-    ip = ''
-    auto_clear = True
-    bg_color = (0, 0, 0)
-    restart = False
-    show_osd = False
-    menu_mode = False
-    osd_first = False # when osd is first turned on this is used to gather info
-    trig_button = False # if the button is held down or not
-    fps = 0
-    frame_count = 0
-    xres = 1280
-    yres = 720
-    font = None
+        # menu stuff
+        self.current_screen = None
+        self.menu_screens = {}
 
-    # menu stuff
-    current_screen = None
-    menu_screens = {}
-    
-    # key stuff
-    key1_press = False
-    key2_press = False
-    key3_press = False
-    key4_press = False
-    key5_press = False
-    key6_press = False
-    key7_press = False
-    key8_press = False
-    key9_press = False
-    key10_press = False
-    
-    key2_status = False  # shift key pressed or not
-    key4_status = False  
-    key5_status = False  
-    key6_status = False  
-    key7_status = False  
-    key10_status = False  
+        # key stuff
+        self.key1_press = False
+        self.key2_press = False
+        self.key3_press = False
+        self.key4_press = False
+        self.key5_press = False
+        self.key6_press = False
+        self.key7_press = False
+        self.key8_press = False
+        self.key9_press = False
+        self.key10_press = False
+        
+        self.key2_status = False  # shift key pressed or not
+        self.key4_status = False  
+        self.key5_status = False  
+        self.key6_status = False  
+        self.key7_status = False  
+        self.key10_status = False  
 
-    # counters for key repeaters
-    key4_td = 0
-    key5_td = 0
-    key6_td = 0
-    key7_td = 0
+        # counters for key repeaters
+        self.key4_td = 0
+        self.key5_td = 0
+        self.key6_td = 0
+        self.key7_td = 0
 
-    # color stuff
-    palettes = color_palettes.abcd_palettes
-    fg_palette = 0;
-    bg_palette = 0;
+        # color stuff
+        self.palettes = color_palettes.abcd_palettes
+        self.fg_palette = 0;
+        self.bg_palette = 0;
 
     def load_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
@@ -222,12 +222,12 @@ class Eyesy:
         self._validate_config_int("fg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("bg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("trigger_source", 0, len(self.TRIGGER_SOURCES)-1)
-        self._validate_config_int("knob1_cc", 0, 127)
-        self._validate_config_int("knob2_cc", 0, 127)
-        self._validate_config_int("knob3_cc", 0, 127)
-        self._validate_config_int("knob4_cc", 0, 127)
-        self._validate_config_int("knob5_cc", 0, 127)
-        self._validate_config_int("auto_clear_cc", 0, 127)
+        self._validate_config_int("knob1_cc", -1, 127)
+        self._validate_config_int("knob2_cc", -1, 127)
+        self._validate_config_int("knob3_cc", -1, 127)
+        self._validate_config_int("knob4_cc", -1, 127)
+        self._validate_config_int("knob5_cc", -1, 127)
+        self._validate_config_int("auto_clear_cc", -1, 127)
 
     def save_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"

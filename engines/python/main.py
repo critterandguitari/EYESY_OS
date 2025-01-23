@@ -14,6 +14,15 @@ import eyesy
 import osc
 import sound
 import osd
+from screen_main_menu import ScreenMainMenu
+from screen_test import ScreenTest
+from screen_video_settings import ScreenVideoSettings
+from screen_palette import ScreenPalette
+from screen_wifi import ScreenWiFi
+from screen_applogs import ScreenApplogs
+from screen_midi_settings import ScreenMIDISettings
+from screen_midi_pc_mapping import ScreenMIDIPCMapping
+
 
 print("starting...")
 
@@ -156,18 +165,9 @@ def exitexit_restart():
     osc.close()
     sys.exit(1)
 
-# menu screens
+# menu screens, need to load after pygame
 osd.loading_banner(hwscreen,"Loading menu")
 try :
-    from screen_main_menu import ScreenMainMenu
-    from screen_test import ScreenTest
-    from screen_video_settings import ScreenVideoSettings
-    from screen_palette import ScreenPalette
-    from screen_wifi import ScreenWiFi
-    from screen_applogs import ScreenApplogs
-    from screen_midi_settings import ScreenMIDISettings
-    from screen_midi_pc_mapping import ScreenMIDIPCMapping
-
     eyesy.menu_screens["home"] = ScreenMainMenu(eyesy)
     eyesy.menu_screens["test"] = ScreenTest(eyesy)
     eyesy.menu_screens["video_settings"] = ScreenVideoSettings(eyesy)

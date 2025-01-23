@@ -12,13 +12,14 @@ class ScreenMIDISettings(Screen):
         self.menu = WidgetMenu(eyesy, [])
         self.menu.items.append(MenuItem('MIDI PC Mapping  ▶', self.goto_midi_pc_mapping))
         
+        self.menu.items.append(self.create_adjustable_menu_item("trigger_source", 0, len(eyesy.TRIGGER_SOURCES)-1,  ""))
         self.menu.items.append(self.create_adjustable_menu_item("midi_channel", 1, 16,  "MIDI Channel: {value}"))
-        self.menu.items.append(self.create_adjustable_menu_item("knob1_cc", 0, 127,  "Knob 1 CC: {value}"))
-        self.menu.items.append(self.create_adjustable_menu_item("knob2_cc", 0, 127,  "Knob 2 CC: {value}"))
-        self.menu.items.append(self.create_adjustable_menu_item("knob3_cc", 0, 127,  "Knob 3 CC: {value}"))
-        self.menu.items.append(self.create_adjustable_menu_item("knob4_cc", 0, 127,  "Knob 4 CC: {value}"))
-        self.menu.items.append(self.create_adjustable_menu_item("knob5_cc", 0, 127,  "Knob 5 CC: {value}"))
-        self.menu.items.append(self.create_adjustable_menu_item("auto_clear_cc", 0, 127,  "Screen Clear On/Off CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob1_cc", -1, 127,  "Knob 1 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob2_cc", -1, 127,  "Knob 2 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob3_cc", -1, 127,  "Knob 3 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob4_cc", -1, 127,  "Knob 4 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("knob5_cc", -1, 127,  "Knob 5 CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("auto_clear_cc", -1, 127,  "Screen Clear On/Off CC: {value}"))
 
         self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))
         self.menu.visible_items = 8
@@ -36,7 +37,6 @@ class ScreenMIDISettings(Screen):
         item.max_value = maxv
         item.value = item.min_value
         item.format_string = format_string
-        item.text = item.format_string.format(value=item.value)
         return item
     
     def get_item_index(self, target_name):
@@ -44,6 +44,13 @@ class ScreenMIDISettings(Screen):
             if item.name == target_name:
                 return i
         return -1
+    
+    def text_for_menu_item(self, item) :
+        if item.name == "trigger_source" :
+           item.text = "Trigger Source: " + self.eyesy.TRIGGER_SOURCES[item.value] 
+        else:
+            if item.value < 0: item.text = item.format_string.format(value="None")
+            else: item.text = item.format_string.format(value=item.value)
 
     # set from config
     def before(self):
@@ -52,8 +59,8 @@ class ScreenMIDISettings(Screen):
             if i >= 0:
                 item = self.menu.items[i]
                 item.value = self.eyesy.config[key]
-                item.text = item.format_string.format(value=item.value)
-
+                self.text_for_menu_item(item)
+    
     def render(self, surface):
         self.menu.render(surface)
 
@@ -80,12 +87,12 @@ class ScreenMIDISettings(Screen):
     def menu_dec_value(self, item):
         item.value -= 1
         if item.value < item.min_value: item.value = item.min_value
-        item.text = item.format_string.format(value=item.value)
+        self.text_for_menu_item(item)
 
     def menu_inc_value(self, item):
         item.value += 1
         if item.value > item.max_value: item.value = item.max_value
-        item.text = item.format_string.format(value=item.value)
+        self.text_for_menu_item(item)
 
     def save_config(self):
         # save to config

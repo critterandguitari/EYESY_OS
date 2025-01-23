@@ -3,6 +3,7 @@ import traceback
 import mido
 
 input_port = None
+midi_clock_count = 0
 
 def _handle_note(eyesy, message):
     #print(f"Note message: {message}")
@@ -11,6 +12,8 @@ def _handle_note(eyesy, message):
         val = message.velocity
         if val > 0 :
             eyesy.midi_notes[num] = 1
+            #eyesy.mode_index = num % len(eyesy.mode_names)
+            #eyesy.set_mode_by_index(eyesy.mode_index)
         else :
             eyesy.midi_notes[num] = 0
 
@@ -25,6 +28,8 @@ def _handle_control_change(eyesy, message):
         if message.control == eyesy.config["knob4_cc"] : eyesy.knob_hardware[3] = val / 127.
         if message.control == eyesy.config["knob5_cc"] : eyesy.knob_hardware[4] = val / 127.
         if message.control == eyesy.config["auto_clear_cc"] : 
+            #eyesy.mode_index = val % len(eyesy.mode_names)
+            #eyesy.set_mode_by_index(eyesy.mode_index)
             if val > 64 :
                 eyesy.auto_clear = True
             else:
@@ -37,6 +42,10 @@ def _handle_program_change(eyesy, message):
             scene = eyesy.config["pc_map"][f"pgm_{message.program + 1}"]
             print(f"attempting to load scene {scene}")
             eyesy.recall_scene_by_name(scene)
+
+def _handle_clock(eyesy, message):
+    global midi_clock_count
+    midi_clock_count += 1
 
 def init():
     global input_port
@@ -67,6 +76,8 @@ def recv(eyesy):
 
         for message in messages:
             try:
+                if message.type == 'clock':
+                    _handle_clock(eyesy, message)
                 if message.type == 'note_on' or message.type == 'note_off':
                     _handle_note(eyesy, message)
                 elif message.type == 'control_change':

@@ -12,8 +12,9 @@ def _handle_note(eyesy, message):
         val = message.velocity
         if val > 0 :
             eyesy.midi_notes[num] = 1
-            #eyesy.mode_index = num % len(eyesy.mode_names)
-            #eyesy.set_mode_by_index(eyesy.mode_index)
+            if eyesy.config["notes_change_mode"] == 1:
+                eyesy.mode_index = num % len(eyesy.mode_names)
+                eyesy.set_mode_by_index(eyesy.mode_index)
         else :
             eyesy.midi_notes[num] = 0
 

@@ -20,6 +20,7 @@ class ScreenMIDISettings(Screen):
         self.menu.items.append(self.create_adjustable_menu_item("knob4_cc", -1, 127,  "Knob 4 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob5_cc", -1, 127,  "Knob 5 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("auto_clear_cc", -1, 127,  "Screen Clear On/Off CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("notes_change_mode", 0, 1, ""))
 
         self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))
         self.menu.visible_items = 8
@@ -48,6 +49,9 @@ class ScreenMIDISettings(Screen):
     def text_for_menu_item(self, item) :
         if item.name == "trigger_source" :
            item.text = "Trigger Source: " + self.eyesy.TRIGGER_SOURCES[item.value] 
+        elif item.name == "notes_change_mode" :
+            if item.value == 1: item.text = "MIDI Notes Select Mode: Yes"
+            else : item.text = "MIDI Notes Select Mode: No"
         else:
             if item.value < 0: item.text = item.format_string.format(value="None")
             else: item.text = item.format_string.format(value=item.value)

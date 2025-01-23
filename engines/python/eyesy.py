@@ -59,6 +59,7 @@ class Eyesy:
             "knob4_cc": 23,
             "knob5_cc": 24,
             "auto_clear_cc": 25,
+            "notes_change_mode": False,
             "pc_map": {}
         }
         
@@ -214,6 +215,13 @@ class Eyesy:
             else self.DEFAULT_CONFIG[field]
         )
 
+    def _validate_config_bool(self, field):
+        self.config[field] = (
+            self.config.get(field)
+            if isinstance(self.config.get(field), bool)
+            else self.DEFAULT_CONFIG[field]
+        )
+
     def validate_config(self):
         # Validate each field in self.config, falling back to defaults if needed
         self._validate_config_int("midi_channel", 1, 16)
@@ -228,6 +236,7 @@ class Eyesy:
         self._validate_config_int("knob4_cc", -1, 127)
         self._validate_config_int("knob5_cc", -1, 127)
         self._validate_config_int("auto_clear_cc", -1, 127)
+        self._validate_config_int("notes_change_mode", 0, 1)
 
     def save_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"

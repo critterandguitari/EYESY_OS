@@ -16,9 +16,10 @@ class ScreenMIDIPCMapping(Screen):
         self.menu.visible_items = 12  
         self.key4_td = 0      # timer used for key repeats
         self.key5_td = 0      # timer used for key repeats
-        self.update_thumb_flag = False
-    
-    # see if scene name is in the current list of scenes
+        self.thumbnail = pygame.Surface((320,240))
+        self.thumbnail_index = -1
+
+    # seoe if scene name is in the current list of scenes
     def get_scene_index(self, target_name):
         for i, scene in enumerate(self.eyesy.scenes):
             if scene["name"] == target_name:
@@ -52,18 +53,21 @@ class ScreenMIDIPCMapping(Screen):
 
     def render(self, surface):
         self.menu.render(surface)
-        if True: #self.update_thumb_flag:
-            self.update_thumb_flag = False
-            item = self.menu.items[self.menu.selected_index]
-            if item.value >= 0:
-                thumb_path = self.eyesy.scenes[item.value]['thumbnail']
-                self.show_thumb(surface, (300,150), thumb_path)
+        item = self.menu.items[self.menu.selected_index]
+        if item.value >= 0:
+            if item.value != self.thumbnail_index: # don't keep loading same one
+                self.thumbnail.fill((0,0,0))
+                self.thumbnail_index = item.value
+                thumb_path = self.eyesy.scenes[item.value].get('thumbnail', None)
+                if thumb_path: self.show_thumb(self.thumbnail, thumb_path)
+        else :
+            self.thumbnail.fill((0,0,0))
+        surface.blit(self.thumbnail, (270, 75)) 
 
     def menu_inc_value(self, item):
         item.value += 1
         if item.value > len(self.eyesy.scenes) - 1: item.value = len(self.eyesy.scenes) - 1
         item.text = f"pgm {self.menu.selected_index + 1} -> {self.eyesy.scenes[item.value]['name']}"
-        self.update_thumb_flag = True
 
     def menu_dec_value(self, item):
         item.value -= 1
@@ -104,14 +108,13 @@ class ScreenMIDIPCMapping(Screen):
             self.eyesy.save_config_file()
             self.exit_menu()
      
-    def show_thumb(self, surface, position, filepath):
+    def show_thumb(self, surface, filepath):
         try:
             image = pygame.image.load(filepath)
-            x, y = position
-            surface.blit(image, (x, y))
+            surface.blit(image, (0, 0))
         except pygame.error as e:
             print(f"Error loading image at {filepath}: {e}")
-    
+        
     def exit_menu(self):
         self.eyesy.switch_menu_screen("home")
 

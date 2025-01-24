@@ -529,8 +529,8 @@ class Eyesy:
         except Exception as e:
             print(f"Failed to save scene file: {e}")
 
-        thumb = pygame.Surface((128, 72))
-        pygame.transform.scale(self.screen, (128, 72), thumb)
+        thumb = pygame.Surface((320, 240))
+        pygame.transform.scale(self.screen, (320, 240), thumb)
         pygame.image.save(thumb, imagepath)
         print("saved scene screenshot " + imagepath)
 

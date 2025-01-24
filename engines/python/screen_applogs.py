@@ -7,6 +7,7 @@ class ScreenApplogs(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
         self.title = "Logs"
+        self.footer =  chr(0x2680) + "     = Cancel     "
         self.applogs = WidgetApplogs(eyesy)
         self.applogs.x_offset = 50
         self.applogs.y_offset = 50

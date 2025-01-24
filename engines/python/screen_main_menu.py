@@ -6,10 +6,10 @@ from widget_menu import WidgetMenu, MenuItem
 class ScreenMainMenu(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
-        self.title = "Settings         " + chr(0x2680) + "           " + chr(0x2681) + "         " + chr(0x2682) + "          " + chr(0x2683)
+        #self.title = "Settings         " + chr(0x2680) + "           " + chr(0x2681) + "         " + chr(0x2682) + "          " + chr(0x2683)
+        self.title = "Settings"
+        self.footer =  chr(0x2680) + "     = Cancel     " + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Enter"
         self.menu = WidgetMenu(eyesy, [
-#            MenuItem('MIDI Ch 16', self.exit_menu),
-#            MenuItem('Gain 100%', self.exit_menu),
             MenuItem('Video Settings  ▶', self.goto_video_settings),
             MenuItem('MIDI Settings  ▶', self.goto_midi_settings),
             MenuItem('WiFi  ▶', self.goto_wifi),

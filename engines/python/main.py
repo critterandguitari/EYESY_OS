@@ -73,8 +73,6 @@ eyesy.yres = hwscreen.get_height()
 print("opened screen at: " + str(hwscreen.get_size()))
 hwscreen.fill((0,0,0)) 
 pygame.display.flip()
-osd.loading_banner(hwscreen, "Timer Why 2 Seconds?")
-time.sleep(2)
 
 # screen for mode to draw on
 mode_screen = pygame.Surface((eyesy.xres,eyesy.yres))

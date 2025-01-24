@@ -100,6 +100,8 @@ class ScreenWiFi(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
         self.title = "WiFi Setup"
+        self.footer =  chr(0x2680) + "     = Cancel     " + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Enter"
+        self.footer =  chr(0x2680) + "     = Cancel     "+ chr(0x2681) +"   = Right/Left     "  + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Enter"
         self.menu = WidgetMenu(eyesy, [])
         self.ssids = []
         self.connected = False
@@ -111,7 +113,7 @@ class ScreenWiFi(Screen):
         self.keyboard = None  # Will hold the KeyboardScreen instance when needed
         self.netlogs = WidgetNetlogs(eyesy)
         self.netlogs.x_offset = 50
-        self.netlogs.y_offset = 300
+        self.netlogs.y_offset = 280
         self.menu.off_y = 75
 
     def before(self):
@@ -136,7 +138,7 @@ class ScreenWiFi(Screen):
 
         # otherwise we show the netlogs
         message = "Logs"
-        msg_xy = (32, 275)
+        msg_xy = (32, 260)
         rendered_text = font.render(message, True, color)
         surface.blit(rendered_text, msg_xy)
         self.netlogs.render(surface)

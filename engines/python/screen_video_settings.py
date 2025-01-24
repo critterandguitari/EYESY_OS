@@ -6,6 +6,7 @@ class ScreenVideoSettings(Screen):
         super().__init__(eyesy)
         self.state = "idle" 
         self.title = "Video Settings"
+        self.footer =  chr(0x2680) + "     = Cancel     " + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Enter"
         self.new_video_res = 0
 
         self.menu = WidgetMenu(eyesy, [

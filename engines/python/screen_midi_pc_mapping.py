@@ -9,6 +9,7 @@ class ScreenMIDIPCMapping(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
         self.title = "MIDI PC Mapping"
+        self.footer =  chr(0x2680) + "     = Cancel     "+ chr(0x2681) +"   = Adjust     "  + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Save & Exit"
         self.menu = self.create_midi_mapping_menu()
         self.menu.visible_items = 8
         self.menu.off_y = 43

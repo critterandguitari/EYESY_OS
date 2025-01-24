@@ -9,6 +9,7 @@ class ScreenMIDISettings(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
         self.title = "MIDI Settings"
+        self.footer =  chr(0x2680) + "     = Cancel     "+ chr(0x2681) +"   = Adjust     "  + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Save & Exit"
         self.menu = WidgetMenu(eyesy, [])
         self.menu.items.append(MenuItem('MIDI PC Mapping  ▶', self.goto_midi_pc_mapping))
         
@@ -22,7 +23,7 @@ class ScreenMIDISettings(Screen):
         self.menu.items.append(self.create_adjustable_menu_item("auto_clear_cc", -1, 127,  "Screen Clear On/Off CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("notes_change_mode", 0, 1, ""))
 
-        self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))
+        #self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))
         self.menu.visible_items = 8
         self.menu.off_y = 43
 

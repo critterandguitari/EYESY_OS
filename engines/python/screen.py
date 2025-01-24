@@ -5,6 +5,7 @@ class Screen:
     def __init__(self, eyesy):
         self.eyesy = eyesy
         self.title = "My Cool Screen"
+        self.footer = "Footer"
         self.font = pygame.font.Font("font.ttf", 16)
 
     def handle_events(self):
@@ -25,6 +26,9 @@ class Screen:
         pygame.draw.line(surface, (200,200,200), (20, 50), (619, 50), 1)
         text_surface = self.font.render(self.title, True, (200,200,200), (0,0,0))
         surface.blit(text_surface, (32, 24))
+        pygame.draw.line(surface, (200,200,200), (20, 430), (619, 430), 1)
+        text_surface = self.font.render(self.footer, True, (200,200,200), (0,0,0))
+        surface.blit(text_surface, (32, 433))
         self.render(surface)
 
     def render(self, surface):

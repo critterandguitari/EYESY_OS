@@ -30,10 +30,11 @@ class ScreenPalette(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
         self.title = "Color Palette"
+        self.footer =  chr(0x2680) + "     = Cancel     "+ chr(0x2681) +"   = FG Palette     "  + chr(0x2682) + "   = BG Palette     " + chr(0x2683) + "  = Save & Exit"
         self.fg_menu = self.create_fg_palette_menu()
         self.bg_menu = self.create_bg_palette_menu()
         self.fg_menu.off_y = 50
-        self.bg_menu.off_y = 250
+        self.bg_menu.off_y = 230
         #self.menu.items.append(MenuItem('◀ Exit', self.goto_home))
     
     # Function to dynamically create a menu based on palettes

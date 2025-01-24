@@ -5,6 +5,7 @@ class ScreenTest(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
         self.title = "Factory Test"
+        self.footer =  chr(0x2680) + "     = Cancel     "
 
         # State previously stored globally
         self.highlighted_controls = set()

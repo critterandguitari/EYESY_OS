@@ -1,6 +1,6 @@
 
 import os
-from multiprocessing import Process, Array, Value
+from multiprocessing import Process, Array, Value, Lock
 from ctypes import c_float
 import time
 import sys
@@ -23,7 +23,6 @@ from screen_applogs import ScreenApplogs
 from screen_midi_settings import ScreenMIDISettings
 from screen_midi_pc_mapping import ScreenMIDIPCMapping
 
-
 print("starting...")
 
 # create eyesy object
@@ -45,12 +44,13 @@ midi.init()
 
 # setup alsa sound shared resources
 BUFFER_SIZE = 100
-shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer
+shared_buffer = Array(c_float, BUFFER_SIZE + 1, lock=True)  # Circular buffer, size + 1, last entry for trigger value
 write_index = Value('i', 0)  # Write index for the buffer
-lock = shared_buffer.get_lock()  # Lock for thread-safe access
+atrig = Value('i', 0)  # audio trigger
+lock = Lock()
 
 # Start the audio processing in a separate process
-audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, lock))
+audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, atrig, lock))
 audio_process.start()
 
 # init pygame, this has to happen after sound is setup
@@ -64,7 +64,7 @@ print("pygame version " + pygame.version.ver)
 # on screen display and other screen helpers
 osc.send("/led", 7) # set led to running
 
-# init fb and main surfaces
+# init fb and main surface hwscreen
 print("opening frame buffer...")
 os.putenv('SDL_VIDEODRIVER', "directfb")
 hwscreen = pygame.display.set_mode(eyesy.RES)
@@ -73,11 +73,14 @@ eyesy.yres = hwscreen.get_height()
 print("opened screen at: " + str(hwscreen.get_size()))
 hwscreen.fill((0,0,0)) 
 pygame.display.flip()
-osd.loading_banner(hwscreen, "")
+osd.loading_banner(hwscreen, "Timer Why 2 Seconds?")
 time.sleep(2)
 
+# screen for mode to draw on
+mode_screen = pygame.Surface((eyesy.xres,eyesy.yres))
+
 # eyesy gets a refrence to screen so it can save screen grabs 
-eyesy.screen = hwscreen
+eyesy.screen = mode_screen#hwscreen
 print(str(eyesy.screen) + " " +  str(hwscreen))
 
 # load modes, post banner if none found
@@ -214,16 +217,20 @@ while 1:
 
     # measure fps
     eyesy.frame_count += 1
-    if ((eyesy.frame_count % 50) == 0):
+    if ((eyesy.frame_count % 30) == 0):
         now = time.time()
-        eyesy.fps = 1 / ((now - start) / 50)
-        #print(eyesy.fps)
+        eyesy.fps = 1 / ((now - start) / 30)
         start = now
 
-    # check for sound
+    # get sound and trigger
+    tmptrig = False
     with lock:
         eyesy.audio_in[:] = shared_buffer[:]
-
+        tmptrig = atrig.value
+  
+    # update audio trig 
+    if eyesy.config["trigger_source"] == 0 and tmptrig: eyesy.trig = True
+    
     # set the mode on which to call draw
     try : 
         mode = sys.modules[eyesy.mode]
@@ -247,7 +254,8 @@ while 1:
 
     # clear it with bg color if auto clear enabled
     if eyesy.auto_clear :
-        hwscreen.fill(eyesy.bg_color) 
+        #hwscreen.fill(eyesy.bg_color) 
+        mode_screen.fill(eyesy.bg_color) 
     
     # run setup (usually if the mode was reloaded)
     if eyesy.run_setup :
@@ -261,17 +269,18 @@ while 1:
     # draw it
     if not eyesy.menu_mode :
         try :
-            mode.draw(hwscreen, eyesy)
+            #mode.draw(hwscreen, eyesy)
+            mode.draw(mode_screen, eyesy)
         except Exception as e:   
             eyesy.error = traceback.format_exc()
             print("error with draw: " + eyesy.error)
             # no use spitting these errors out at 30 fps
             pygame.time.wait(200)
             
-        #hwscreen.blit(screen, (0,0))
+        hwscreen.blit(mode_screen, (0,0))
         
     # osd
-    if eyesy.show_osd :
+    if eyesy.show_osd and not eyesy.menu_mode:
         try :
             osd.render_overlay_480(hwscreen, eyesy)
         except Exception as e:   
@@ -294,6 +303,13 @@ while 1:
         # menu exits, clear screen
         if not eyesy.menu_mode :
             hwscreen.fill(eyesy.bg_color) 
+    
+    #txt_str = " FPS:  "   + str(int(eyesy.fps)) + " "
+    #text = eyesy.font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
+    #text_rect = text.get_rect()
+    #text_rect.x = 10
+    #text_rect.centery = 10
+    #hwscreen.blit(text, text_rect)
  
     pygame.display.flip()
     

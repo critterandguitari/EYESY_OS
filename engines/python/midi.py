@@ -12,6 +12,9 @@ def _handle_note(eyesy, message):
         val = message.velocity
         if val > 0 :
             eyesy.midi_notes[num] = 1
+            # 1 is trigger source for note
+            if eyesy.config["trigger_source"] == 1: eyesy.trig = True 
+            # select mode from note 
             if eyesy.config["notes_change_mode"] == 1:
                 eyesy.mode_index = num % len(eyesy.mode_names)
                 eyesy.set_mode_by_index(eyesy.mode_index)
@@ -29,8 +32,6 @@ def _handle_control_change(eyesy, message):
         if message.control == eyesy.config["knob4_cc"] : eyesy.knob_hardware[3] = val / 127.
         if message.control == eyesy.config["knob5_cc"] : eyesy.knob_hardware[4] = val / 127.
         if message.control == eyesy.config["auto_clear_cc"] : 
-            #eyesy.mode_index = val % len(eyesy.mode_names)
-            #eyesy.set_mode_by_index(eyesy.mode_index)
             if val > 64 :
                 eyesy.auto_clear = True
             else:
@@ -46,6 +47,16 @@ def _handle_program_change(eyesy, message):
 
 def _handle_clock(eyesy, message):
     global midi_clock_count
+    ts = eyesy.config["trigger_source"]
+    if ts > 1:
+        if ts == 2:
+            if (midi_clock_count % 6) == 0: eyesy.trig = True
+        elif ts == 3:
+            if (midi_clock_count % 12) == 0: eyesy.trig = True
+        elif ts == 4:
+            if (midi_clock_count % 24) == 0: eyesy.trig = True
+        elif ts == 5:
+            if (midi_clock_count % 96) == 0: eyesy.trig = True
     midi_clock_count += 1
 
 def init():

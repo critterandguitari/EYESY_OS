@@ -135,8 +135,8 @@ def render_overlay_480(screen, eyesy) :
         eyesy.osd_first = False
 
     # mode
-    mode_str = " Mode: (" + str(eyesy.mode_index + 1) +" of "+str(len(eyesy.mode_names)) + ")" + str(eyesy.mode)      
-    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+    txt_str = " Mode: (" + str(eyesy.mode_index + 1) +" of "+str(len(eyesy.mode_names)) + ")" + str(eyesy.mode)      
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 40
@@ -182,18 +182,19 @@ def render_overlay_480(screen, eyesy) :
     # trigger
     pygame.draw.rect(screen, eyesy.BLACK, (20, 166, 105, 30))
     pygame.draw.rect(screen, eyesy.LGRAY, (98, 169, 24, 24), 1)
-    if eyesy.audio_trig:
+    if eyesy.trig:
         pygame.draw.rect(screen, (255,255,0), (98, 169, 24, 24))
   
     # ip    
-    mode_str = f" IP Address:  {eyesy.ip} "
-    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+    txt_str = f" IP Address:  {eyesy.ip} "
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 150
     screen.blit(text, text_rect)
     
 
+    draw_vu_480(screen, eyesy, 115, 210)
 
     '''            
     # knobs
@@ -211,8 +212,8 @@ def render_overlay_480(screen, eyesy) :
    
     # input level 
     pygame.draw.rect(screen, eyesy.BLACK, (20, 205, 220, 30))
-    mode_str = " Input Level:"
-    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+    txt_str = " Input Level:"
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 220
@@ -221,18 +222,18 @@ def render_overlay_480(screen, eyesy) :
     
     # Auto Clear   
     if eyesy.auto_clear :
-        mode_str = " Persist: No " 
+        txt_str = " Persist: No " 
     else :
-        mode_str = " Persist: Yes "         
-    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+        txt_str = " Persist: Yes "         
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 252
     screen.blit(text, text_rect)
     
     # mem
-    mode_str = " Memory Used:  "   + str(int(eyesy.memory_used) + 1) + "% "
-    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+    txt_str = " Memory Used:  "   + str(int(eyesy.memory_used) + 1) + "% "
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 306
@@ -240,41 +241,41 @@ def render_overlay_480(screen, eyesy) :
  
     # midi usb dev
 #    if (eyesy.usb_midi_present) :
-#        mode_str = " USB MIDI:  "   + str(eyesy.usb_midi_name) + " "
+#        txt_str = " USB MIDI:  "   + str(eyesy.usb_midi_name) + " "
 #    else :
-#        mode_str = " USB MIDI:  None "
-#    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+#        txt_str = " USB MIDI:  None "
+#    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
 #    text_rect = text.get_rect()
 #    text_rect.x = 20
 #    text_rect.centery = 334
 #    screen.blit(text, text_rect)
  
     # midi ch
-#    mode_str = " MIDI CH:  "   + str(eyesy.midi_ch) + " "
-#    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+#    txt_str = " MIDI CH:  "   + str(eyesy.midi_ch) + " "
+#    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
 #    text_rect = text.get_rect()
 #    text_rect.x = 20
 #    text_rect.centery = 362
 #    screen.blit(text, text_rect)
          # SSID    
-    mode_str = " Network: FIX ME "
-    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+    txt_str = " Network: FIX ME "
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 418
     screen.blit(text, text_rect)
 
     # fps
-    mode_str = " FPS:  "   + str(int(eyesy.fps)) + " "
-    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+    txt_str = " FPS:  "   + str(int(eyesy.fps)) + " "
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 10
     text_rect.centery = 10
     screen.blit(text, text_rect)
     
     # version
-    mode_str = " v3beta1 "
-    text = font.render(mode_str, True, eyesy.LGRAY, eyesy.BLACK)
+    txt_str = " v3beta1 "
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
     text_rect.centery = 446

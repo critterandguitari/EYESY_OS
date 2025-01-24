@@ -44,7 +44,7 @@ class Eyesy:
         
         self.RES =  (0,0)
         
-        self.TRIGGER_SOURCES = ["Audio", "MIDI Note", "MIDI Clock ", "MIDI Clock 16th Note", "MIDI Clock 8th Note", "MIDI Clock 1/4 Note", "MIDI Clock Whole Note"]
+        self.TRIGGER_SOURCES = ["Audio", "MIDI Note", "MIDI Clock 16th Note", "MIDI Clock 8th Note", "MIDI Clock 1/4 Note", "MIDI Clock Whole Note"]
 
         self.DEFAULT_CONFIG = {
             "video_resolution": 0,
@@ -101,7 +101,6 @@ class Eyesy:
         # audio
         self.audio_in = [0] * 100
         self.audio_peak = 0
-        self.audio_trig = False
         self.audio_scale = 1.0
 
         # knobs a used by mode 
@@ -140,6 +139,7 @@ class Eyesy:
         self.menu_mode = False
         self.osd_first = False # when osd is first turned on this is used to gather info
         self.trig_button = False # if the button is held down or not
+        self.trig = False
         self.fps = 0
         self.frame_count = 0
         self.font = None 
@@ -244,7 +244,7 @@ class Eyesy:
 
     def update_trig_button(self, stat) :
         if (stat > 0 ):
-            self.audio_trig = True
+            self.trig = True
             self.trig_button = True
         else :
             self.trig_button = False
@@ -261,13 +261,13 @@ class Eyesy:
         #self.screen.fill(self.bg_color) 
 
     def exit_menu(self):
-        self.screen.fill(self.bg_color) 
+        #self.screen.fill(self.bg_color) 
         self.menu_mode = False
         self.set_osd(False)
 
     def toggle_menu(self) :
         if self.menu_mode:
-            self.screen.fill(self.bg_color) 
+            #self.screen.fill(self.bg_color) 
             self.menu_mode = False
             self.set_osd(False)
         else :
@@ -278,11 +278,11 @@ class Eyesy:
     def toggle_osd(self) :
         # if on osd or menu screen, exit out of both
         if self.show_osd or self.menu_mode:
-            self.screen.fill(self.bg_color) 
+            #self.screen.fill(self.bg_color) 
             self.menu_mode = False
             self.set_osd(False)
         else :
-            self.screen.fill(self.bg_color) 
+            #self.screen.fill(self.bg_color) 
             self.set_osd(True)
             self.menu_mode = False
 
@@ -810,7 +810,7 @@ class Eyesy:
 
         # basic trig
         if k == 10 : 
-            if v > 0 : self.audio_trig = True
+            if v > 0 : self.trig = True
 
         # toggle osd or menu depending on shift
         if (k == 1 and v > 0) : 
@@ -865,7 +865,7 @@ class Eyesy:
 
     def update_key_repeater(self) :
         if self.key10_status : 
-            self.audio_trig = True
+            self.trig = True
         if not self.menu_mode :
             if self.key2_status : 
                 if self.key4_status :
@@ -959,7 +959,7 @@ class Eyesy:
 
     def clear_flags(self):
         self.new_midi = False
-        self.audio_trig = False
+        self.trig = False
         self.run_setup = False
         self.screengrab_flag = False
         self.midi_note_new = False

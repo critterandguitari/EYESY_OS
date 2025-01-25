@@ -47,10 +47,11 @@ BUFFER_SIZE = 100
 shared_buffer = Array(c_float, BUFFER_SIZE + 1, lock=True)  # Circular buffer, size + 1, last entry for trigger value
 write_index = Value('i', 0)  # Write index for the buffer
 atrig = Value('i', 0)  # audio trigger
+gain = Value('f', 0)
 lock = Lock()
 
 # Start the audio processing in a separate process
-audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, atrig, lock))
+audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, atrig, gain, lock))
 audio_process.start()
 
 # init pygame, this has to happen after sound is setup
@@ -224,6 +225,7 @@ while 1:
     tmptrig = False
     with lock:
         eyesy.audio_in[:] = shared_buffer[:]
+        gain.value = float(eyesy.config["audio_gain"] / 100)
         tmptrig = atrig.value
   
     # update audio trig 

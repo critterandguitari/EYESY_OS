@@ -7,7 +7,7 @@ import time
 
 BUFFER_SIZE = 100  # Size of the circular buffer
 
-def audio_processing(shared_buffer, write_index, atrig, lock):
+def audio_processing(shared_buffer, write_index, atrig, gain, lock):
     """Audio processing function running in a separate process."""
     card_index = 1
     channels = 1
@@ -42,6 +42,7 @@ def audio_processing(shared_buffer, write_index, atrig, lock):
                     for i in range(0, len(samples), 16):
                         if i + 16 <= len(samples):
                             avg_sample = sum(samples[i:i+16]) / 16
+                            avg_sample *= gain.value
                             atrig.value = 0
                             if avg_sample > 5000: atrig.value = 1
                             shared_buffer[write_index.value] = avg_sample

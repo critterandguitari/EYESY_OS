@@ -7,6 +7,7 @@ class MenuItem:
         self.adjustable = False   # adjustable value in place
         self.name = "none"
         self.value = 0
+        self.value_delta = 1  # the amount we move when changing a value
         self.min_value = 0
         self.max_value = 0
         self.format_string = ""

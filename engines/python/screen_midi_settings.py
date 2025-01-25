@@ -14,6 +14,9 @@ class ScreenMIDISettings(Screen):
         self.menu.items.append(MenuItem('MIDI PC Mapping  ▶', self.goto_midi_pc_mapping))
         
         self.menu.items.append(self.create_adjustable_menu_item("trigger_source", 0, len(eyesy.TRIGGER_SOURCES)-1,  ""))
+        gain_item = self.create_adjustable_menu_item("audio_gain", 50, 300,  "Audio Gain: {value} %")
+        gain_item.value_delta = 10 # for adjusting gain more quickly
+        self.menu.items.append(gain_item)
         self.menu.items.append(self.create_adjustable_menu_item("midi_channel", 1, 16,  "MIDI Channel: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob1_cc", -1, 127,  "Knob 1 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob2_cc", -1, 127,  "Knob 2 CC: {value}"))
@@ -90,12 +93,12 @@ class ScreenMIDISettings(Screen):
                 if self.key5_td > 10 : self.menu_inc_value(item)
      
     def menu_dec_value(self, item):
-        item.value -= 1
+        item.value -= item.value_delta
         if item.value < item.min_value: item.value = item.min_value
         self.text_for_menu_item(item)
 
     def menu_inc_value(self, item):
-        item.value += 1
+        item.value += item.value_delta
         if item.value > item.max_value: item.value = item.max_value
         self.text_for_menu_item(item)
 

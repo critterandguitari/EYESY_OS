@@ -48,7 +48,7 @@ class Eyesy:
 
         self.DEFAULT_CONFIG = {
             "video_resolution": 0,
-            "audio_gain": 50,
+            "audio_gain": 100,
             "trigger_source":0,
             "fg_palette": 0,
             "bg_palette": 0,
@@ -226,7 +226,7 @@ class Eyesy:
         # Validate each field in self.config, falling back to defaults if needed
         self._validate_config_int("midi_channel", 1, 16)
         self._validate_config_int("video_resolution", 0, len(self.RESOLUTIONS))
-        self._validate_config_int("audio_gain", 0, 300)
+        self._validate_config_int("audio_gain", 50, 300)
         self._validate_config_int("fg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("bg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("trigger_source", 0, len(self.TRIGGER_SOURCES)-1)

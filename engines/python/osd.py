@@ -52,7 +52,7 @@ def draw_vu_480(screen, eyesy, offx, offy):
         pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 20], 1)
         pygame.draw.line(screen, color, [x, offy + 20], [x + 6, offy + 20], 1)
     color = eyesy.GREEN
-    for i in range(0, int(eyesy.audio_peak / 2048)):
+    for i in range(0, int(eyesy.audio_in[0] / 2048)):
         if i > 8 : color = (255,255,0)
         if i == 14 : color = eyesy.RED
         x = offx + 8 * i

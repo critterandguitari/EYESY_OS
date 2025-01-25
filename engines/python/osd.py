@@ -192,12 +192,7 @@ def render_overlay_480(screen, eyesy) :
     text_rect.x = 20
     text_rect.centery = 150
     screen.blit(text, text_rect)
-    
-
-    draw_vu_480(screen, eyesy, 115, 210)
-
-    '''            
-    # knobs
+     # knobs
     pygame.draw.rect(screen, eyesy.BLACK, (20, 124, 144, 35))
     text = font.render(" Knobs:", True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
@@ -209,7 +204,12 @@ def render_overlay_480(screen, eyesy) :
     draw_knob_slider_480(screen, eyesy, 115, 128, 2)
     draw_knob_slider_480(screen, eyesy, 130, 128, 3)
     draw_knob_slider_480(screen, eyesy, 145, 128, 4)
-   
+    
+
+    draw_vu_480(screen, eyesy, 115, 210)
+
+    '''            
+  
     # input level 
     pygame.draw.rect(screen, eyesy.BLACK, (20, 205, 220, 30))
     txt_str = " Input Level:"

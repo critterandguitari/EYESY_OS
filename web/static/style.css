@@ -52,7 +52,7 @@
 #modees {
 }
 #editor-container {
-    flex: 3 1 0%; /* Grow factor of 3 */
+    flex: 2.2 1 0%; /* Grow factor of 3 */
     display: flex;
     flex-direction: column;
 }
@@ -340,13 +340,15 @@ body.dialog .modal-dialog { display: block;}
 #vconsole-title-bar span {
     padding-left: 4px;
 }
+
 #vconsole-container {
-    flex: 1 1 0%; /* Grow factor of 1 */
+    flex: 1 1 0%;
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    overflow-y: auto; /* Correct property for vertical scrolling */
     background-color: #222;
 }
+
 #vconsole {
     padding-left: 4px;
     flex: 1; /* Allow the console output to fill the remaining space */

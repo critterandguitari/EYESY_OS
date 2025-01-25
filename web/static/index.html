@@ -166,11 +166,13 @@
 		
     <script>
 
-	const socket = io(location.origin + '/test');
 
-	socket.on('connect', function() {
-	    console.log('Connected');
-	});
+
+    const socket = io(location.origin + '/test');
+
+    socket.on('connect', function() {
+        console.log('Connected');
+    });
 
     socket.on('log_output', function (msg) {
         const logMessage = msg.data;
@@ -179,9 +181,7 @@
         
         // Append the new log
         vconsole.append(logMessage);
-
-        // Scroll to the bottom of the container
-        container.scrollTop(container[0].scrollHeight);
+        vconsole.scrollTop(vconsole.prop("scrollHeight"));
     });
 
     </script>

@@ -143,10 +143,10 @@ def render_overlay_480(screen, eyesy) :
     screen.blit(text, text_rect)
      
     # scene
-    if eyesy.scene_set :
+    if eyesy.scene_index >= 0 :
         scene_str = " Scene: (" + str(eyesy.scene_index + 1) +" of "+str(len(eyesy.scenes)) + ")"
     else:
-        scene_str = " Scene: Not Set "
+        scene_str = " Scene: None "
     text = font.render(scene_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20

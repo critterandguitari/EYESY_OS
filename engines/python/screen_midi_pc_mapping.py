@@ -1,4 +1,5 @@
 import pygame
+import os
 from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
 
@@ -17,7 +18,6 @@ class ScreenMIDIPCMapping(Screen):
         self.key4_td = 0      # timer used for key repeats
         self.key5_td = 0      # timer used for key repeats
         self.thumbnail = pygame.Surface((320,240))
-        self.thumbnail_index = -1
 
     # seoe if scene name is in the current list of scenes
     def get_scene_index(self, target_name):
@@ -55,11 +55,9 @@ class ScreenMIDIPCMapping(Screen):
         self.menu.render(surface)
         item = self.menu.items[self.menu.selected_index]
         if item.value >= 0:
-            if item.value != self.thumbnail_index: # don't keep loading same one
-                self.thumbnail.fill((0,0,0))
-                self.thumbnail_index = item.value
-                thumb_path = self.eyesy.scenes[item.value].get('thumbnail', None)
-                if thumb_path: self.show_thumb(self.thumbnail, thumb_path)
+            self.thumbnail.fill((0,0,0))
+            thumb_path = self.eyesy.scenes[item.value].get('thumbnail', None)
+            if thumb_path: self.show_thumb(self.thumbnail, thumb_path)
         else :
             self.thumbnail.fill((0,0,0))
         surface.blit(self.thumbnail, (270, 75)) 
@@ -107,14 +105,18 @@ class ScreenMIDIPCMapping(Screen):
                     self.eyesy.config["pc_map"].pop(f"pgm_{i + 1}", None)
             self.eyesy.save_config_file()
             self.exit_menu()
-     
+    import os
+
     def show_thumb(self, surface, filepath):
+        if not os.path.exists(filepath):
+            return
+
         try:
             image = pygame.image.load(filepath)
             surface.blit(image, (0, 0))
         except pygame.error as e:
             print(f"Error loading image at {filepath}: {e}")
-        
+     
     def exit_menu(self):
         self.eyesy.switch_menu_screen("home")
 

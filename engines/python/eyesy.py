@@ -92,10 +92,9 @@ class Eyesy:
 
         # scenes
         self.scenes = []     # 
-        self.scene_index = 0
+        self.scene_index = -1  # init to -1 to indicate no scene
         self.save_key_status = False
         self.save_key_time = 0  # for timing how long save key held 
-        self.scene_set = False
         self.next_numbered_scene = 1
         
         # audio
@@ -311,14 +310,12 @@ class Eyesy:
         if self.mode_index >= len(self.mode_names) : 
             self.mode_index = 0
         self.set_mode_by_index(self.mode_index)
-        self.scene_set = False
 
     def prev_mode (self) :
         self.mode_index -= 1
         if self.mode_index < 0 : 
             self.mode_index = len(self.mode_names) - 1
         self.set_mode_by_index(self.mode_index)
-        self.scene_set = False
 
     def next_bg_palette (self) :
         self.bg_palette += 1
@@ -488,8 +485,7 @@ class Eyesy:
             if self.scene_index >= len(self.scenes):
                 self.scene_index = len(self.scenes) - 1
             if self.scene_index < 0:  # deleted last scene
-                self.scene_index = 0
-                self.scene_set = False
+                self.scene_index = -1  # no scenes
             else:
                 self.recall_scene(self.scene_index)
 
@@ -537,7 +533,64 @@ class Eyesy:
         # add name and thumbnail fields after saving file (allows user to change scene folder names later)
         self.scenes[-1]["name"] = os.path.basename(folder_path)
         self.scenes[-1]["thumbnail"] = imagepath
-       
+        # set to new scene
+        self.recall_scene(len(self.scenes) - 1)
+
+    def update_scene(self):
+        print("Updating current scene")
+
+        # Get the current scene
+        if not (0 <= self.scene_index < len(self.scenes)):
+            print("Invalid scene index. Cannot update.")
+            return
+
+        current_scene = self.scenes[self.scene_index]
+        folder_name = current_scene["name"]
+        folder_path = os.path.join(self.SCENES_PATH, folder_name)
+
+        if not os.path.exists(folder_path):
+            print(f"Scene folder {folder_path} does not exist. Cannot update.")
+            return
+
+        scene_file = os.path.join(folder_path, "scene.json")
+        imagepath = os.path.join(folder_path, "scene.jpg")
+
+        # Create the updated scene dictionary without "name" and "thumbnail"
+        updated_scene = {
+            "mode": self.mode,
+            "knob1": self.knob1,
+            "knob2": self.knob2,
+            "knob3": self.knob3,
+            "knob4": self.knob4,
+            "knob5": self.knob5,
+            "auto_clear": self.auto_clear,
+            "bg_palette": self.bg_palette,
+            "fg_palette": self.fg_palette,
+        }
+
+        # Update in-memory scene representation, adding computed fields back
+        self.scenes[self.scene_index] = {**updated_scene, "name": folder_name, "thumbnail": imagepath}
+
+        try:
+            # Save the updated scene to the JSON file, excluding computed fields
+            with open(scene_file, 'w') as f:
+                json.dump(updated_scene, f, indent=4)
+            print(f"Updated scene saved to {scene_file}")
+        except Exception as e:
+            print(f"Failed to update scene file: {e}")
+            return
+
+        # Update the thumbnail image
+        thumb = pygame.Surface((320, 240))
+        pygame.transform.scale(self.screen, (320, 240), thumb)
+        try:
+            pygame.image.save(thumb, imagepath)
+            print(f"Updated scene screenshot saved to {imagepath}")
+        except Exception as e:
+            print(f"Failed to save updated thumbnail: {e}")
+            return
+
+        print("Scene updated successfully.")
 
     def _load_scene(self, folder_path):
         scene_file = os.path.join(folder_path, "scene.json")
@@ -649,24 +702,25 @@ class Eyesy:
             self.bg_palette = scene["bg_palette"]
             self.fg_palette = scene["fg_palette"]
             self.set_mode_by_name(scene["mode"])
-            self.scene_set = True
         except :
             print("probably no scenes")
 
     def next_scene(self):
-        self.scene_index += 1
-        if self.scene_index >= len(self.scenes) : 
-            self.scene_index = 0
-        self.recall_scene(self.scene_index)
+        if len(self.scenes) > 0:    
+            self.scene_index += 1
+            if self.scene_index >= len(self.scenes) : 
+                self.scene_index = 0
+            self.recall_scene(self.scene_index)
 
     def prev_scene (self) :
-        self.scene_index -= 1
-        if self.scene_index < 0 : 
-            if len(self.scenes) > 0 :
-                self.scene_index = len(self.scenes) - 1
-            else :
-                self.scene_index = 0
-        self.recall_scene(self.scene_index)
+        if len(self.scenes) > 0:    
+            self.scene_index -= 1
+            if self.scene_index < 0 : 
+                if len(self.scenes) > 0 :
+                    self.scene_index = len(self.scenes) - 1
+                else :
+                    self.scene_index = 0
+            self.recall_scene(self.scene_index)
 
     def get_color_from_phase(self, val, palette_index) :
         c = float(val)
@@ -845,6 +899,7 @@ class Eyesy:
                     self.next_bg_palette()
                     self.key7_td = 0
                 if (k == 3 and v > 0) : self.knob_seq_control()
+                if (k == 8 and v > 0) : self.update_scene()
             else :
                 if (k == 3 and v > 0) : self.toggle_auto_clear()
                 if (k == 4 and v > 0) : 

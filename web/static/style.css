@@ -353,6 +353,7 @@ body.dialog .modal-dialog { display: block;}
     padding-left: 4px;
     flex: 1; /* Allow the console output to fill the remaining space */
     overflow-y: auto;
+    font-size: 10px; 
 }
 
 .icon-button.small-icon  {

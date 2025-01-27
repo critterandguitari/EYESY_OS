@@ -4,18 +4,6 @@ import imp
 import subprocess
 import re
 
-
-def draw_knob_slider(screen, eyesy, offx, offy, index) :
-    if eyesy.knob_override[index]:
-        color = eyesy.RED
-    else :
-        color = eyesy.LGRAY
-    pygame.draw.line(screen, color, [offx, offy], [offx + 16, offy], 1)
-    pygame.draw.line(screen, color, [offx, offy], [offx, offy + 40], 1)
-    pygame.draw.line(screen, color, [offx + 16, offy], [offx + 16, offy + 40], 1)
-    pygame.draw.line(screen, color, [offx, offy + 40], [offx + 16, offy + 40], 1)
-    pygame.draw.rect(screen, color, (offx, offy + 40 - int(40*eyesy.knob[index]), 16, int(40*eyesy.knob[index])))
-
 def draw_knob_slider_480(screen, eyesy, offx, offy, index) :
     # color based on knob seq state 
     if eyesy.knob_seq_state == "playing":
@@ -31,37 +19,20 @@ def draw_knob_slider_480(screen, eyesy, offx, offy, index) :
     pygame.draw.line(screen, color, [offx, offy + 24], [offx + 10, offy + 24], 1)
     pygame.draw.rect(screen, color, (offx, offy + 24 - int(24*eyesy.knob[index]), 10, int(24*eyesy.knob[index])))
 
-
-def draw_vu(screen, eyesy, offx, offy):
-    color = eyesy.LGRAY
-    for i in range(0,15) :
-        x = offx + 14 * i
-        pygame.draw.line(screen, color, [x, offy], [x + 10, offy], 1)
-        pygame.draw.line(screen, color, [x, offy], [x, offy + 30], 1)
-        pygame.draw.line(screen, color, [x + 10, offy], [x + 10, offy + 30], 1)
-        pygame.draw.line(screen, color, [x, offy + 30], [x + 10, offy + 30], 1)
-    color = eyesy.GREEN
-    for i in range(0, eyesy.audio_peak / 2048):
-        if i > 8 : color = (255,255,0)
-        if i == 14 : color = eyesy.RED
-        x = offx + 14 * i
-        pygame.draw.rect(screen, color, (x + 1, offy + 1, 9, 29))
-
 def draw_vu_480(screen, eyesy, offx, offy):
     color = eyesy.LGRAY
     for i in range(0,15) :
         x = offx + 8 * i
         pygame.draw.line(screen, color, [x, offy], [x + 6, offy], 1)
-        pygame.draw.line(screen, color, [x, offy], [x, offy + 20], 1)
-        pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 20], 1)
-        pygame.draw.line(screen, color, [x, offy + 20], [x + 6, offy + 20], 1)
+        pygame.draw.line(screen, color, [x, offy], [x, offy + 24], 1)
+        pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 24], 1)
+        pygame.draw.line(screen, color, [x, offy + 24], [x + 6, offy + 24], 1)
     color = eyesy.GREEN
     for i in range(0, int(eyesy.audio_in[0] / 2048)):
         if i > 8 : color = (255,255,0)
         if i == 14 : color = eyesy.RED
         x = offx + 8 * i
-        if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 19))
-
+        if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 23))
 
 # loading banner helper
 def loading_banner(screen, stuff) :
@@ -85,8 +56,8 @@ def loading_banner(screen, stuff) :
 def draw_color_palette(surface, eyesy):
     
     # bg
-    width, height = 125, 125  
-    xoff = 400
+    width, height = 170, 130 
+    xoff = 450
     yoff = 10
     for i in range(height):
         # Get the color using the color_picker function
@@ -95,9 +66,9 @@ def draw_color_palette(surface, eyesy):
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 
     # fg
-    width, height = 75, 75  
-    xoff = 440
-    yoff = 30
+    width, height = 125, 85  
+    xoff = 475
+    yoff = 35
     for i in range(height):
         # Get the color using the color_picker function
         color = eyesy.color_picker(i / height)
@@ -120,7 +91,7 @@ def get_local_ip_ifconfig():
         for ip in ips:
             if ip != '127.0.0.1':
                 return ip
-        return "No non-loopback IP found."
+        return "Not Connected"
     except Exception as e:
         return f"Error: {e}"
 
@@ -128,9 +99,11 @@ def get_local_ip_ifconfig():
 def render_overlay_480(screen, eyesy) :
 
     font = eyesy.font
-
+    
+    pygame.draw.rect(screen, (0,0,0), (10, 10, 598, 130))
     #pygame.draw.line(screen, eyesy.LGRAY, [0,480], [720,480], 1)
     #pygame.draw.line(screen, eyesy.LGRAY, [720,480], [720,0], 1)
+    
     draw_color_palette(screen, eyesy)
 
     # first time through, gather some info
@@ -139,78 +112,65 @@ def render_overlay_480(screen, eyesy) :
         eyesy.osd_first = False
 
     # mode
-    txt_str = " Mode: (" + str(eyesy.mode_index + 1) +" of "+str(len(eyesy.mode_names)) + ") " + str(eyesy.mode)      
+    txt_str = "Mode: (" + str(eyesy.mode_index + 1) +" of "+str(len(eyesy.mode_names)) + ") " + str(eyesy.mode)      
     text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
-    text_rect.centery = 40
+    text_rect.centery = 30
     screen.blit(text, text_rect)
      
     # scene
     if eyesy.scene_index >= 0 :
-        scene_str = " Scene: (" + str(eyesy.scene_index + 1) +" of "+str(len(eyesy.scenes)) + ") " + str(eyesy.scenes[eyesy.scene_index]["name"])
+        scene_str = "Scene: (" + str(eyesy.scene_index + 1) +" of "+str(len(eyesy.scenes)) + ") " + str(eyesy.scenes[eyesy.scene_index]["name"])
     else:
-        scene_str = " Scene: None "
+        scene_str = "Scene: None "
     text = font.render(scene_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
-    text_rect.centery = 68
+    text_rect.centery = 55
     screen.blit(text, text_rect)   
 
     # res
     reso = eyesy.RESOLUTIONS[eyesy.config["video_resolution"]]["name"]
-    message = f"Screen Size {reso} "
+    message = f"Screen Size: {reso} "
     text =          font.render(message, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 300
-    text_rect.centery = 68
-    screen.blit(text, text_rect)   
- 
-    # midi notes
-    pygame.draw.rect(screen, eyesy.BLACK, (20, 85, 299, 33))
-    text = font.render(" MIDI Notes:", True, eyesy.LGRAY, eyesy.BLACK)
-    text_rect = text.get_rect()
     text_rect.x = 20
-    text_rect.centery = 101
-    screen.blit(text, text_rect)  
-    offx = 120
-    offy = 89
+    text_rect.centery = 80
+    screen.blit(text, text_rect)   
+  
+    # ip    
+    txt_str = f"IP:  {eyesy.ip} "
+    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 200
+    text_rect.centery = 80
+    screen.blit(text, text_rect)
+ 
+    # knobs
+    draw_knob_slider_480(screen, eyesy, 20, 105, 0)
+    draw_knob_slider_480(screen, eyesy, 33, 105, 1)
+    draw_knob_slider_480(screen, eyesy, 46, 105, 2)
+    draw_knob_slider_480(screen, eyesy, 59, 105, 3)
+    draw_knob_slider_480(screen, eyesy, 73, 105, 4)
+
+    # midi notes
+    offx = 89
+    offy = 105
     for i in range(0, 33):
         pygame.draw.line(screen, eyesy.LGRAY, [(i*6)+offx, offy], [(i*6)+offx, 24+offy], 1)
     for i in range(0, 5):
         pygame.draw.line(screen, eyesy.LGRAY, [offx, (i*6)+offy], [offx + 192, (i*6)+offy], 1)
     for i in range(0,128):
         if (eyesy.midi_notes[i] > 0):
-            pygame.draw.rect(screen, eyesy.LGRAY, (offx + 6 * (i % 32), offy + 6 * (i / 32), 6, 6))
-        
+            pygame.draw.rect(screen, eyesy.LGRAY, (offx + 6 * (i % 32), offy + 6 * int(i / 32), 6, 6))
+    
+    draw_vu_480(screen, eyesy, 286, 105)
+       
     # trigger
-    pygame.draw.rect(screen, eyesy.BLACK, (20, 166, 105, 30))
-    pygame.draw.rect(screen, eyesy.LGRAY, (98, 169, 24, 24), 1)
+    pygame.draw.rect(screen, eyesy.LGRAY, (410, 105, 25, 25), 1)
     if eyesy.trig:
-        pygame.draw.rect(screen, (255,255,0), (98, 169, 24, 24))
-  
-    # ip    
-    txt_str = f" IP Address:  {eyesy.ip} "
-    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 200
-    text_rect.centery = 150
-    screen.blit(text, text_rect)
-
-     # knobs
-    pygame.draw.rect(screen, eyesy.BLACK, (20, 124, 144, 35))
-    text = font.render(" Knobs:", True, eyesy.LGRAY, eyesy.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 20
-    text_rect.centery = 141
-    screen.blit(text, text_rect)
-    draw_knob_slider_480(screen, eyesy, 85, 128, 0)
-    draw_knob_slider_480(screen, eyesy, 100, 128, 1)
-    draw_knob_slider_480(screen, eyesy, 115, 128, 2)
-    draw_knob_slider_480(screen, eyesy, 130, 128, 3)
-    draw_knob_slider_480(screen, eyesy, 145, 128, 4)
-
-    draw_vu_480(screen, eyesy, 115, 210)
+        pygame.draw.rect(screen, (255,255,0), (410, 105, 25, 25))
 
     '''            
     # input level 

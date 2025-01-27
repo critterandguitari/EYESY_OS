@@ -186,6 +186,8 @@ class Eyesy:
         self.knob_seq_index = 0
         self.knob_seq_state = "stopped"
 
+        self.clear_flags()
+
     def load_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
         if not(os.path.isdir(self.SYSTEM_PATH)) :

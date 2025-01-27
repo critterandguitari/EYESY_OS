@@ -5,15 +5,12 @@
     <title>EYESY Editor</title>
     <link rel="icon" type="image/png" href="/static/assets/fav.png">
 
-    <!--script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script-->
-
     <script src="/static/assets/jquery.min.js"></script>
     <script src="/static/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="/static/app.js"></script>
 
     <!-- The container for the uploaded files -->
     <script src="/static/assets/jquery.ui.widget.js"></script>
-    <!--script src="assets/jquery.iframe-transport.js"></script-->
     <script src="/static/assets/jquery.fileupload.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -22,18 +19,13 @@
   </head>
   <body>
 	<div id="left-col">
-        <!--div id="show-settings" class="side-button" style="">Settings</div-->
-        <!--div id="show-settings" class="icon-button" title="Settings"><span class="material-icons">settings</span></div-->
-        <!--div id="start-oflua" class="side-button">Start Video</div-->
         <div id="start-video" class="icon-button" title="Start Video Engine"><span class="material-icons">smart_display</span></div>
-        <!--div id="stop-video" class="side-button">Stop Video</div-->
         <div id="stop-video" class="icon-button" title="Stop Video Engine"><span class="material-icons">stop</span></div>
         <div style="clear:left;"></div>
         <br/>
 
         <div id="save" class="icon-button" title="Save"><span class="material-icons">save</span></div>
         <div id="reload-mode" class="icon-button" title="Reload Mode"><span class="material-icons">refresh</span></div>
-        <!--div id="select-mode" class="icon-button" title="Quick Select Mode"><span class="material-icons">switch_access_shortcut</span></div--> 
 
         <div style="clear:left;"></div>
         <br/>
@@ -80,9 +72,6 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <!--th class="col-xs-1">Select</th>
-                        <th class="col-xs-8"><span class="gspacer"/>Name</th-->
-                        <!--th class="col-xs-3">Size</th-->
                     </tr>
                 </thead>
                 <tbody id="ftable">
@@ -91,52 +80,12 @@
         </div>
     </div>
 
-    <div id="right-col">        
+    <div id="right-col"> 
 
         <div id="title-bar">
             <div id="tabs-container">
-            <!--div class="tab active" data-filepath="path/to/file1.lua">file1.lua <span class="close-tab">&times;</span></div>
-            <div class="tab" data-filepath="path/to/file2.lua">file2.lua <span class="close-tab">&times;</span></div-->
             </div>
         </div>
-        <!--div id="settings-container">
-            <div id="settings">
-                <h3>WiFi Network</h3>
-                <p>Enter network details. When it boots up the EYESY will attempt to join this network.</p>
-                <p>Network Name <input type="text" id="wifi-net-name" value="Name"></p>
-                <p>Password <input type="text" id="wifi-net-pw" value=""></p>
-                <div id="wifi-save-net" class="side-button">Save</div>
-                   
-                <br/> 
-                <br/> 
-                <h3>WiFi Access Point</h3>
-                <p>Hold down the shift button while the EYESY boots up to enable access point mode.</p>
-                <p>In access point mode the EYESY will create a WiFi network that you can join from your computer.</p>
-                <p>By default the network name is 'EYESY' and the password is 'coolmusic'. This can be changed below.</p>
-                <p>Network Name <input type="text" id="wifi-ap-name" value="Name"></p>
-                <p>Password <input type="text" id="wifi-ap-pw" value="Password"></p>
-                <div id="wifi-save-ap" class="side-button">Save</div>
-
-                <br/>
-                <br/>
-                <p>WiFi settings take effect after restarting the EYESY.</p>
-                    
-                <h3>Composite Video Format</h3>
-                <p>When the EYESY is not connected to a HDMI monitor it will output composite video.</p>
-                <p>Select NTSC or PAL depending on the type of television you are using.</p>
-                <p> 
-                 <input type="radio" id="compvid-ntsc-select" name="compvid" value="ntsc">
-                 <label for="compvid-ntsc-select">NTSC</label><br>
-                 <input type="radio" id="compvid-pal-select" name="compvid" value="pal">
-                 <label for="compvid-pal-select">PAL</label><br> 
-                </p>
-                <div id="compvid-save-format" class="side-button">Save</div>
-                <br/>
-                <br/>
-                <p>Video settings take effect after restarting the EYESY.</p>
-        
-		    </div>
-	    </div-->
         <div id="editor-container">
             <div id="editor"></div>
             <div id="image-container" style="display: none;"></div>
@@ -165,25 +114,39 @@
     <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
 		
     <script>
+        const socket = io(location.origin + '/test');
 
+        const MAX_LOGS = 1000; // Set a reasonable limit for log messages
+        let logCount = 0; // Counter to keep track of logs
 
+        function appendLogMessage(logMessage) {
+            const vconsole = document.getElementById("vconsole");
 
-    const socket = io(location.origin + '/test');
+            // Append the new log message
+            const textNode = document.createTextNode(logMessage);
+            vconsole.appendChild(textNode);
+            logCount++;
 
-    socket.on('connect', function() {
-        console.log('Connected');
-    });
+            // Check if logCount exceeds MAX_LOGS
+            if (logCount > MAX_LOGS) {
+                // Clear all logs and reset the counter
+                vconsole.textContent = ""; // Clear the <pre> element
+                logCount = 0;
+                console.log("Log limit exceeded. Cleared console.");
+            }
+        }
 
-    socket.on('log_output', function (msg) {
-        const logMessage = msg.data;
-        const vconsole = $("#vconsole");
-        const container = $('#vconsole-container');
-        
-        // Append the new log
-        vconsole.append(logMessage);
-        vconsole.scrollTop(vconsole.prop("scrollHeight"));
-    });
+        socket.on('connect', function() {
+            console.log('Connected');
+        });
 
+        socket.on('log_output', function (msg) {
+            const logMessage = msg.data;
+            // Append the new log
+            appendLogMessage(logMessage)
+            vconsole=$("#vconsole")
+            vconsole.scrollTop(vconsole.prop("scrollHeight"));
+        });
     </script>
     </body>
 </html>

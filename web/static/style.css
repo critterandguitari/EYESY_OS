@@ -129,8 +129,7 @@ body {
 
 /* Ensure the download button container doesn't affect layout */
 .dl-but {
-    float: right;
-    padding: 0 8px 0 0;
+    float: left;
 }
 
 .dl-but a {

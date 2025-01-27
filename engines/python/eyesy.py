@@ -302,12 +302,17 @@ class Eyesy:
         print("setting mode: " + self.mode_root)
         self.error = ''
 
-    def set_mode_by_name (self, name) :
-        self.mode = name 
+    def set_mode_by_name(self, name):
+        """Sets the mode by name if it exists in mode_names, otherwise raises an exception."""
+        if name not in self.mode_names:
+            raise ValueError(f"Mode '{name}' not found in mode_names.")
+        
+        # Set the mode properties
+        self.mode = name
         self.mode_index = self.mode_names.index(name)
         self.mode_root = self.MODES_PATH + self.mode + "/"
         print("setting mode: " + self.mode_root)
-        self.error = ''
+        self.error = ''  # Clear any existing errors
 
     def next_mode (self) :
         self.mode_index += 1
@@ -408,15 +413,7 @@ class Eyesy:
 
     # load a new mode (created from web editor)
     def load_new_mode(self, new_mode) :
-        print("loadeing new mode "+new_mode+"...")
-        mode_path = self.MODES_PATH+new_mode+'/main.py'
-        try :
-            imp.load_source(new_mode, mode_path)
-            self.mode_names.append(new_mode)
-        except Exception as e:
-            print(traceback.format_exc())
-        self.set_mode_by_name(new_mode)
-        self.run_setup
+        print("not working...")
     
     # reload mode module
     def reload_mode(self) :
@@ -727,8 +724,10 @@ class Eyesy:
                 self.knob_seq_play()
             else:
                 self.knob_seq_stop()
-        except :
-            print("problem recalling scene")
+        except ValueError as e:
+            print(f"Problem recalling scene: {e}")
+        except Exception as e:
+            print(f"Problem recalling scene: {e}")
 
     def next_scene(self):
         if len(self.scenes) > 0:    

@@ -140,7 +140,6 @@ class Eyesy:
         self.show_osd = False
         self.menu_mode = False
         self.osd_first = False # when osd is first turned on this is used to gather info
-        self.trig_button = False # if the button is held down or not
         self.trig = False
         self.fps = 0
         self.frame_count = 0
@@ -174,6 +173,7 @@ class Eyesy:
         self.key5_td = 0
         self.key6_td = 0
         self.key7_td = 0
+        self.key10_td = 0
 
         # color stuff
         self.palettes = color_palettes.abcd_palettes
@@ -251,13 +251,6 @@ class Eyesy:
     def save_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
         config.save_config(config_file, self.config)
-
-    def update_trig_button(self, stat) :
-        if (stat > 0 ):
-            self.trig = True
-            self.trig_button = True
-        else :
-            self.trig_button = False
 
     def set_osd(self, stat) :
         self.show_osd = stat
@@ -893,11 +886,6 @@ class Eyesy:
             if v > 0 : self.key10_status = True
             else : self.key10_status = False
 
-
-        # basic trig
-        if k == 10 : 
-            if v > 0 : self.trig = True
-
         # toggle osd or menu depending on shift
         if (k == 1 and v > 0) : 
             if self.key2_status: self.toggle_menu()
@@ -949,11 +937,13 @@ class Eyesy:
                     self.key7_td = 0
                 if (k == 8)           : self.save_or_delete_scene(v)
                 if (k == 9 and v > 0) : self.screengrab_flag = True
-                if (k == 10)          : self.update_trig_button(v)
+                if (k == 10 and v > 0) : 
+                    self.trig = True
+                    self.key10_td = 0
 
     def update_key_repeater(self) :
-        if self.key10_status : 
-            self.trig = True
+       # if self.key10_status : 
+       #     self.trig = True
         if not self.menu_mode :
             if self.key2_status : 
                 if self.key4_status :
@@ -981,6 +971,9 @@ class Eyesy:
                 if self.key7_status :
                     self.key7_td += 1
                     if (self.key7_td > 10) : self.next_scene()
+                if self.key10_status :
+                    self.key10_td += 1
+                    if (self.key10_td > 10) : self.trig = True
     
     def set_led(self, val):
         self.led = val

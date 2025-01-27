@@ -62,8 +62,8 @@ clocker = pygame.time.Clock() # for locking fps
 
 print("pygame version " + pygame.version.ver)
 
-# on screen display and other screen helpers
-osc.send("/led", 7) # set led to running
+# set led to running
+osc.send("/led", 0) 
 
 # init fb and main surface hwscreen
 print("opening frame buffer...")
@@ -120,9 +120,6 @@ eyesy.load_grabs()
 
 # load scenes
 eyesy.load_scenes()
-
-# used to measure fps
-start = time.time()
 
 # set font for system stuff
 eyesy.font = pygame.font.Font("font.ttf", 16)
@@ -184,6 +181,9 @@ except Exception as e:
     print("error loading menu screens")
     exitexit()
 
+# used to measure fps
+start = time.time()
+
 while 1:
  
     # quit on esc
@@ -195,24 +195,25 @@ while 1:
                 exitexit()
 
     # check for OSC
+    # key events will be dispatched from here
     osc.recv()
 
+    # for repeating keys held down
     eyesy.update_key_repeater()
 
     # check MIDI
     midi.recv(eyesy)
-    
-    # stop a midi led flash if one is hapenning
-    if (midi_led_flashing):
-        midi_led_flashing = False
-        osc.send("/led", 7)
-
-    if (eyesy.new_midi) :
-        osc.send("/led", 2)
-        midi_led_flashing = True
 
     # get knobs, checking for override, and check for new note on
+    # for the knobs, only changes are assinged
     eyesy.update_knobs_and_notes()
+
+    # sequence the knobs    
+    # only changes assigned 
+    eyesy.knob_seq_run()
+    
+    # fills in eyesy.knob1 etc, for the modes
+    eyesy.set_knobs()
 
     # measure fps
     eyesy.frame_count += 1
@@ -220,6 +221,10 @@ while 1:
         now = time.time()
         eyesy.fps = 1 / ((now - start) / 30)
         start = now
+    
+    # update new led
+    if (eyesy.new_led) :
+        osc.send("/led", eyesy.led)
 
     # get sound and trigger
     tmptrig = False
@@ -242,15 +247,10 @@ while 1:
 
     # save a screen shot before drawing stuff
     if (eyesy.screengrab_flag):
-        osc.send("/led", 3) # flash led yellow
         eyesy.screengrab()
-        osc.send("/led", 7)
         
     # see if save is being held down for deleting scene
     eyesy.update_scene_save_key()
-
-    # shift - sequence the knobs
-    #eyesy.knob_sequencer()
 
     # clear it with bg color if auto clear enabled
     if eyesy.auto_clear :

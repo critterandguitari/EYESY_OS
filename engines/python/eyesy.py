@@ -112,6 +112,7 @@ class Eyesy:
         # knob values used internally
         self.knob = [.2] * 5
         self.knob_hardware = [.2] * 5
+        self.knob_hardware_last = [-1] * 5  # used to filter repetitive knob values so they don't interfere with knob sequencer
         self.knob_snapshot = [.2] * 5
         self.knob_override = [False] * 5
         self.knob_last = [-1] * 5      # used to filter repetitive knob osc messages, but we always want to first one so set to -1
@@ -126,6 +127,8 @@ class Eyesy:
         self.usb_midi_present = False
 
         # system stuff 
+        self.led = 0
+        self.new_led = False
         self.screen = None  # ref to main surface, for doing screenshots
         self.xres = 1280
         self.yres = 720
@@ -176,6 +179,12 @@ class Eyesy:
         self.palettes = color_palettes.abcd_palettes
         self.fg_palette = 0;
         self.bg_palette = 0;
+
+        # knob sequencer stuff
+        self.knob_seq = []
+        self.knob_seq_last_values = [-1] * 5
+        self.knob_seq_index = 0
+        self.knob_seq_state = "stopped"
 
     def load_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
@@ -354,20 +363,25 @@ class Eyesy:
                 if abs(self.knob_snapshot[i] - self.knob_hardware[i]) > .05 :
                     self.knob_override[i] = False
                     self.knob[i] = self.knob_hardware[i]
-            else : 
-                self.knob[i] = self.knob_hardware[i]
+            else :
+                # filter value no change
+                if (self.knob_hardware[i] != self.knob_hardware_last[i]) : 
+                    self.knob_hardware_last[i] = self.knob_hardware[i]
+                    self.knob[i] = self.knob_hardware[i]
 
-        # fill these in for convinience
+        # check for new notes
+        for i in range(0, 128):
+            if self.midi_notes[i] > 0 and self.midi_notes_last[i] == 0:
+                self.midi_note_new = True
+    
+    def set_knobs(self) :
+        # fill these in for convenience
         self.knob1 = self.knob[0]
         self.knob2 = self.knob[1]
         self.knob3 = self.knob[2]
         self.knob4 = self.knob[3]
         self.knob5 = self.knob[4]
 
-        # check for new notes
-        for i in range(0, 128):
-            if self.midi_notes[i] > 0 and self.midi_notes_last[i] == 0:
-                self.midi_note_new = True
 
     # save a screenshot
     def screengrab(self):
@@ -530,6 +544,10 @@ class Eyesy:
         pygame.image.save(thumb, imagepath)
         print("saved scene screenshot " + imagepath)
 
+        # if there is a knob sequence playing, save that too
+        if self.knob_seq_state == "playing":
+            self.knob_seq_save(folder_path)
+
         # add name and thumbnail fields after saving file (allows user to change scene folder names later)
         self.scenes[-1]["name"] = os.path.basename(folder_path)
         self.scenes[-1]["thumbnail"] = imagepath
@@ -589,6 +607,12 @@ class Eyesy:
         except Exception as e:
             print(f"Failed to save updated thumbnail: {e}")
             return
+
+        # if there is a knob sequence playing, save that too, otherwise erase any previously recorded ones
+        if self.knob_seq_state == "playing":
+            self.knob_seq_save(folder_path)
+        else:
+            self.knob_seq_delete_file(folder_path)
 
         print("Scene updated successfully.")
 
@@ -689,6 +713,7 @@ class Eyesy:
 
     def recall_scene(self, index) :
         print("recalling scene " + str(index))
+
         try :
             scene = self.scenes[index]
             self.scene_index = index
@@ -702,8 +727,13 @@ class Eyesy:
             self.bg_palette = scene["bg_palette"]
             self.fg_palette = scene["fg_palette"]
             self.set_mode_by_name(scene["mode"])
+            # play back knob file if we have one, otherwise stop the seq if running
+            if self.knob_seq_load(self.SCENES_PATH + scene["name"]):
+                self.knob_seq_play()
+            else:
+                self.knob_seq_stop()
         except :
-            print("probably no scenes")
+            print("problem recalling scene")
 
     def next_scene(self):
         if len(self.scenes) > 0:    
@@ -898,8 +928,9 @@ class Eyesy:
                 if (k == 7 and v > 0) : 
                     self.next_bg_palette()
                     self.key7_td = 0
-                if (k == 3 and v > 0) : self.knob_seq_control()
                 if (k == 8 and v > 0) : self.update_scene()
+                if (k == 9 and v > 0) : self.knob_seq_play_stop_key()
+                if (k == 10 and v > 0) : self.knob_seq_record_key()
             else :
                 if (k == 3 and v > 0) : self.toggle_auto_clear()
                 if (k == 4 and v > 0) : 
@@ -948,69 +979,133 @@ class Eyesy:
                 if self.key7_status :
                     self.key7_td += 1
                     if (self.key7_td > 10) : self.next_scene()
+    
+    def set_led(self, val):
+        self.led = val
+        self.new_led = True
 
-# We'll use a simple state machine for the sequencer:
-# States:
-#   "stopped": Doing nothing, knobs pass through normally.
-#   "recording": Key2 is held; we're recording each frame's knob values into knob_sequence.
-#   "playing": Playing back the recorded sequence in a loop.
-#
-# Transitions:
-#   stopped -> (Key2 press) -> recording (clear the old sequence and start a new one)
-#   recording -> (Key2 release) -> playing (if we have recorded data, otherwise back to stopped)
-#   playing -> (Key2 press) -> stopped
-#
-# In "stopped" state: do nothing special.
-# In "recording" state: record current knob values each frame.
-# In "playing" state: set knobs from the recorded sequence each frame.
+    def knob_seq_play_stop_key(self):
+        if self.knob_seq_state == "playing": 
+            self.knob_seq_stop()
+        elif self.knob_seq_state == "recording":
+            self.knob_seq_play()
+        elif self.knob_seq_state == "stopped":
+            self.knob_seq_play()
 
-    knob_seq = []
-    knob_seq_index = 0
-    knob_seq_state = "stopped"
+    def knob_seq_record_key(self):
+        if self.knob_seq_state == "playing":
+            self.knob_seq_record()
+        elif self.knob_seq_state == "recording":
+            self.knob_seq_play()
+        elif self.knob_seq_state == "stopped":
+            self.knob_seq_record()
+    
+    def knob_seq_play(self):
+        self.knob_seq_state = "playing"
+        self.knob_seq_index = 0
+        print("knob sequence playing")
+        self.set_led(3)
 
-    def knob_sequencer(self):
+    def knob_seq_record(self):
+        self.knob_seq_state = "recording"
+        self.knob_seq = []
+        self.knob_seq_index = 0
+        print("knob sequence recording")
+        self.set_led(1)
 
+    def knob_seq_stop(self):
+        self.knob_seq_state = "stopped"
+        print("knob sequence stopping")
+        self.set_led(0)
+
+
+    def knob_seq_run(self):
         if self.knob_seq_state == "stopped":
-            # If stopped and key2 is pressed, start recording
-            if False:#self.key2_pressed:
-                # Clear old sequence and start fresh
-                self.knob_seq = []
-                self.knob_seq_state = "recording"
-                self.knob_seq_index = 0
+            return
 
         elif self.knob_seq_state == "recording":
-            # While recording, store knob values every frame
-            if False:#key2_released:
-                # Key2 released, stop recording
-                if len(self.knob_seq) > 0:
-                    # If we have something recorded, start playing
-                    self.knob_seq_state = "playing"
-                    self.knob_seq_index = 0
-                else:
-                    # Nothing recorded, go back to stopped
-                    self.knob_seq_state = "stopped"
-            else:
-                # Still recording - add current knob values
-                frame_values = (eyesy.knob1, eyesy.knob2, eyesy.knob3, eyesy.knob4, eyesy.knob5)
-                self.knob_seq.append(frame_values)
+            frame_values = tuple(self.knob)  # Collect current knob values
+            self.knob_seq.append(frame_values)
+            
+            # Auto stop after maximum frames
+            MAX_FRAMES = 1000
+            if len(self.knob_seq) > MAX_FRAMES:
+                self.knob_seq_play()
 
         elif self.knob_seq_state == "playing":
-            # If playing back, set knobs to the recorded sequence
-            if False:#key2_pressed:
-                # Key2 pressed while playing => stop
-                self.knob_seq_state = "stopped"
+            if self.knob_seq:
+                current_values = self.knob_seq[self.knob_seq_index]
+                
+                # Update knobs only on value change
+                for i, value in enumerate(current_values):
+                    if value != self.knob_seq_last_values[i]:
+                        self.knob_seq_last_values[i] = value
+                        self.knob[i] = value
+
+                # Increment and wrap playback index
+                self.knob_seq_index += 1
+                if self.knob_seq_index >= len(self.knob_seq):
+                    self.knob_seq_index = 0
             else:
-                # Continue playback
-                if len(self.knob_seq) > 0:
-                    current_values = self.knob_seq[self.knob_seq_index]
-                    eyesy.knob1, eyesy.knob2, eyesy.knob3, eyesy.knob4, eyesy.knob5 = current_values
-                    
-                    self.knob_seq_index += 1
-                    if self.knob_seq_index >= len(self.knob_seq):
-                        self.knob_seq_index = 0
-                else:
-                    # No sequence data? Just stop
-                    self.knob_seq_state = "stopped"
+                self.knob_seq_stop()
+
+
+    def knob_seq_save(self, path):
+        """Saves the knob_seq list to a JSON file."""
+        try:
+            file_path = os.path.join(path, "knob_seq.json")
+            # Write the knob_seq list to the file
+            with open(file_path, "w") as file:
+                json.dump(self.knob_seq, file)
+            return True
+        except Exception as e:
+            print(f"Error saving knob_seq: {e}")
+            return False
+
+    def knob_seq_load(self, path):
+        """Loads the knob_seq list from a JSON file."""
+        try:
+            file_path = os.path.join(path, "knob_seq.json")
+            
+            # Check if the file exists
+            if not os.path.isfile(file_path):
+                print(file_path + " does not exist.")
+                return False
+
+            # Read and load the JSON file
+            with open(file_path, "r") as file:
+                data = json.load(file)
+
+            # Validate the data
+            if isinstance(data, list) and all(isinstance(frame, (list, tuple)) for frame in data):
+                self.knob_seq = data
+                return True
+            else:
+                print("Invalid JSON structure for knob_seq.")
+                return False
+        except json.JSONDecodeError:
+            print("Error decoding JSON file.")
+            return False
+        except Exception as e:
+            print(f"Error loading knob_seq: {e}")
+            return False
+
+    def knob_seq_delete_file(self, path):
+        """Deletes the knob_seq.json file at the specified path."""
+        try:
+            file_path = os.path.join(path, "knob_seq.json")
+            
+            # Check if the file exists
+            if os.path.isfile(file_path):
+                os.remove(file_path)  # Delete the file
+                print(f"knob seq file {file_path} deleted successfully.")
+                return True
+            else:
+                print(f"knob seq file {file_path} does not exist.")
+                return False
+        except Exception as e:
+            print(f"error deleting knob seq file {file_path}: {e}")
+            return False
 
     def clear_flags(self):
         self.new_midi = False
@@ -1030,6 +1125,7 @@ class Eyesy:
         self.key8_press = False
         self.key9_press = False
         self.key10_press = False
+        self.new_led = False
 
 
 

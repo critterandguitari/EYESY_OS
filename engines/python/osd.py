@@ -17,10 +17,14 @@ def draw_knob_slider(screen, eyesy, offx, offy, index) :
     pygame.draw.rect(screen, color, (offx, offy + 40 - int(40*eyesy.knob[index]), 16, int(40*eyesy.knob[index])))
 
 def draw_knob_slider_480(screen, eyesy, offx, offy, index) :
-    if eyesy.knob_override[index]:
+    # color based on knob seq state 
+    if eyesy.knob_seq_state == "playing":
+        color = eyesy.GREEN
+    elif eyesy.knob_seq_state == "recording" :
         color = eyesy.RED
     else :
         color = eyesy.LGRAY
+    
     pygame.draw.line(screen, color, [offx, offy], [offx + 10, offy], 1)
     pygame.draw.line(screen, color, [offx, offy], [offx, offy + 24], 1)
     pygame.draw.line(screen, color, [offx + 10, offy], [offx + 10, offy + 24], 1)
@@ -135,7 +139,7 @@ def render_overlay_480(screen, eyesy) :
         eyesy.osd_first = False
 
     # mode
-    txt_str = " Mode: (" + str(eyesy.mode_index + 1) +" of "+str(len(eyesy.mode_names)) + ")" + str(eyesy.mode)      
+    txt_str = " Mode: (" + str(eyesy.mode_index + 1) +" of "+str(len(eyesy.mode_names)) + ") " + str(eyesy.mode)      
     text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20
@@ -144,7 +148,7 @@ def render_overlay_480(screen, eyesy) :
      
     # scene
     if eyesy.scene_index >= 0 :
-        scene_str = " Scene: (" + str(eyesy.scene_index + 1) +" of "+str(len(eyesy.scenes)) + ")"
+        scene_str = " Scene: (" + str(eyesy.scene_index + 1) +" of "+str(len(eyesy.scenes)) + ") " + str(eyesy.scenes[eyesy.scene_index]["name"])
     else:
         scene_str = " Scene: None "
     text = font.render(scene_str, True, eyesy.LGRAY, eyesy.BLACK)
@@ -158,7 +162,7 @@ def render_overlay_480(screen, eyesy) :
     message = f"Screen Size {reso} "
     text =          font.render(message, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 200
+    text_rect.x = 300
     text_rect.centery = 68
     screen.blit(text, text_rect)   
  
@@ -189,9 +193,10 @@ def render_overlay_480(screen, eyesy) :
     txt_str = f" IP Address:  {eyesy.ip} "
     text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
-    text_rect.x = 20
+    text_rect.x = 200
     text_rect.centery = 150
     screen.blit(text, text_rect)
+
      # knobs
     pygame.draw.rect(screen, eyesy.BLACK, (20, 124, 144, 35))
     text = font.render(" Knobs:", True, eyesy.LGRAY, eyesy.BLACK)
@@ -204,12 +209,10 @@ def render_overlay_480(screen, eyesy) :
     draw_knob_slider_480(screen, eyesy, 115, 128, 2)
     draw_knob_slider_480(screen, eyesy, 130, 128, 3)
     draw_knob_slider_480(screen, eyesy, 145, 128, 4)
-    
 
     draw_vu_480(screen, eyesy, 115, 210)
 
     '''            
-  
     # input level 
     pygame.draw.rect(screen, eyesy.BLACK, (20, 205, 220, 30))
     txt_str = " Input Level:"

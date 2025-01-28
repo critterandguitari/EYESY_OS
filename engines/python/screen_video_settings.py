@@ -46,7 +46,7 @@ class ScreenVideoSettings(Screen):
         self.state = "idle"
 
     def after(self):
-        self.eyesy.save_config_file()
+        pass
 
     def handle_events(self):
         if self.state == "idle":
@@ -93,7 +93,6 @@ class ScreenVideoSettings(Screen):
         self.eyesy.config["video_resolution"] = self.new_video_res
         self.eyesy.save_config_file()
         self.eyesy.restart = True
-
 
     def select_res(self):
         self.state = "select_res"

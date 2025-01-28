@@ -75,27 +75,6 @@ def draw_color_palette(surface, eyesy):
         # Draw a horizontal line (1 pixel high)
         pygame.draw.line(surface, color, (xoff, i + yoff), (width - 1 + xoff, i + yoff))
 
-
-def get_local_ip_ifconfig():
-    try:
-        # Run the `ifconfig` command and get the output
-        result = subprocess.run(['ifconfig'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        if result.returncode != 0:
-            raise Exception(result.stderr.strip())
-
-        # Extract IP addresses using a regex (looks for IPv4 addresses)
-        ip_pattern = re.compile(r'inet\s+(\d+\.\d+\.\d+\.\d+)')
-        ips = ip_pattern.findall(result.stdout)
-
-        # Exclude 127.0.0.1 (loopback) and return the first match
-        for ip in ips:
-            if ip != '127.0.0.1':
-                return ip
-        return "Not Connected"
-    except Exception as e:
-        return f"Error: {e}"
-
-
 def render_overlay_480(screen, eyesy) :
 
     font = eyesy.font
@@ -108,7 +87,6 @@ def render_overlay_480(screen, eyesy) :
 
     # first time through, gather some info
     if eyesy.osd_first :
-        eyesy.ip = get_local_ip_ifconfig()
         eyesy.osd_first = False
 
     # mode
@@ -139,14 +117,6 @@ def render_overlay_480(screen, eyesy) :
     text_rect.centery = 80
     screen.blit(text, text_rect)   
   
-    # ip    
-    txt_str = f"IP:  {eyesy.ip} "
-    text = font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
-    text_rect = text.get_rect()
-    text_rect.x = 200
-    text_rect.centery = 80
-    screen.blit(text, text_rect)
- 
     # knobs
     draw_knob_slider_480(screen, eyesy, 20, 105, 0)
     draw_knob_slider_480(screen, eyesy, 33, 105, 1)

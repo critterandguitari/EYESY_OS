@@ -1,6 +1,7 @@
 import subprocess
 import threading
 import time
+import re
 import pygame
 from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
@@ -95,6 +96,25 @@ def connect(ssid, device='wlan0'):
         print(f"Error connecting to {ssid}: {error_output}")
         return False, error_output
 
+def get_local_ip_ifconfig():
+    try:
+        # Run the `ifconfig` command and get the output
+        result = subprocess.run(['ifconfig'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if result.returncode != 0:
+            raise Exception(result.stderr.strip())
+
+        # Extract IP addresses using a regex (looks for IPv4 addresses)
+        ip_pattern = re.compile(r'inet\s+(\d+\.\d+\.\d+\.\d+)')
+        ips = ip_pattern.findall(result.stdout)
+
+        # Exclude 127.0.0.1 (loopback) and return the first match
+        for ip in ips:
+            if ip != '127.0.0.1':
+                return ip
+        return "Not Connected"
+    except Exception as e:
+        return f"Error: {e}"
+
 class ScreenWiFi(Screen):
 
     def __init__(self, eyesy):
@@ -137,7 +157,7 @@ class ScreenWiFi(Screen):
             return
 
         # otherwise we show the netlogs
-        message = "Logs"
+        message = "Logs                                IP: " + self.eyesy.ip
         msg_xy = (32, 260)
         rendered_text = font.render(message, True, color)
         surface.blit(rendered_text, msg_xy)
@@ -209,6 +229,8 @@ class ScreenWiFi(Screen):
             MenuItem('◀  Exit', self.exit_menu)
         ]
         self.menu.set_selected_index(1)
+        self.eyesy.ip = get_local_ip_ifconfig()
+
 
     def build_not_connected_menu(self):
         # Insert SSIDs plus Exit
@@ -216,6 +238,7 @@ class ScreenWiFi(Screen):
         for ssid in self.ssids:
             self.menu.items.insert(-1, MenuItem(ssid, self.select_ssid_callback(ssid)))
         self.menu.set_selected_index(0)
+        self.eyesy.ip = get_local_ip_ifconfig()
 
     def start_scanning(self):
         def do_scan():
@@ -231,7 +254,6 @@ class ScreenWiFi(Screen):
             else:
                 self.build_not_connected_menu()
                 self.state = "select_net"
-
 
         threading.Thread(target=do_scan, daemon=True).start()
 

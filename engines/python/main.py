@@ -61,10 +61,11 @@ try :
     write_index = Value('i', 0)     # Write index for the buffer
     atrig = Value('i', 0)           # audio trigger
     gain = Value('f', 0)
+    peak = Value('f', 0)
     lock = Lock()
 
     # Start the audio processing in a separate process
-    audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, atrig, gain, lock))
+    audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, atrig, gain, peak, lock))
     audio_process.start()
 
     # init pygame, this has to happen after sound is setup
@@ -216,6 +217,7 @@ while 1:
             eyesy.audio_in[:] = shared_buffer[:]
             gain.value = float(eyesy.config["audio_gain"] / 100)
             tmptrig = atrig.value
+            eyesy.audio_peak = peak.value
       
         # update audio trig 
         if eyesy.config["trigger_source"] == 0 and tmptrig: eyesy.trig = True

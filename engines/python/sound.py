@@ -6,8 +6,10 @@ import pygame
 import time
 
 BUFFER_SIZE = 100  # Size of the circular buffer
+max_peak = 0
 
-def audio_processing(shared_buffer, write_index, atrig, gain, lock):
+def audio_processing(shared_buffer, write_index, atrig, gain, peak, lock):
+    global max_peak
     """Audio processing function running in a separate process."""
     card_index = 1
     channels = 1
@@ -42,11 +44,25 @@ def audio_processing(shared_buffer, write_index, atrig, gain, lock):
                     for i in range(0, len(samples), 16):
                         if i + 16 <= len(samples):
                             avg_sample = sum(samples[i:i+16]) / 16
+
+                            # apply gain
                             avg_sample *= gain.value
+
+                            # check for trigger
                             atrig.value = 0
                             if avg_sample > 5000: atrig.value = 1
+
+                            # check peak value
+                            if avg_sample > max_peak: max_peak = avg_sample
+
+                            # write to buffer and increment
                             shared_buffer[write_index.value] = avg_sample
                             write_index.value = (write_index.value + 1) % BUFFER_SIZE
+                            
+                            # update peak once per buffer
+                            if write_index.value == 0:
+                                peak.value = max_peak
+                                max_peak = 0
 
     finally:
         pcm.close()

@@ -98,7 +98,7 @@ try :
     # load modes, post banner if none found
     if not (eyesy.load_modes()) :
         print("no modes found.")
-        osd.loading_banner(hwscreen, "No Modes found.  Insert USB drive with Modes folder and restart.")
+        osd.loading_banner(hwscreen, "No Modes found. Insert USB drive with Modes folder and restart.")
         while True:
             # quit on esc
             for event in pygame.event.get():
@@ -301,11 +301,11 @@ while 1:
         
         # clear all the events
         eyesy.clear_flags()
-        osc_msgs_recv = 0
          
     except Exception as e:   
         eyesy.error = traceback.format_exc()
         print("problem in main loop")
+        print(eyesy.error)
         pygame.time.wait(200)
    
     # limit fps 30

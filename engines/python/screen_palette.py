@@ -8,8 +8,8 @@ def draw_color_palette(surface, eyesy):
     
     # bg
     width, height = 260, 260  
-    xoff = 350
-    yoff = 100
+    xoff = 300
+    yoff = 110
     for i in range(height):
         # Get the color using the color_picker function
         color = eyesy.color_picker_bg_preview(i / height)
@@ -18,8 +18,8 @@ def draw_color_palette(surface, eyesy):
 
     # fg
     width, height = 160, 160  
-    xoff = 420
-    yoff = 170
+    xoff = 350
+    yoff = 160
     for i in range(height):
         # Get the color using the color_picker function
         color = eyesy.color_picker(i / height)

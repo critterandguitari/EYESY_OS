@@ -1,5 +1,28 @@
 from screen import Screen
 import pygame
+import subprocess
+
+def wifi_connected():
+    try:
+        # Run iwconfig and capture the output
+        result = subprocess.run(
+            ["iwconfig"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        # Search for ESSID and check if connected
+        for line in result.stdout.splitlines():
+            if "ESSID" in line:
+                essid = line.split("ESSID:")[-1].strip().strip('"')
+                if essid and essid != "off/any":
+                    return True
+        return False
+    except subprocess.CalledProcessError as e:
+        print(f"Error checking connection status: {e}")
+        return False
+
+
 
 class ScreenTest(Screen):
     def __init__(self, eyesy):
@@ -7,9 +30,32 @@ class ScreenTest(Screen):
         self.title = "Factory Test"
         self.footer =  chr(0x2680) + "     = Cancel     "
 
-        # State previously stored globally
         self.highlighted_controls = set()
 
+        self.button_press_counts = {
+            "top0": 0, "top1": 0, "top2": 0,
+            "bottom0": 0, "bottom1": 0, "bottom2": 0, "bottom3": 0, "bottom4": 0, "bottom5": 0, "bottom6": 0
+        }
+
+        self.previous_button_states = {
+            "top0": False, "top1": False, "top2": False,
+            "bottom0": False, "bottom1": False, "bottom2": False, "bottom3": False, "bottom4": False, "bottom5": False, "bottom6": False
+        }
+
+        self.knob_min_reached = {"knob0": False, "knob1": False, "knob2": False, "knob3": False, "knob4": False}
+        self.knob_max_reached = {"knob0": False, "knob1": False, "knob2": False, "knob3": False, "knob4": False}
+        
+        self.wifi_good = False
+        self.midi_good = False
+        self.audio_good = False
+    
+
+    def before(self):
+        self.wifi_good = wifi_connected()
+        self.midi_good = False
+        self.audio_good = False
+        
+        self.highlighted_controls = set()
         self.button_press_counts = {
             "top0": 0, "top1": 0, "top2": 0,
             "bottom0": 0, "bottom1": 0, "bottom2": 0, "bottom3": 0, "bottom4": 0, "bottom5": 0, "bottom6": 0
@@ -60,22 +106,60 @@ class ScreenTest(Screen):
             self.previous_button_states[ctrl_id] = is_pressed
 
         # Handle knobs (check extremes)
-        epsilon = 0.01
+        epsilon = 0 #0.01
         for ctrl_id, value in knob_map.items():
             if value <= epsilon:
                 self.knob_min_reached[ctrl_id] = True
-            if value >= 1.0 - epsilon:
+
+            # Only allow max to be reached if min was reached first
+            if self.knob_min_reached.get(ctrl_id, False) and value >= 1.0 - epsilon:
                 self.knob_max_reached[ctrl_id] = True
 
-            if self.knob_min_reached[ctrl_id] and self.knob_max_reached[ctrl_id]:
+            if self.knob_min_reached.get(ctrl_id, False) and self.knob_max_reached.get(ctrl_id, False):
                 self.highlighted_controls.add(ctrl_id)
 
+    def check_audio_midi(self):
+        if not self.audio_good :
+            if self.eyesy.audio_peak > 5000: self.audio_good = True
+        if not self.midi_good:
+            if self.eyesy.midi_notes[60] > 0: self.midi_good = True
+
     def render(self, surface):
+
+        self.check_audio_midi()
+
+        msg_xy = (32, 90)
+        if self.wifi_good :
+            message = "USB WiFi Pass" 
+            rendered_text = self.eyesy.font.render(message, True, self.eyesy.GREEN)
+        else :
+            message = "USB WiFi Not Connected" 
+            rendered_text = self.eyesy.font.render(message, True, self.eyesy.RED)
+        surface.blit(rendered_text, msg_xy)
+
+        msg_xy = (32, 120)
+        if self.midi_good :
+            message = "MIDI In Connection Pass" 
+            rendered_text = self.eyesy.font.render(message, True, self.eyesy.GREEN)
+        else :
+            message = "MIDI In Connection Problem" 
+            rendered_text = self.eyesy.font.render(message, True, self.eyesy.RED)
+        surface.blit(rendered_text, msg_xy)
+        
+        msg_xy = (32, 150)
+        if self.audio_good :
+            message = "Audio In Connection Pass" 
+            rendered_text = self.eyesy.font.render(message, True, self.eyesy.GREEN)
+        else :
+            message = "Audio In Connection Problem" 
+            rendered_text = self.eyesy.font.render(message, True, self.eyesy.RED)
+        surface.blit(rendered_text, msg_xy)
+
         self.draw_controls(surface, self.highlighted_controls)
 
     def draw_controls(self, surface, highlighted):
         # Use the same logic as before, just passing `highlighted`
-        WHITE = (255, 255, 255)
+        WHITE = (200, 200, 200)
 
         panel_x, panel_y = 140, 200
         panel_width, panel_height = 355, 200
@@ -133,4 +217,3 @@ class ScreenTest(Screen):
 
         for ctrl_id, pos in bottom_button_positions:
             draw_control(ctrl_id, pos, button_radius)
-

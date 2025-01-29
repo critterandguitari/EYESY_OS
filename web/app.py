@@ -1,5 +1,4 @@
 import os
-import imp
 from flask import Flask, request, make_response, jsonify, send_from_directory, send_file
 from flask_socketio import SocketIO, emit
 import subprocess
@@ -7,6 +6,7 @@ import urllib.parse
 import werkzeug
 import mimetypes
 import liblo
+import file_operations
 
 GRABS_PATH = "/sdcard/Grabs/"
 MODES_PATH = "/"
@@ -18,9 +18,6 @@ try:
 except liblo.AddressError as err:
 	print(err)
 	sys.exit()
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-file_operations = imp.load_source('file_operations', current_dir + '/file_operations.py')
 
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = 'secret!'
@@ -160,7 +157,7 @@ def test_connect():
     socketio.start_background_task(target=background_thread, sid=sid)
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', debug=True)
+    socketio.run(app, host='0.0.0.0', debug=True, port=8080)
 
 
 

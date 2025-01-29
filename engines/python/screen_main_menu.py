@@ -12,8 +12,8 @@ class ScreenMainMenu(Screen):
         self.menu = WidgetMenu(eyesy, [
             MenuItem('Video Settings  ▶', self.goto_video_settings),
             MenuItem('MIDI Settings  ▶', self.goto_midi_settings),
-            MenuItem('WiFi  ▶', self.goto_wifi),
             MenuItem('Color Palette  ▶', self.goto_palette),
+            MenuItem('WiFi  ▶', self.goto_wifi),
             MenuItem('Hardware Test  ▶', self.goto_test),
             MenuItem('Logs  ▶', self.goto_applogs),
             MenuItem('◀  Exit', self.exit_menu)

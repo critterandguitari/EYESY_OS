@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, make_response, jsonify, send_from_directory, send_file
-from flask_socketio import SocketIO, emit
+from flask_sock import Sock
 import subprocess
 import urllib.parse
 import werkzeug
@@ -21,15 +21,21 @@ except liblo.AddressError as err:
 
 app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+sock = Sock(app)  # Use Flask-Sock for WebSockets
 
-def background_thread(sid):
-    # Use 'journalctl -f -u eyesypy.service -o cat' to get just the raw log messages
-    # without extra metadata.
+
+def background_thread(ws):
     cmd = ["journalctl", "-f", "-u", "eyesypy.service", "-o", "cat"]
     with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
-        for line in iter(p.stdout.readline, b''):
-            socketio.emit('log_output', {'data': line.decode()}, room=sid, namespace='/test')
+        try:
+            for line in iter(p.stdout.readline, b''):
+                try:
+                    ws.send(line.decode())  # Send output over WebSocket
+                except:
+                    print("WebSocket disconnected.")
+                    break  # Stop the loop when the WebSocket is closed
+        finally:
+            p.terminate()  # Ensure subprocess is killed when WebSocket disconnects
 
 @app.route('/test')
 def test():
@@ -151,13 +157,21 @@ def fmdata():
         response.headers['Content-Type'] = "application/json"
         return response
 
-@socketio.on('connect', namespace='/test')
-def test_connect():
-    sid = request.sid
-    socketio.start_background_task(target=background_thread, sid=sid)
+#@socketio.on('connect', namespace='/test')
+#def test_connect():
+#    sid = request.sid
+#    socketio.start_background_task(target=background_thread, sid=sid)
+
+#if __name__ == '__main__':
+#    socketio.run(app, host='0.0.0.0', debug=True, port=8080)
+
+@sock.route('/log_stream')
+def log_stream(ws):
+    background_thread(ws)  # Start sending logs to the WebSocket client
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', debug=True, port=8080)
+    app.run(host='0.0.0.0', debug=True, port=8080)
+
 
 
 

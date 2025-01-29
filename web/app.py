@@ -23,7 +23,6 @@ app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = 'secret!'
 sock = Sock(app)  # Use Flask-Sock for WebSockets
 
-
 def background_thread(ws):
     cmd = ["journalctl", "-f", "-u", "eyesypy.service", "-o", "cat"]
     with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
@@ -32,10 +31,12 @@ def background_thread(ws):
                 try:
                     ws.send(line.decode())  # Send output over WebSocket
                 except:
-                    print("WebSocket disconnected.")
-                    break  # Stop the loop when the WebSocket is closed
+                    print("WebSocket disconnected. Stopping journalctl...")
+                    break  # Exit the loop when the WebSocket is closed
         finally:
-            p.terminate()  # Ensure subprocess is killed when WebSocket disconnects
+            p.terminate()  # Forcefully stop journalctl
+            p.wait()       # Ensure process is fully terminated
+            print("journalctl process terminated.")
 
 @app.route('/test')
 def test():

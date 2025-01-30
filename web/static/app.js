@@ -306,7 +306,22 @@ console.log(typeof d)
             sizeType = c.size;
             var trow = $('<tr class="fsfile">');
             var tdata = $('<td class="fsfilename">');
-            var dlButton = $('<div class="dl-but"><a href="'+appBaseURL+'/download?fpath='+encodeURIComponent(c.path)+'&cb=cool"><span class="material-icons download-icon">download</span></a></div>'); 
+                        
+            var dlButton = $('<div class="dl-but"><span class="material-icons download-icon">download</span></div>');
+            dlButton.on("click", function(event) {
+                event.preventDefault(); // Prevent the default behavior
+
+                let fileUrl = appBaseURL + "/download?fpath=" + encodeURIComponent(c.path) + "&cb=cool";
+
+                // Create a temporary hidden anchor element
+                let a = document.createElement("a");
+                a.href = fileUrl;
+                a.download = ""; // Let the server define the filename
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+
             tdata.append(dlButton);
             tdata.append(nodeNameWithIcon(c.path, c.type));
         }
@@ -837,7 +852,7 @@ $(function () {
     // Click handler for file items
     $('body').on('click', '.fsfile', function(event) {
         var target = $(event.target);
-        if (!target.is("input") && !target.is("a")) {
+        if (!target.is("input") && !target.is("a") && !target.is("span")) {
             var path = $(this).data("path");
             openFile(path);
         }

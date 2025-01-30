@@ -4,6 +4,7 @@ from ctypes import c_float
 import time
 import sys
 import psutil
+import math
 import traceback
 import liblo
 import pygame
@@ -149,6 +150,9 @@ try :
     # for flashing the LED
     midi_led_flashing = False
 
+    # LFO for simulated sound
+    undulate_p = 0
+
     # menu screens, need to load after pygame
     eyesy.menu_screens["home"] = ScreenMainMenu(eyesy)
     eyesy.menu_screens["test"] = ScreenTest(eyesy)
@@ -211,13 +215,19 @@ while 1:
         if (eyesy.new_led) :
             osc.send("/led", eyesy.led)
 
-        # get sound and trigger
-        tmptrig = False
-        with lock:
-            eyesy.audio_in[:] = shared_buffer[:]
-            gain.value = float(eyesy.config["audio_gain"] / 100)
-            tmptrig = atrig.value
-            eyesy.audio_peak = peak.value
+        # get sound and trigger, unless trigger button is being pressed, then do the simulated sound
+        if not eyesy.key10_status:
+            tmptrig = False
+            with lock:
+                eyesy.audio_in[:] = shared_buffer[:]
+                gain.value = float(eyesy.config["audio_gain"] / 100)
+                tmptrig = atrig.value
+                eyesy.audio_peak = peak.value
+        else:
+            undulate_p += .005
+            undulate = ((math.sin(undulate_p * 2 * math.pi) + 1) * 2) + .5
+            for i,v in enumerate(eyesy.audio_in):
+                eyesy.audio_in[i] = int(math.sin((i / 100) * 2 * math.pi * undulate) * 25000)
       
         # update audio trig 
         if eyesy.config["trigger_source"] == 0 and tmptrig: eyesy.trig = True

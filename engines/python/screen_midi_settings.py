@@ -24,6 +24,9 @@ class ScreenMIDISettings(Screen):
         self.menu.items.append(self.create_adjustable_menu_item("knob4_cc", -1, 127,  "Knob 4 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("knob5_cc", -1, 127,  "Knob 5 CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("auto_clear_cc", -1, 127,  "Screen Clear On/Off CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("fg_palette_cc", -1, 127,  "FG Palette CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("bg_palette_cc", -1, 127,  "BG Palette CC: {value}"))
+        self.menu.items.append(self.create_adjustable_menu_item("mode_cc", -1, 127,  "Mode Select CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("notes_change_mode", 0, 1, ""))
 
         #self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))

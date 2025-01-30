@@ -36,6 +36,13 @@ def _handle_control_change(eyesy, message):
                 eyesy.auto_clear = True
             else:
                 eyesy.auto_clear = False
+        if message.control == eyesy.config["fg_palette_cc"] : 
+            eyesy.fg_palette = val % len(eyesy.palettes)
+        if message.control == eyesy.config["bg_palette_cc"] : 
+            eyesy.bg_palette = val % len(eyesy.palettes)
+        if message.control == eyesy.config["mode_cc"] : 
+            eyesy.mode_index = val % len(eyesy.mode_names)
+            eyesy.set_mode_by_index(eyesy.mode_index)
        
 def _handle_program_change(eyesy, message):
     #print(f"Program Change message: {message}")

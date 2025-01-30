@@ -11,7 +11,7 @@ class ScreenMainMenu(Screen):
         self.footer =  chr(0x2680) + "     = Cancel     " + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Enter"
         self.menu = WidgetMenu(eyesy, [
             MenuItem('Video Settings  ▶', self.goto_video_settings),
-            MenuItem('MIDI Settings  ▶', self.goto_midi_settings),
+            MenuItem('Audio MIDI Settings  ▶', self.goto_midi_settings),
             MenuItem('Color Palette  ▶', self.goto_palette),
             MenuItem('WiFi  ▶', self.goto_wifi),
             MenuItem('Hardware Test  ▶', self.goto_test),

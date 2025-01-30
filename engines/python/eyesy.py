@@ -59,6 +59,9 @@ class Eyesy:
             "knob4_cc": 23,
             "knob5_cc": 24,
             "auto_clear_cc": 25,
+            "fg_palette_cc": -1,
+            "bg_palette_cc": -1,
+            "mode_cc": -1,
             "notes_change_mode": False,
             "pc_map": {}
         }
@@ -246,6 +249,9 @@ class Eyesy:
         self._validate_config_int("knob4_cc", -1, 127)
         self._validate_config_int("knob5_cc", -1, 127)
         self._validate_config_int("auto_clear_cc", -1, 127)
+        self._validate_config_int("fg_palette_cc", -1, 127)
+        self._validate_config_int("bg_palette_cc", -1, 127)
+        self._validate_config_int("mode_cc", -1, 127)
         self._validate_config_int("notes_change_mode", 0, 1)
 
     def save_config_file(self) :

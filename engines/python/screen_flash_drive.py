@@ -24,6 +24,7 @@ class ScreenFlashDrive(Screen):
 
     def before(self):
         self.menu.selected_index = 1
+        self.logs = []
         pass
 
     def after(self):

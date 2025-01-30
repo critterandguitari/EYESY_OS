@@ -133,7 +133,7 @@ class ScreenWiFi(Screen):
         self.keyboard = None  # Will hold the KeyboardScreen instance when needed
         self.netlogs = WidgetNetlogs(eyesy)
         self.netlogs.x_offset = 50
-        self.netlogs.y_offset = 280
+        self.netlogs.y_offset = 260
         self.menu.off_y = 75
 
     def before(self):
@@ -157,10 +157,10 @@ class ScreenWiFi(Screen):
             return
 
         # otherwise we show the netlogs
-        message = "Logs                                IP: " + self.eyesy.ip
-        msg_xy = (32, 260)
-        rendered_text = font.render(message, True, color)
-        surface.blit(rendered_text, msg_xy)
+        #message = "IP: " + self.eyesy.ip
+        #msg_xy = (32, 260)
+        #rendered_text = font.render(message, True, color)
+        #surface.blit(rendered_text, msg_xy)
         self.netlogs.render(surface)
 
         # then show stuff depeinding on state
@@ -192,7 +192,7 @@ class ScreenWiFi(Screen):
 
         elif self.state == "idle":
             self.menu.render(surface)
-            message = f"Connected to: {self.current_ssid}"
+            message = f"Connected to: {self.current_ssid}" + "            IP: " + self.eyesy.ip
             rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
 

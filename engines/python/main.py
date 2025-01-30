@@ -22,6 +22,7 @@ from screen_wifi import ScreenWiFi
 from screen_applogs import ScreenApplogs
 from screen_midi_settings import ScreenMIDISettings
 from screen_midi_pc_mapping import ScreenMIDIPCMapping
+from screen_flash_drive import ScreenFlashDrive
 
 def exitexit(code):
     print("EXIT exiting\n")
@@ -162,6 +163,7 @@ try :
     eyesy.menu_screens["applogs"] = ScreenApplogs(eyesy)
     eyesy.menu_screens["midi_settings"] = ScreenMIDISettings(eyesy)
     eyesy.menu_screens["midi_pc_mapping"] = ScreenMIDIPCMapping(eyesy)
+    eyesy.menu_screens["backup"] = ScreenFlashDrive(eyesy)
     eyesy.switch_menu_screen("home")
     
     # used to measure fps

@@ -14,6 +14,7 @@ class ScreenMainMenu(Screen):
             MenuItem('Audio MIDI Settings  ▶', self.goto_midi_settings),
             MenuItem('Color Palette  ▶', self.goto_palette),
             MenuItem('WiFi  ▶', self.goto_wifi),
+            MenuItem('Backup  ▶', self.goto_backup),
             MenuItem('Hardware Test  ▶', self.goto_test),
             MenuItem('Logs  ▶', self.goto_applogs),
             MenuItem('◀  Exit', self.exit_menu)
@@ -36,6 +37,9 @@ class ScreenMainMenu(Screen):
 
     def goto_video_settings(self):
         self.eyesy.switch_menu_screen("video_settings")
+
+    def goto_backup(self):
+        self.eyesy.switch_menu_screen("backup")
 
     def goto_test(self):
         self.eyesy.switch_menu_screen("test")

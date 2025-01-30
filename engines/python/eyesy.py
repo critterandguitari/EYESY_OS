@@ -20,7 +20,7 @@ class Eyesy:
     def __init__(self):
         # config stuff 
         self.GRABS_PATH = "/sdcard/Grabs/"
-        self.MODES_PATH = "/sdcard/Modes/Python/"
+        self.MODES_PATH = "/sdcard/Modes/"
         self.SCENES_PATH = "/sdcard/Scenes/"
         self.SYSTEM_PATH = "/sdcard/System/"
         
@@ -1018,7 +1018,6 @@ class Eyesy:
         print("knob sequence stopping")
         self.set_led(0)
 
-
     def knob_seq_run(self):
         if self.knob_seq_state == "stopped":
             return
@@ -1048,7 +1047,6 @@ class Eyesy:
                     self.knob_seq_index = 0
             else:
                 self.knob_seq_stop()
-
 
     def knob_seq_save(self, path):
         """Saves the knob_seq list to a JSON file."""
@@ -1126,6 +1124,4 @@ class Eyesy:
         self.key9_press = False
         self.key10_press = False
         self.new_led = False
-
-
 

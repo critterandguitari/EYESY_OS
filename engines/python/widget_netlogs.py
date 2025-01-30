@@ -6,7 +6,7 @@ import re
 class WidgetNetlogs():
     def __init__(self, eyesy):
         self.eyesy = eyesy
-        self.font = pygame.font.Font("font.ttf", 10)
+        self.font = pygame.font.Font("font.ttf", 12)
         self.logs = []
         self.last_log_time = 0  # Timestamp of the last log fetch
         self.x_offset = 10

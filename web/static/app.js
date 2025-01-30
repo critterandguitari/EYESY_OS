@@ -24,6 +24,7 @@ function getAceMode(extension) {
     return "text";
 }
 
+
 function openFile(path) {
     // Check if the file is already open
     var existingFile = openFiles.find(file => file.path === path);
@@ -36,19 +37,24 @@ function openFile(path) {
     // Determine the file extension
     var extension = path.split('.').pop().toLowerCase();
 
+    // List of allowed text-based extensions
+    var textExtensions = ['txt', 'md', 'html', 'css', 'js', 'json', 'xml', 'csv', 'log', 'py', 'c', 'cpp', 'java', 'sh'];
+
     // List of image extensions
     var imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'];
 
     if (imageExtensions.includes(extension)) {
         // For image files, add a tab that displays the image
         addImageTab(path);
-    } else {
-        // Get the file content from the server for text files
+    } else if (textExtensions.includes(extension)) {
+        // Fetch and display text-based files
         $.get(appBaseURL + '/get_file?fpath=' + encodeURIComponent(path), function(data) {
-            // Create a new tab
             var fileName = path.split('/').pop();
             addTab(path, fileName, data);
         }, 'text');
+    } else {
+        // Ignore unsupported file types
+        //alert("This file type cannot be displayed.");
     }
 }
 

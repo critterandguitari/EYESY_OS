@@ -109,8 +109,7 @@ def render_overlay_480(screen, eyesy) :
     screen.blit(text, text_rect)   
 
     # res
-    reso = eyesy.RESOLUTIONS[eyesy.config["video_resolution"]]["name"]
-    message = f"Screen Size: {reso} "
+    message = f"Screen Size: {eyesy.xres} x {eyesy.yres}"
     text =          font.render(message, True, eyesy.LGRAY, eyesy.BLACK)
     text_rect = text.get_rect()
     text_rect.x = 20

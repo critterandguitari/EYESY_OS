@@ -180,8 +180,10 @@ class Eyesy:
 
         # color stuff
         self.palettes = color_palettes.abcd_palettes
-        self.fg_palette = 0;
-        self.bg_palette = 0;
+        self.fg_palette = 0
+        self.bg_palette = 0
+        self.color_lfo_inc = 0
+        self.color_lfo_index = 0
 
         # knob sequencer stuff
         self.knob_seq = []
@@ -861,6 +863,17 @@ class Eyesy:
         
         return color 
 
+    def color_picker_lfo(self, knob_val):
+        if knob_val <= .5:
+            return self.color_picker((knob_val * 2) % 1)
+        else:
+            self.color_lfo_inc = (knob_val - .5) * .1
+            if self.color_lfo_index <= 1: return self.color_picker(self.color_lfo_index)  # ramp up
+            else: return self.color_picker(2 - self.color_lfo_index)            # ramp down
+                
+    def color_picker_lfo_step(self):
+        self.color_lfo_index = (self.color_lfo_index + self.color_lfo_inc) % 2    # ramp 0-2
+    
     def dispatch_key_event(self, k, v):
         
         # the shift key status, also resets all repeater key timers (or not)

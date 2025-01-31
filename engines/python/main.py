@@ -206,6 +206,9 @@ while 1:
         # fills in eyesy.knob1 etc, for the modes
         eyesy.set_knobs()
 
+        # step the color picker lfo
+        eyesy.color_picker_lfo_step()
+
         # measure fps
         eyesy.frame_count += 1
         if ((eyesy.frame_count % 30) == 0):

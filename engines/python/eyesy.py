@@ -1004,15 +1004,21 @@ class Eyesy:
             self.knob_seq_play()
         elif self.knob_seq_state == "stopped":
             self.knob_seq_play()
+        elif self.knob_seq_state == "enabled":
+            self.knob_seq_stop()
+
 
     def knob_seq_record_key(self):
         if self.knob_seq_state == "playing":
-            self.knob_seq_record()
+            self.knob_seq_record_enable()
         elif self.knob_seq_state == "recording":
             self.knob_seq_play()
         elif self.knob_seq_state == "stopped":
-            self.knob_seq_record()
-    
+            self.knob_seq_record_enable()
+        elif self.knob_seq_state == "enabled":
+            self.knob_seq_stop()
+
+   
     def knob_seq_play(self):
         self.knob_seq_state = "playing"
         self.knob_seq_index = 0
@@ -1031,9 +1037,21 @@ class Eyesy:
         print("knob sequence stopping")
         self.set_led(0)
 
+    def knob_seq_record_enable(self):
+        # snapshot current knob 
+        self.knob_seq_last_values[:] = self.knob[:]
+        self.knob_seq_state = "enabled"
+        print(f"knob sequence record enabled")
+        self.set_led(7)
+
+
     def knob_seq_run(self):
         if self.knob_seq_state == "stopped":
             return
+
+        elif self.knob_seq_state == "enabled":
+            moved = any(abs(x-y) >= .005 for x,y in zip(self.knob_seq_last_values, self.knob))
+            if moved: self.knob_seq_record()
 
         elif self.knob_seq_state == "recording":
             frame_values = tuple(self.knob)  # Collect current knob values

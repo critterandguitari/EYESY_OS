@@ -10,19 +10,37 @@ max_peak = 0
 
 def audio_processing(shared_buffer, write_index, atrig, gain, peak, lock):
     global max_peak
-    """Audio processing function running in a separate process."""
-    card_index = 1
+    
+    def find_alsa_card_index(target_name="audioinjector-pi-soundcard"):
+        """Finds the correct ALSA hardware index using card names."""
+        num_cards = alsaaudio.card_indexes()  # Gets actual ALSA internal indexes
+        for index in num_cards:
+            card_name = alsaaudio.card_name(index)[1]  # Extract name from (index, name) tuple
+            print(f"card {index} : {card_name}")
+            if target_name in card_name.lower():
+                return index
+        raise ValueError(f"Sound card '{target_name}' not found!")
+
+    # Try to find the correct card index dynamically
+    try:
+        card_index = find_alsa_card_index()
+        print(f"Using ALSA card index: {card_index}")
+    except ValueError as e:
+        print(e)
+        exit(1)
+
+    # PCM setup
     channels = 1
     format = alsaaudio.PCM_FORMAT_S16_LE
     period_size = 32
     rate = 32000  # Adjust as needed
     bytes_per_sample = 2  # S16_LE = 2 bytes per sample
 
-    # Open PCM device for capture in blocking mode
+    # Open PCM using the correct index
     pcm = alsaaudio.PCM(
         type=alsaaudio.PCM_CAPTURE,
         mode=alsaaudio.PCM_NORMAL,
-        cardindex=card_index,
+        cardindex=card_index,  # Now using the correct ALSA index
         channels=channels,
         rate=rate,
         format=format,

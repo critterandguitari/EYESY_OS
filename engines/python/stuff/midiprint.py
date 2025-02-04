@@ -1,8 +1,9 @@
 import time
 import mido
-
+inputs = mido.get_input_names()
+print(f"{inputs}")
 # Open MIDI input port
-input_port = mido.open_input('ttymidi:MIDI in 128:0')  # Replace with your actual MIDI port name
+input_port = mido.open_input(inputs[1])  # Replace with your actual MIDI port name
 
 # Functions to handle specific MIDI message types
 def handle_note(message):

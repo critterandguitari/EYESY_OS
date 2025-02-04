@@ -5,6 +5,7 @@ Requires=eyesyhw.service ttymidi.service
 
 
 [Service]
+LimitMEMLOCK=infinity
 Type=simple
 WorkingDirectory=/home/music/EYESY_OS/engines/python
 # Run as the 'music' user and group if desired

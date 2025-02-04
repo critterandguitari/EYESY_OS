@@ -3,6 +3,7 @@ import traceback
 import mido
 
 input_port = None
+input_port_usb = None
 midi_clock_count = 0
 
 def _handle_note(eyesy, message):
@@ -67,12 +68,23 @@ def _handle_clock(eyesy, message):
     midi_clock_count += 1
 
 def init():
-    global input_port
+    global input_port, input_port_usb
+
+    # first ttymidi
     try:
-        input_port = mido.open_input('ttymidi:MIDI in 128:0')  # Replace with your actual MIDI port name
+        input_port = mido.open_input('ttymidi:MIDI in 128:0') 
+    except Exception as e:
+        print(f"Error initializing ttymidi input port: {e}")
+        input_port = None
+
+    # try to get a USB midi port
+    input_ports = mido.get_input_names()
+    valid_port = next((port for port in input_ports if not port.startswith(("Midi Through", "ttymidi"))), None)
+    try:
+        input_port_usb = mido.open_input(valid_port) 
     except Exception as e:
         print(f"Error initializing input port: {e}")
-        input_port = None
+        input_port_usb = None
 
 def close():
     global input_port
@@ -82,8 +94,7 @@ def close():
     except Exception as e:
         print(f"Error closing input port: {e}")
 
-def recv(eyesy):
-    global input_port
+def recv(eyesy, input_port):
     if not input_port:
         #print("Input port is not initialized.")
         return
@@ -109,3 +120,10 @@ def recv(eyesy):
     except Exception as e:
         print(f"Error receiving messages: {e}")
 
+def recv_ttymidi(eyesy):
+    global input_port
+    recv(eyesy, input_port)
+
+def recv_usbmidi(eyesy):
+    global input_port_usb
+    recv(eyesy, input_port_usb)

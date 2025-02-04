@@ -193,7 +193,8 @@ while 1:
         eyesy.update_key_repeater()
 
         # check MIDI
-        midi.recv(eyesy)
+        midi.recv_ttymidi(eyesy)
+        midi.recv_usbmidi(eyesy)
 
         # get knobs, checking for override, and check for new note on
         # for the knobs, only changes are assinged

@@ -4,7 +4,7 @@
 echo -n performance | sudo tee /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
 # disable status led after bootup
-#echo none > /sys/class/leds/led0/trigger
+echo none | sudo tee /sys/class/leds/ACT/trigger
 
 # Check HDMI status using kmsprint
 if kmsprint | grep -q "HDMI-A-1 (connected)"; then

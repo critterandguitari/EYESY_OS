@@ -115,6 +115,13 @@ def get_local_ip_ifconfig():
     except Exception as e:
         return f"Error: {e}"
 
+def wifi_adapter_found():
+    try:
+        output = subprocess.check_output(["nmcli", "device"], text=True)
+        return any("wifi" in line for line in output.splitlines())
+    except subprocess.CalledProcessError:
+        return False  # nmcli failed, assume no adapter
+
 class ScreenWiFi(Screen):
 
     def __init__(self, eyesy):
@@ -157,10 +164,6 @@ class ScreenWiFi(Screen):
             return
 
         # otherwise we show the netlogs
-        #message = "IP: " + self.eyesy.ip
-        #msg_xy = (32, 260)
-        #rendered_text = font.render(message, True, color)
-        #surface.blit(rendered_text, msg_xy)
         self.netlogs.render(surface)
 
         # then show stuff depeinding on state
@@ -172,8 +175,12 @@ class ScreenWiFi(Screen):
                 self.build_connected_menu()
                 self.state = "idle"
             else:
-                self.start_scanning()
-                self.state = "scanning"
+                if wifi_adapter_found():
+                    self.start_scanning()
+                    self.state = "scanning"
+                else:
+                    self.build_nowifi_menu()
+                    self.state = "nowifi"
 
         elif self.state == "scanning":
             message = "Looking for networks..."
@@ -202,6 +209,12 @@ class ScreenWiFi(Screen):
             rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
 
+        elif self.state == "nowifi":
+            self.menu.render(surface)
+            message = f"WiFi Adapter Not Found"
+            rendered_text = font.render(message, True, color)
+            surface.blit(rendered_text, msg_xy)
+
         elif self.state == "dialog":
             self.menu.render(surface)
             message = f"Disconnect from: {self.current_ssid}?"
@@ -220,8 +233,14 @@ class ScreenWiFi(Screen):
             return
 
         # otherwise seclect from menu, but not during an action
-        if self.state == "idle" or self.state == "select_net":
+        if self.state == "idle" or self.state == "select_net" or self.state == "nowifi":
             self.menu.handle_events()
+
+    def build_nowifi_menu(self):
+        self.menu.items = [
+            MenuItem('◀  Exit', self.exit_menu)
+        ]
+        self.menu.set_selected_index(0)
 
     def build_connected_menu(self):
         self.menu.items = [
@@ -230,7 +249,6 @@ class ScreenWiFi(Screen):
         ]
         self.menu.set_selected_index(1)
         self.eyesy.ip = get_local_ip_ifconfig()
-
 
     def build_not_connected_menu(self):
         # Insert SSIDs plus Exit

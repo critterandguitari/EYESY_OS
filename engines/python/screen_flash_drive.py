@@ -19,7 +19,7 @@ class ScreenFlashDrive(Screen):
         ])
         self.menu.off_y = 73
         self.font = pygame.font.Font("font.ttf", 16)
-        self.font_small = pygame.font.Font("font.ttf", 14)
+        self.font_small = pygame.font.Font("font.ttf", 12)
         self.logs = []
 
     def before(self):

@@ -146,7 +146,8 @@ class Eyesy:
         self.trig = False
         self.fps = 0
         self.frame_count = 0
-        self.font = None 
+        self.font = None
+        self.running_from_usb = False
 
         # menu stuff
         self.current_screen = None

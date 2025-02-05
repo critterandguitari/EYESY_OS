@@ -25,6 +25,7 @@ class ScreenFlashDrive(Screen):
     def before(self):
         self.menu.selected_index = 1
         self.logs = []
+        self.ensure_usb_mounted()
         pass
 
     def after(self):
@@ -82,8 +83,8 @@ class ScreenFlashDrive(Screen):
         self.log("Syncing drive...")
         subprocess.run(["sync"])
 
-        self.log("Unmounting drive...")
-        subprocess.run(["sudo", "umount", "/usbdrive"])
+        #self.log("Unmounting drive...")
+        #subprocess.run(["sudo", "umount", "/usbdrive"])
 
         self.log("Backup complete.")
         self.state = "idle"
@@ -96,7 +97,8 @@ class ScreenFlashDrive(Screen):
             return False
 
         if not os.path.exists("/usbdrive"):
-            os.makedirs("/usbdrive")
+            self.log("mount point /usbdrive not found on system")
+            return False
 
         if "/usbdrive" in subprocess.getoutput("mount"):
             self.log("USB already mounted.")
@@ -123,7 +125,13 @@ class ScreenFlashDrive(Screen):
         """Create the next numbered backup folder."""
         backup_path = "/usbdrive/backups"
         if not os.path.exists(backup_path):
-            os.makedirs(backup_path)
+            self.log(f"Creating folder for backups")
+            try:
+                os.makedirs(backup_path)
+                return backup_folder
+            except Exception as e:
+                self.log(f"Error creating backup folder: {e}")
+                return None
 
         existing_folders = [
             int(f) for f in os.listdir(backup_path)

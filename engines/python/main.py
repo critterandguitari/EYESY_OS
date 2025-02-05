@@ -14,6 +14,7 @@ import eyesy
 import osc
 import sound
 import osd
+import usbdrive
 from screen_main_menu import ScreenMainMenu
 from screen_test import ScreenTest
 from screen_video_settings import ScreenVideoSettings
@@ -47,6 +48,21 @@ eyesy = eyesy.Eyesy()
 
 # begin init
 try :     
+    
+    # see if there is a USB drive and we can run from there
+    if usbdrive.mount_usb():
+        print("found USB drive, checking for modes")
+        if os.path.exists("/usbdrive/Modes"):
+            print("found USB drive with modes, using USB")
+            eyesy.GRABS_PATH =  "/usbdrive/Grabs/"
+            eyesy.MODES_PATH =  "/usbdrive/Modes/"
+            eyesy.SCENES_PATH = "/usbdrive/Scenes/"
+            eyesy.SYSTEM_PATH = "/usbdrive/System/"
+            eyesy.running_from_usb = True
+        else:
+            print("no modes found on USB drive, using internal")
+    else:
+        print("no USB found, using internal")
     
     # load config
     eyesy.load_config_file()
@@ -163,7 +179,7 @@ try :
     eyesy.menu_screens["applogs"] = ScreenApplogs(eyesy)
     eyesy.menu_screens["midi_settings"] = ScreenMIDISettings(eyesy)
     eyesy.menu_screens["midi_pc_mapping"] = ScreenMIDIPCMapping(eyesy)
-    eyesy.menu_screens["backup"] = ScreenFlashDrive(eyesy)
+    eyesy.menu_screens["flashdrive"] = ScreenFlashDrive(eyesy)
     eyesy.switch_menu_screen("home")
     
     # used to measure fps

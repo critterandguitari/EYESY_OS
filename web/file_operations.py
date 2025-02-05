@@ -108,20 +108,30 @@ def get_files(rootpath):
     root, folders, files = next(os.walk(rootpath))
     contents = []
 
-    # some reason root is // when rootpath is /, fix it
-    if root == "//" : root = "/"
+    # Fix root path issue
+    if root == "//":
+        root = "/"
 
+    # If we are in the root directory, only allow 'sdcard' and 'usbdrive'
+    if root == "/":
+        folders = [f for f in folders if f in ("sdcard", "usbdrive")]
+
+    # Sort folders and files
     folders = sorted(folders, key=lambda s: s.lower())
     files = sorted(files, key=lambda s: s.lower())
-    # add to the list if they are cool
-    for folder in folders :
-        if not folder[0] == '.' and folder != "__pycache__":
+
+    # Add filtered folders to the list
+    for folder in folders:
+        if not folder.startswith('.') and folder != "__pycache__":
             path = os.path.join(root, folder)
-            contents += [folder_to_dict(path)]
-    
-    for ffile in files :
-        if not ffile[0] == '.' :
-            path = os.path.join(root, ffile)
-            contents += [file_to_dict(path)]
+            contents.append(folder_to_dict(path))
+
+    # Add files (only if not in root, otherwise ignore them)
+    if root != "/":
+        for ffile in files:
+            if not ffile.startswith('.'):
+                path = os.path.join(root, ffile)
+                contents.append(file_to_dict(path))
 
     return json.dumps(contents, indent=4)
+

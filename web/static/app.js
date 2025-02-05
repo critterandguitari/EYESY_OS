@@ -1,7 +1,7 @@
 var appBaseURL = 'http://' + location.host
 var fsurl = appBaseURL + '/fmdata'
-var workingDir = '/sdcard/';
-var baseDirLabel = 'Home';
+//var workingDir = '/sdcard/';
+var workingDir = '/';
 var clipboard = {};
 
 var editor = null
@@ -237,15 +237,6 @@ function refreshWorkingDir(){
     })
     .fail(function () {
         console.log('problem refreshing');
-        // if that was an attempt to load non existent sdcard folder set base back to usbdrive
-        if (workingDir == '/sdcard/') {
-            alertDialog('SD Card storage not available on this Organelle.');
-            workingDir = '/usbdrive/';
-            baseDirLabel = 'USB Drive';
-        }
-        else {
-            alertDialog('Error loading file or folder.');
-        }
     });
 }
 
@@ -294,11 +285,6 @@ function nodeNameWithIcon(path, type){
 function renderFilesTable(d){
     $("#ftable").empty();
     var path = '';
-/*console.log('data:')
-console.log(d)
-console.log('type of data:')
-console.log(typeof d)
-*/
 
     d.forEach(function(c){
         var basename = c.path.split('/').pop();
@@ -345,17 +331,15 @@ console.log(typeof d)
 function renderBreadcrumb () {
     $("#fsbreadcrumb").empty();
     var absPath = '';
-    // NOTE hack for removing base dir and replacing with SD CARD or USB DRIVE for Organelle
-    //var breadelement = $('<li class="fsdir"><a href="#">'+baseDirLabel+'</a></li>');
-    //breadelement.data("path", absPath);
-   // $("#fsbreadcrumb").append(breadelement);
     var path = workingDir.split('/');
     var count = 0;
+    var breadelement = $('<li class="fsdir">&nbsp; / </li>');
+    breadelement.data("path", "/");
+    $("#fsbreadcrumb").append(breadelement);
     path.forEach(function(p) {
         if (p) {
             absPath +=  p + '/';
-            if (count == 0) var breadelement = $('<li class="fsdir">' + baseDirLabel + '/</li>');
-            else var breadelement = $('<li class="fsdir">' + p + '/</li>');
+            var breadelement = $('<li class="fsdir">' + p + '/</li>');
             count++;
             breadelement.data("path", absPath);
             $("#fsbreadcrumb").append(breadelement);
@@ -798,20 +782,7 @@ $(function () {
       }
     });
 
-    $("#usb-sel-but").click(function(){
-        baseDirLabel = 'USB Drive';
-        workingDir = '/usbdrive/';
-        refreshWorkingDir();
-    });
-
-    $("#sd-sel-but").click(function(){
-        baseDirLabel = 'SD Card';
-        workingDir = '/sdcard/';
-        refreshWorkingDir();
-    });
-
     $("#new-folder-but").click(newFolderDialog);
-
 
     $("#rename-but").click(renameDialog);
 

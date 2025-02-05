@@ -8,10 +8,6 @@ import mimetypes
 import liblo
 import file_operations
 
-GRABS_PATH = "/sdcard/Grabs/"
-MODES_PATH = "/"
-USER_DIR =   "/sdcard/"
-
 # osc to eyesy app
 try:
 	osc_target = liblo.Address(4000)

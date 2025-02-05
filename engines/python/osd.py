@@ -96,7 +96,16 @@ def render_overlay_480(screen, eyesy) :
     text_rect.x = 20
     text_rect.centery = 30
     screen.blit(text, text_rect)
-     
+ 
+    # usb
+    if eyesy.running_from_usb:
+        txt_str = "USB"    
+        text = font.render(txt_str, True, eyesy.GREEN, eyesy.BLACK)
+        text_rect = text.get_rect()
+        text_rect.x = 404
+        text_rect.centery = 30
+        screen.blit(text, text_rect)
+         
     # scene
     if eyesy.scene_index >= 0 :
         scene_str = "Scene: (" + str(eyesy.scene_index + 1) +" of "+str(len(eyesy.scenes)) + ") " + str(eyesy.scenes[eyesy.scene_index]["name"])

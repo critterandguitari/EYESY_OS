@@ -62,7 +62,7 @@ def reload_mode():
 @app.route('/get_file', methods=['GET'])
 def get_file():
     fpath = request.args.get('fpath')
-    file_path = os.path.join(MODES_PATH, fpath)
+    file_path = os.path.join("/", fpath)
 
     # Guess the MIME type of the file
     mime_type, _ = mimetypes.guess_type(file_path)
@@ -118,7 +118,7 @@ def save():
     if not fpath or not content:
         return "Missing 'fpath' or 'content' in form data.", 400
     
-    mode_path = MODES_PATH + fpath
+    mode_path = "/" + fpath
     with open(mode_path, "w") as text_file:
         text_file.write(content)
     

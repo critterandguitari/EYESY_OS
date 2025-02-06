@@ -883,6 +883,8 @@ class Eyesy:
                 #self.key5_td = 0
                 #self.key6_td = 0
                 #self.key7_td = 0
+                # grab gain knob value so we can check it for movement while shift is down
+                #self.gain_knob_capture = self.knobs_hardware[0]
             else : 
                 self.key2_status = False
         
@@ -992,6 +994,10 @@ class Eyesy:
                     self.key10_td += 1
                     if (self.key10_td > 10) : self.trig = True
     
+    #def check_gain_knob(self):
+     #   if self.key2_status:
+     #       if
+
     def set_led(self, val):
         self.led = val
         self.new_led = True

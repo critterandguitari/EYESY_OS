@@ -75,7 +75,7 @@ try :
 
     # setup alsa sound shared resources
     BUFFER_SIZE = 100
-    shared_buffer = Array(c_float, BUFFER_SIZE + 1, lock=True)  # Circular buffer, size + 1, last entry for trigger value
+    shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
     write_index = Value('i', 0)     # Write index for the buffer
     atrig = Value('i', 0)           # audio trigger
     gain = Value('f', 0)

@@ -24,15 +24,24 @@ def draw_vu_480(screen, eyesy, offx, offy):
     for i in range(0,15) :
         x = offx + 8 * i
         pygame.draw.line(screen, color, [x, offy], [x + 6, offy], 1)
-        pygame.draw.line(screen, color, [x, offy], [x, offy + 24], 1)
-        pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 24], 1)
-        pygame.draw.line(screen, color, [x, offy + 24], [x + 6, offy + 24], 1)
+        pygame.draw.line(screen, color, [x, offy], [x, offy + 16], 1)
+        pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 16], 1)
+        pygame.draw.line(screen, color, [x, offy + 16], [x + 6, offy + 16], 1)
     color = eyesy.GREEN
     for i in range(0, int(eyesy.audio_peak / 2048)):
         if i > 8 : color = (255,255,0)
         if i == 14 : color = eyesy.RED
         x = offx + 8 * i
-        if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 23))
+        if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 15))
+
+def draw_gain_bar(screen, eyesy, offx, offy):
+    color = eyesy.LGRAY
+    pygame.draw.line(screen, color, [offx, offy], [offx + 118, offy], 1)
+    pygame.draw.line(screen, color, [offx, offy+5], [offx + 118, offy+5], 1)
+    pygame.draw.line(screen, color, [offx, offy], [offx, offy+5], 1)
+    pygame.draw.line(screen, color, [offx+118, offy], [offx+118, offy+5], 1)
+    pygame.draw.rect(screen, color, (offx, offy, int(eyesy.config["audio_gain"] / 3), 5))
+
 
 # loading banner helper
 def loading_banner(screen, stuff) :
@@ -100,11 +109,13 @@ def render_overlay_480(screen, eyesy) :
     # usb
     if eyesy.running_from_usb:
         txt_str = "USB"    
-        text = font.render(txt_str, True, eyesy.GREEN, eyesy.BLACK)
-        text_rect = text.get_rect()
-        text_rect.x = 404
-        text_rect.centery = 30
-        screen.blit(text, text_rect)
+    else :
+        txt_str = "SD"
+    text = font.render(txt_str, True, eyesy.GREEN, eyesy.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 404
+    text_rect.centery = 30
+    screen.blit(text, text_rect)
          
     # scene
     if eyesy.scene_index >= 0 :
@@ -143,7 +154,8 @@ def render_overlay_480(screen, eyesy) :
         if (eyesy.midi_notes[i] > 0):
             pygame.draw.rect(screen, eyesy.LGRAY, (offx + 6 * (i % 32), offy + 6 * int(i / 32), 6, 6))
     
-    draw_vu_480(screen, eyesy, 286, 105)
+    draw_gain_bar(screen, eyesy, 286, 105)
+    draw_vu_480(screen, eyesy, 286, 113)
        
     # trigger
     pygame.draw.rect(screen, eyesy.LGRAY, (410, 105, 25, 25), 1)

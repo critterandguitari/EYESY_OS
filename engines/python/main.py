@@ -95,7 +95,7 @@ try :
     print("pygame version " + pygame.version.ver)
 
     # set led to running
-    osc.send("/led", 0) 
+    osc.send("/led", 7) 
 
     # init fb and main surface hwscreen
     print("opening frame buffer...")

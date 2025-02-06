@@ -1034,14 +1034,14 @@ class Eyesy:
     def knob_seq_stop(self):
         self.knob_seq_state = "stopped"
         print("knob sequence stopping")
-        self.set_led(0)
+        self.set_led(7)
 
     def knob_seq_record_enable(self):
         # snapshot current knob 
         self.knob_seq_last_values[:] = self.knob[:]
         self.knob_seq_state = "enabled"
         print(f"knob sequence record enabled")
-        self.set_led(7)
+        self.set_led(6)
 
 
     def knob_seq_run(self):

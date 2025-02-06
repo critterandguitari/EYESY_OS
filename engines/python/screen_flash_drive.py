@@ -10,20 +10,22 @@ class ScreenFlashDrive(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
         self.state = "idle"  # "idle" or "running"
-        self.title = "Backup to USB Drive"
+        self.title = "Manage USB Drive"
         self.footer = chr(0x2680) + "     = Cancel     " + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Enter"
 
         self.menu = WidgetMenu(eyesy, [
-            MenuItem('Yes', self.start_backup),
+            MenuItem('Backup SD card to USB drive', self.start_backup),
+            MenuItem('Eject USB drive', self.eject),
+            MenuItem('Reload', self.restart),
             MenuItem('◀  Exit', self.goto_home)
         ])
-        self.menu.off_y = 73
+        self.menu.off_y = 43
         self.font = pygame.font.Font("font.ttf", 16)
         self.font_small = pygame.font.Font("font.ttf", 12)
         self.logs = []
 
     def before(self):
-        self.menu.selected_index = 1
+        self.menu.selected_index = 3
         self.logs = []
         self.ensure_usb_mounted()
         pass
@@ -37,11 +39,11 @@ class ScreenFlashDrive(Screen):
 
     def render(self, surface):     
 
-        msg_xy = (32, 68)
-        color = (200, 200, 200)
-        message = "Backup Modes, Scenes, Settings, and Screen Grabs?"
-        rendered_text = self.font.render(message, True, color)
-        surface.blit(rendered_text, msg_xy)
+        #msg_xy = (32, 68)
+        #color = (200, 200, 200)
+        #message = "Backup Modes, Scenes, Settings, and Screen Grabs?"
+        #rendered_text = self.font.render(message, True, color)
+        #surface.blit(rendered_text, msg_xy)
         self.menu.render(surface)
 
         line_height = self.font_small.get_linesize()
@@ -49,6 +51,16 @@ class ScreenFlashDrive(Screen):
             text_surface = self.font_small.render(log, True, (200, 200, 200))  # White text
             surface.blit(text_surface, (32, 200 + i * line_height))
 
+    def restart(self):
+        self.eyesy.restart = True
+ 
+    def eject(self):
+        self.logs = []  # Clear previous logs
+        self.log("Ejecting USB drive...")
+        subprocess.run(["sudo", "umount", "/usbdrive"])
+        self.log("Safe to remove.")
+
+   
     def log(self, message):
         """Append a message to logs and trigger a screen update."""
         self.logs.append(message)
@@ -101,7 +113,8 @@ class ScreenFlashDrive(Screen):
             return False
 
         if "/usbdrive" in subprocess.getoutput("mount"):
-            self.log("USB already mounted.")
+            self.log("USB mounted mounted.")
+            if self.eyesy.running_from_usb : self.log("EYESY running patches from USB")
             return True
 
         result = subprocess.run(["sudo", "mount", "-o", "uid=1000,gid=1000", usb_device, "/usbdrive"],

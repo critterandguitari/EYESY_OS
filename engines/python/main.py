@@ -240,16 +240,17 @@ while 1:
             with lock:
                 eyesy.audio_in[:] = shared_buffer[:]
                 gain.value = float(eyesy.config["audio_gain"] / 100)
+                # update audio trig and peak 
                 tmptrig = atrig.value
+                if eyesy.config["trigger_source"] == 0 and tmptrig: eyesy.trig = True
                 eyesy.audio_peak = peak.value
         else:
             undulate_p += .005
             undulate = ((math.sin(undulate_p * 2 * math.pi) + 1) * 2) + .5
             for i,v in enumerate(eyesy.audio_in):
                 eyesy.audio_in[i] = int(math.sin((i / 100) * 2 * math.pi * undulate) * 25000)
+            eyesy.audio_peak = 25000 # also set peak value
       
-        # update audio trig 
-        if eyesy.config["trigger_source"] == 0 and tmptrig: eyesy.trig = True
         
         # set the mode on which to call draw
         try : 
@@ -313,7 +314,7 @@ while 1:
                 pygame.time.wait(200)
             # menu might signal restart
             if eyesy.restart :
-                print("video res changed, restarting")
+                print("restart requested from menu, restarting")
                 exitexit(1)
             # menu exits, clear screen
             if not eyesy.menu_mode :

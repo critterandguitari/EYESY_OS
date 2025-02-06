@@ -69,7 +69,8 @@ function addTab(path, fileName, content) {
     var parentDir = pathParts.length > 0 ? pathParts.pop() : '';
 
     // Create the tab label with parent directory and file name
-    var tabLabel = parentDir ? parentDir + '/' + fileName : fileName;
+    // actually use full path to differentiate usb from sd
+    var tabLabel = path//parentDir ? parentDir + '/' + fileName : fileName;
 
     // Create a new tab element with the updated label
     var $tab = $('<div class="tab"></div>').text(tabLabel);

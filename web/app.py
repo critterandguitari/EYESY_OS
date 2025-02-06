@@ -56,7 +56,9 @@ def index():
 
 @app.route('/reload_mode', methods=['GET', 'POST'])
 def reload_mode():
-    liblo.send(osc_target, "/reload", 1)
+    mode = request.form.get('name')
+    liblo.send(osc_target, "/set", mode)
+    #liblo.send(osc_target, "/reload", 1)
     return "reloaded mode"
 
 @app.route('/get_file', methods=['GET'])

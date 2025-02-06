@@ -1,5 +1,6 @@
 import sys
 import liblo
+import os
 
 eyesy = None 
 osc_server = None
@@ -9,11 +10,25 @@ osc_target = None
 def fallback(path, args):
     pass
 
+def get_mode_name_from_path(path):
+    parts = os.path.normpath(path).split(os.sep)
+    
+    # Ensure the path has at least two parts and ends with "main.py"
+    if len(parts) < 2 or parts[-1] != "main.py":
+        return None
+
+    return parts[-2]
+
 def set_callback(path, args):
     global eyesy
-    name = args[0]
-    eyesy.set_mode_by_name(name)
-    print("set patch to: " + str(eyesy.mode) + " with index " + str(eyesy.mode_index))
+    name = get_mode_name_from_path(args[0])
+    print(f"attempting to load: {args[0]}")
+    try :
+        eyesy.set_mode_by_name(name)
+        print("set mode to: " + str(eyesy.mode) + " with index " + str(eyesy.mode_index) + " reloading...")
+        eyesy.reload_mode()
+    except:
+        print(f"couldn't set mode {args[0]}, check USB or SD")
  
 def new_callback(path, args):
     global eyesy

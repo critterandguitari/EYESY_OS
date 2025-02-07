@@ -8,7 +8,7 @@ import time
 BUFFER_SIZE = 100  # Size of the circular buffer
 max_peak = 0
 
-def audio_processing(shared_buffer, write_index, atrig, gain, peak, lock):
+def audio_processing(shared_buffer, shared_buffer_r, write_index, atrig, gain, peak, lock):
     global max_peak
     
     def find_alsa_card_index(target_name="audioinjector-pi-soundcard"):
@@ -47,40 +47,57 @@ def audio_processing(shared_buffer, write_index, atrig, gain, peak, lock):
         periodsize=period_size
     )
 
+    # Print ALSA PCM configuration
+    print(pcm.dumpinfo())
+    
     try:
         while True:
             length, data = pcm.read()
+            #print(f"{length}, {len(data)}")
             if length == 64:
                 # Calculate the number of samples
                 num_samples = length * bytes_per_sample
 
                 # Unpack binary data into 16-bit signed integers
                 samples = struct.unpack(f'<{num_samples}h', data)
+                
+                samples_l = samples[0::2]
+                samples_r = samples[1::2]
 
+                #print(len(samples))
                 # Write samples to the circular buffer
-                with lock:
-                    for i in range(0, len(samples), 16):
-                        if i + 16 <= len(samples):
-                            avg_sample = sum(samples[i:i+16]) / 16
+                for i in range(0, len(samples_l), 16):
+                    if i + 16 <= len(samples_l):
+                        avg_sample = sum(samples_l[i:i+16]) / 16
+                        avg_sample_r = sum(samples_r[i:i+16]) / 16
 
-                            # apply gain
-                            avg_sample *= gain.value
+                        # Apply gain
+                        avg_sample *= gain.value
+                        avg_sample_r *= gain.value
 
-                            # check for trigger
-                            atrig.value = 0
-                            if avg_sample > 5000: atrig.value = 1
+                        # Check for trigger
+                        atrig_val = 1 if avg_sample > 5000 else 0
 
-                            # check peak value
-                            if avg_sample > max_peak: max_peak = avg_sample
+                        # Clamp value to avoid overflow
+                        avg_sample = max(-32768, min(32767, avg_sample))
+                        avg_sample_r = max(-32768, min(32767, avg_sample_r))
 
-                            # write to buffer and increment
+                        # Check peak
+                        if avg_sample > max_peak:
+                            max_peak = avg_sample  # Safe, since max_peak is local to this loop
+
+                        # Lock only during shared variable writes
+                        with lock:
                             shared_buffer[write_index.value] = avg_sample
+                            shared_buffer_r[write_index.value] = avg_sample_r
                             write_index.value = (write_index.value + 1) % BUFFER_SIZE
-                            
-                            # update peak once per buffer
+                            atrig.value = atrig_val  # Safe to update here
+
+                            # Update peak once per buffer cycle
                             if write_index.value == 0:
                                 peak.value = max_peak
-                                max_peak = 0
+                                max_peak = 0  # Reset after committing
+
 
     finally:
         pcm.close()

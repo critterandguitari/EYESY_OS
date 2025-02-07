@@ -102,6 +102,7 @@ class Eyesy:
         
         # audio
         self.audio_in = [0] * 100
+        self.audio_in_r = [0] * 100
         self.audio_peak = 0
         self.audio_scale = 1.0
 
@@ -400,10 +401,10 @@ class Eyesy:
     # save a screenshot
     def screengrab(self):
         filenum = 0
-        imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
+        imagepath = self.GRABS_PATH + str(filenum) + ".bmp"
         while os.path.isfile(imagepath):
             filenum += 1
-            imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
+            imagepath = self.GRABS_PATH + str(filenum) + ".bmp"
         pygame.image.save( self.screen ,imagepath)
         print("grabbed " + imagepath)
 

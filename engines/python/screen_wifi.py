@@ -211,7 +211,7 @@ class ScreenWiFi(Screen):
 
         elif self.state == "nowifi":
             self.menu.render(surface)
-            message = f"WiFi Adapter Not Found"
+            message = f"WiFi Adapter Not Found" + "            IP: " + self.eyesy.ip
             rendered_text = font.render(message, True, color)
             surface.blit(rendered_text, msg_xy)
 
@@ -241,6 +241,7 @@ class ScreenWiFi(Screen):
             MenuItem('◀  Exit', self.exit_menu)
         ]
         self.menu.set_selected_index(0)
+        self.eyesy.ip = get_local_ip_ifconfig()
 
     def build_connected_menu(self):
         self.menu.items = [

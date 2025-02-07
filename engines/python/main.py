@@ -76,6 +76,7 @@ try :
     # setup alsa sound shared resources
     BUFFER_SIZE = 100
     shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
+    shared_buffer_r = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
     write_index = Value('i', 0)     # Write index for the buffer
     atrig = Value('i', 0)           # audio trigger
     gain = Value('f', 0)
@@ -83,7 +84,7 @@ try :
     lock = Lock()
 
     # Start the audio processing in a separate process
-    audio_process = Process(target=sound.audio_processing, args=(shared_buffer, write_index, atrig, gain, peak, lock))
+    audio_process = Process(target=sound.audio_processing, args=(shared_buffer, shared_buffer_r, write_index, atrig, gain, peak, lock))
     audio_process.start()
 
     # init pygame, this has to happen after sound is setup
@@ -244,6 +245,7 @@ while 1:
             tmptrig = False
             with lock:
                 eyesy.audio_in[:] = shared_buffer[:]
+                eyesy.audio_in_r[:] = shared_buffer_r[:]
                 g = eyesy.config["audio_gain"]
                 gain.value = float((g * g * 50) + 1)  # map audio, make it big
                 # update audio trig and peak 
@@ -257,7 +259,6 @@ while 1:
                 eyesy.audio_in[i] = int(math.sin((i / 100) * 2 * math.pi * undulate) * 25000)
             eyesy.audio_peak = 25000 # also set peak value
       
-        
         # set the mode on which to call draw
         try : 
             mode = sys.modules[eyesy.mode]
@@ -326,12 +327,12 @@ while 1:
             if not eyesy.menu_mode :
                 hwscreen.fill(eyesy.bg_color) 
         
-        '''txt_str = " FPS:  "   + str(int(eyesy.fps)) + " "
+        txt_str = " FPS:  "   + str(int(eyesy.fps)) + " "
         text = eyesy.font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
         text_rect = text.get_rect()
         text_rect.x = 10
         text_rect.centery = 10
-        hwscreen.blit(text, text_rect)'''
+        hwscreen.blit(text, text_rect)
      
         pygame.display.flip()
         

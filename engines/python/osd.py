@@ -12,12 +12,18 @@ def draw_knob_slider_480(screen, eyesy, offx, offy, index) :
         color = eyesy.RED
     else :
         color = eyesy.LGRAY
-    
+  
+    # use knob1,2 etc, same as mode
+    if index == 0: knob = eyesy.knob1
+    elif index == 1: knob = eyesy.knob2
+    elif index == 2: knob = eyesy.knob3
+    elif index == 3: knob = eyesy.knob4
+    elif index == 4: knob = eyesy.knob5
     pygame.draw.line(screen, color, [offx, offy], [offx + 10, offy], 1)
     pygame.draw.line(screen, color, [offx, offy], [offx, offy + 24], 1)
     pygame.draw.line(screen, color, [offx + 10, offy], [offx + 10, offy + 24], 1)
     pygame.draw.line(screen, color, [offx, offy + 24], [offx + 10, offy + 24], 1)
-    pygame.draw.rect(screen, color, (offx, offy + 24 - int(24*eyesy.knob[index]), 10, int(24*eyesy.knob[index])))
+    pygame.draw.rect(screen, color, (offx, offy + 24 - int(24*knob), 10, int(24*knob)))
 
 def draw_vu_480(screen, eyesy, offx, offy):
     color = eyesy.LGRAY
@@ -40,7 +46,7 @@ def draw_gain_bar(screen, eyesy, offx, offy):
     pygame.draw.line(screen, color, [offx, offy+5], [offx + 118, offy+5], 1)
     pygame.draw.line(screen, color, [offx, offy], [offx, offy+5], 1)
     pygame.draw.line(screen, color, [offx+118, offy], [offx+118, offy+5], 1)
-    pygame.draw.rect(screen, color, (offx, offy, int(eyesy.config["audio_gain"] / 3), 5))
+    pygame.draw.rect(screen, color, (offx, offy, int(eyesy.config["audio_gain"] * 118), 5))
 
 
 # loading banner helper

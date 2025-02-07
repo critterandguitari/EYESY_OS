@@ -203,18 +203,23 @@ while 1:
     try :
         # check for OSC
         # key events will be dispatched from here
+        # knobs from hardware
         osc.recv()
 
-        # for repeating keys held down
-        eyesy.update_key_repeater()
-
         # check MIDI
+        # matching CC merged with knobs
         midi.recv_ttymidi(eyesy)
         midi.recv_usbmidi(eyesy)
 
         # get knobs, checking for override, and check for new note on
         # for the knobs, only changes are assinged
         eyesy.update_knobs_and_notes()
+
+        # for repeating keys held down
+        eyesy.update_key_repeater()
+
+        # check gain knob
+        eyesy.check_gain_knob()
 
         # sequence the knobs    
         # only changes assigned 
@@ -239,7 +244,8 @@ while 1:
             tmptrig = False
             with lock:
                 eyesy.audio_in[:] = shared_buffer[:]
-                gain.value = float(eyesy.config["audio_gain"] / 100)
+                g = eyesy.config["audio_gain"]
+                gain.value = float((g * g * 50) + 1)  # map audio, make it big
                 # update audio trig and peak 
                 tmptrig = atrig.value
                 if eyesy.config["trigger_source"] == 0 and tmptrig: eyesy.trig = True

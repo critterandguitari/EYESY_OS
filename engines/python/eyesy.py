@@ -48,7 +48,7 @@ class Eyesy:
 
         self.DEFAULT_CONFIG = {
             "video_resolution": 0,
-            "audio_gain": 100,
+            "audio_gain": .25,
             "trigger_source":0,
             "fg_palette": 0,
             "bg_palette": 0,
@@ -192,6 +192,11 @@ class Eyesy:
         self.knob_seq_index = 0
         self.knob_seq_state = "stopped"
 
+        # gain control shortcut
+        self.gain_knob_unlocked = False
+        self.gain_knob_capture = 0
+        self.gain_value_snapshot = 0
+    
         self.clear_flags()
 
     def load_config_file(self) :
@@ -242,7 +247,7 @@ class Eyesy:
         # Validate each field in self.config, falling back to defaults if needed
         self._validate_config_int("midi_channel", 1, 16)
         self._validate_config_int("video_resolution", 0, len(self.RESOLUTIONS))
-        self._validate_config_int("audio_gain", 50, 300)
+        self._validate_config_int("audio_gain", 0, 1)
         self._validate_config_int("fg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("bg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("trigger_source", 0, len(self.TRIGGER_SOURCES)-1)
@@ -384,13 +389,13 @@ class Eyesy:
                 self.midi_note_new = True
     
     def set_knobs(self) :
-        # fill these in for convenience
-        self.knob1 = self.knob[0]
-        self.knob2 = self.knob[1]
-        self.knob3 = self.knob[2]
-        self.knob4 = self.knob[3]
-        self.knob5 = self.knob[4]
-
+        # fill these for the modes, but only if shift isn't down
+        if not self.key2_status:
+            self.knob1 = self.knob[0]
+            self.knob2 = self.knob[1]
+            self.knob3 = self.knob[2]
+            self.knob4 = self.knob[3]
+            self.knob5 = self.knob[4]
 
     # save a screenshot
     def screengrab(self):
@@ -876,6 +881,7 @@ class Eyesy:
     def dispatch_key_event(self, k, v):
         
         # the shift key status, also resets all repeater key timers (or not)
+        # and does some other stuff when pressed / released
         if k == 2 :
             if v > 0 : 
                 self.key2_status = True
@@ -884,8 +890,15 @@ class Eyesy:
                 #self.key6_td = 0
                 #self.key7_td = 0
                 # grab gain knob value so we can check it for movement while shift is down
-                #self.gain_knob_capture = self.knobs_hardware[0]
-            else : 
+                self.gain_knob_capture = self.knob_hardware[0]
+                self.gain_knob_unlocked = False
+                self.gain_value_snapshot = self.config["audio_gain"]
+            else :
+                # save gain to config if changed
+                if self.gain_value_snapshot != self.config["audio_gain"] : 
+                    v = self.config["audio_gain"]
+                    print(f"gain value updated {v}, saving to config")
+                    self.save_config_file()
                 self.key2_status = False
         
         # status of these keys also used for key repeating
@@ -994,9 +1007,11 @@ class Eyesy:
                     self.key10_td += 1
                     if (self.key10_td > 10) : self.trig = True
     
-    #def check_gain_knob(self):
-     #   if self.key2_status:
-     #       if
+    def check_gain_knob(self):
+        if self.key2_status:
+            if abs(self.gain_knob_capture - self.knob_hardware[0]) > .05: self.gain_knob_unlocked = True
+            if self.gain_knob_unlocked:
+                self.config["audio_gain"] = self.knob_hardware[0]
 
     def set_led(self, val):
         self.led = val

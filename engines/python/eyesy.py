@@ -239,6 +239,13 @@ class Eyesy:
             else self.DEFAULT_CONFIG[field]
         )
 
+    def _validate_config_float(self, field, minv, maxv) :
+        self.config[field] = (
+            self.config.get(field)
+            if isinstance(self.config.get(field), float) and minv <= self.config[field] <= maxv
+            else self.DEFAULT_CONFIG[field]
+        )
+
     def _validate_config_bool(self, field):
         self.config[field] = (
             self.config.get(field)
@@ -250,7 +257,7 @@ class Eyesy:
         # Validate each field in self.config, falling back to defaults if needed
         self._validate_config_int("midi_channel", 1, 16)
         self._validate_config_int("video_resolution", 0, len(self.RESOLUTIONS))
-        self._validate_config_int("audio_gain", 0, 1)
+        self._validate_config_float("audio_gain", 0, 1)
         self._validate_config_int("fg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("bg_palette", 0, len(self.palettes)-1)
         self._validate_config_int("trigger_source", 0, len(self.TRIGGER_SOURCES)-1)

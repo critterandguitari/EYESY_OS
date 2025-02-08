@@ -331,12 +331,12 @@ while 1:
             if not eyesy.menu_mode :
                 hwscreen.fill(eyesy.bg_color) 
         
-        txt_str = " FPS:  "   + str(int(eyesy.fps)) + " "
+        '''txt_str = " FPS:  "   + str(int(eyesy.fps)) + " "
         text = eyesy.font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
         text_rect = text.get_rect()
         text_rect.x = 10
         text_rect.centery = 10
-        hwscreen.blit(text, text_rect)
+        hwscreen.blit(text, text_rect)'''
      
         pygame.display.flip()
         

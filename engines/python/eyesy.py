@@ -24,7 +24,9 @@ class Eyesy:
         self.MODES_PATH = "/sdcard/Modes/"
         self.SCENES_PATH = "/sdcard/Scenes/"
         self.SYSTEM_PATH = "/sdcard/System/"
-        
+       
+        self.COMPVIDS = ["NTSC","NTSC-J","NTSC-443","PAL","PAL-M","PAL-N","PAL60","SECAM"]
+
         self.RESOLUTIONS = [
             { "name" : "640 x 480",
               "res"  : (640,480)

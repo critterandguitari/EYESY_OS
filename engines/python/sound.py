@@ -7,9 +7,10 @@ import time
 
 BUFFER_SIZE = 100  # Size of the circular buffer
 max_peak = 0
+max_peak_r = 0
 
-def audio_processing(shared_buffer, shared_buffer_r, write_index, atrig, gain, peak, lock):
-    global max_peak
+def audio_processing(shared_buffer, shared_buffer_r, write_index, atrig, gain, peak, peak_r, lock):
+    global max_peak, max_peak_r
     
     def find_alsa_card_index(target_name="audioinjector-pi-soundcard"):
         """Finds the correct ALSA hardware index using card names."""
@@ -84,7 +85,9 @@ def audio_processing(shared_buffer, shared_buffer_r, write_index, atrig, gain, p
 
                         # Check peak
                         if avg_sample > max_peak:
-                            max_peak = avg_sample  # Safe, since max_peak is local to this loop
+                            max_peak = avg_sample 
+                        if avg_sample_r > max_peak_r:
+                            max_peak_r = avg_sample_r  
 
                         # Lock only during shared variable writes
                         with lock:
@@ -96,7 +99,9 @@ def audio_processing(shared_buffer, shared_buffer_r, write_index, atrig, gain, p
                             # Update peak once per buffer cycle
                             if write_index.value == 0:
                                 peak.value = max_peak
+                                peak_r.value = max_peak_r
                                 max_peak = 0  # Reset after committing
+                                max_peak_r = 0  # Reset after committing
 
 
     finally:

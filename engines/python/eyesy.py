@@ -18,6 +18,7 @@ import config
 class Eyesy:
 
     def __init__(self):
+        self.VERSION = "3beta10"
         # config stuff 
         self.GRABS_PATH = "/sdcard/Grabs/"
         self.MODES_PATH = "/sdcard/Modes/"
@@ -104,6 +105,7 @@ class Eyesy:
         self.audio_in = [0] * 100
         self.audio_in_r = [0] * 100
         self.audio_peak = 0
+        self.audio_peak_r = 0
         self.audio_scale = 1.0
 
         # knobs a used by mode 

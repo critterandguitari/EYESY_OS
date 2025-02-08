@@ -26,19 +26,37 @@ def draw_knob_slider_480(screen, eyesy, offx, offy, index) :
     pygame.draw.rect(screen, color, (offx, offy + 24 - int(24*knob), 10, int(24*knob)))
 
 def draw_vu_480(screen, eyesy, offx, offy):
+    # L
     color = eyesy.LGRAY
     for i in range(0,15) :
         x = offx + 8 * i
         pygame.draw.line(screen, color, [x, offy], [x + 6, offy], 1)
-        pygame.draw.line(screen, color, [x, offy], [x, offy + 16], 1)
-        pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 16], 1)
-        pygame.draw.line(screen, color, [x, offy + 16], [x + 6, offy + 16], 1)
+        pygame.draw.line(screen, color, [x, offy], [x, offy + 7], 1)
+        pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 7], 1)
+        pygame.draw.line(screen, color, [x, offy + 7], [x + 6, offy + 7], 1)
     color = eyesy.GREEN
     for i in range(0, int(eyesy.audio_peak / 2048)):
         if i > 8 : color = (255,255,0)
         if i == 14 : color = eyesy.RED
         x = offx + 8 * i
-        if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 15))
+        if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 6))
+    
+    # R
+    offy += 9
+    color = eyesy.LGRAY
+    for i in range(0,15) :
+        x = offx + 8 * i
+        pygame.draw.line(screen, color, [x, offy], [x + 6, offy], 1)
+        pygame.draw.line(screen, color, [x, offy], [x, offy + 7], 1)
+        pygame.draw.line(screen, color, [x + 6, offy], [x + 6, offy + 7], 1)
+        pygame.draw.line(screen, color, [x, offy + 7], [x + 6, offy + 7], 1)
+    color = eyesy.GREEN
+    for i in range(0, int(eyesy.audio_peak_r / 2048)):
+        if i > 8 : color = (255,255,0)
+        if i == 14 : color = eyesy.RED
+        x = offx + 8 * i
+        if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 6))
+
 
 def draw_gain_bar(screen, eyesy, offx, offy):
     color = eyesy.LGRAY
@@ -142,6 +160,14 @@ def render_overlay_480(screen, eyesy) :
     text_rect.centery = 80
     screen.blit(text, text_rect)   
   
+    # version
+    message = f"v{eyesy.VERSION}"
+    text =          font.render(message, True, eyesy.LGRAY, eyesy.BLACK)
+    text_rect = text.get_rect()
+    text_rect.x = 380
+    text_rect.centery = 80
+    screen.blit(text, text_rect)   
+
     # knobs
     draw_knob_slider_480(screen, eyesy, 20, 105, 0)
     draw_knob_slider_480(screen, eyesy, 33, 105, 1)

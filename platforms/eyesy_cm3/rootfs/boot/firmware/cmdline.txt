@@ -1,0 +1,1 @@
+console=tty3 root=PARTUUID=546f7261-02 rootfstype=ext4 cfg80211.ieee80211_regdom=US dwc_otg.lpm_enable=0 elevator=deadline fsck.mode=skip fastboot rootwait noswap loglevel=0 logo.nologo vt.global_cursor_default=0 splash quiet plymouth.ignore-serial-consoles vt.global_cursor_default=0 fsck.repair=no vc4.tv_norm=NTSC 

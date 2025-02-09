@@ -1,6 +1,6 @@
 [Unit]
 Description=EYESY Web Editor
-After=eyesysetup.service
+After=eyesypy.service
 
 [Service]
 Type=simple

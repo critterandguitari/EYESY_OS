@@ -882,13 +882,13 @@ class Eyesy:
         return color 
 
     def color_picker_lfo(self, knob_val):
+        self.color_lfo_index = (self.color_lfo_index + self.color_lfo_inc) % 2    # ramp 0-2
         if knob_val <= .5:
             return self.color_picker((knob_val * 2) % 1)
         else:
             self.color_lfo_inc = (knob_val - .5) * .1
             if self.color_lfo_index <= 1: return self.color_picker(self.color_lfo_index)  # ramp up
             else: return self.color_picker(2 - self.color_lfo_index)            # ramp down
-        self.color_lfo_index = (self.color_lfo_index + self.color_lfo_inc) % 2    # ramp 0-2
                 
     def dispatch_key_event(self, k, v):
         

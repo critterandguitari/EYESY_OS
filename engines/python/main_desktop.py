@@ -77,6 +77,11 @@ print("starting...")
 # it gets passed to the modes which use the audio midi and knob values
 eyesy = eyesy.Eyesy()
 
+eyesy.GRABS_PATH = "/Users/owen1/sdcard/Grabs/"
+eyesy.MODES_PATH = "/Users/owen1/sdcard/Modes/"
+eyesy.SCENES_PATH = "/Users/owen1/sdcard/Scenes/"
+eyesy.SYSTEM_PATH = "/Users/owen1/sdcard/System/"
+
 # begin init
 try :     
     
@@ -115,7 +120,7 @@ try :
 
     # init fb and main surface hwscreen
     print("opening frame buffer...")
-    hwscreen = pygame.display.set_mode(eyesy.RES)
+    hwscreen = pygame.display.set_mode((4000,2000))#eyesy.RES)
     eyesy.xres = hwscreen.get_width()
     eyesy.yres = hwscreen.get_height()
     print("opened screen at: " + str(hwscreen.get_size()))
@@ -324,12 +329,12 @@ while 1:
             if not eyesy.menu_mode :
                 hwscreen.fill(eyesy.bg_color) 
         
-        '''txt_str = " FPS:  "   + str(int(eyesy.fps)) + " "
+        txt_str = " FPS:  "   + str(int(eyesy.fps)) + " "
         text = eyesy.font.render(txt_str, True, eyesy.LGRAY, eyesy.BLACK)
         text_rect = text.get_rect()
         text_rect.x = 10
         text_rect.centery = 10
-        hwscreen.blit(text, text_rect)'''
+        hwscreen.blit(text, text_rect)
      
         pygame.display.flip()
         

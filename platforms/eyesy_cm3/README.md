@@ -59,3 +59,48 @@ compile the dts:
 sudo dtc -@ -I dts -O dtb -o /boot/overlays/wm8731-spi.dtbo audioinjector-wm8731-audio-spi-overlay.dts
 ```
 
+## configure stuff
+
+make stuff in /root readable
+
+    sudo chmod +xr /root
+
+make sdcard and usb directories
+
+    sudo mkdir /sdcard
+    sudo chown music:music /sdcard
+    sudo mkdir /usbdrive
+    sudo chown music:music /usbdrive
+
+add this to /etc/fstab to mount the patches partition:
+
+    /dev/mmcblk0p3 /sdcard  ext4 defaults,noatime 0 0
+
+reboot and change owner
+
+    sudo chown music:music /sdcard 
+
+remove this if it got added along the way
+
+    sudo rm -fr /sdcard/lost+found/
+
+enable rt. in /etc/security/limits.conf add to end:
+
+    @music - rtprio 99
+    @music - memlock unlimited
+    @music - nice -10
+
+
+## install software
+
+    git clone https://github.com/WiringPi/WiringPi.git
+    cd WiringPi
+    ./build debian
+    mv debian-template/wiringpi_3.10_armhf.deb .
+    sudo chmod o+r ./wiringpi_3.14_armhf.deb
+    sudo apt install ./wiringpi_3.10_armhf.deb
+
+    sudo apt-get install libasound2-dev liblo-dev liblo-tools python3-pip 
+
+    pip install "Cython<3.0" --break-system-packages
+    pip install flask flask_sock --break-system-packages

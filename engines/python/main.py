@@ -144,8 +144,9 @@ try :
             print("setup " + str(eyesy.mode))
             mode.setup(hwscreen, eyesy)
             eyesy.memory_used = psutil.virtual_memory()[2]
-        except :
+        except Exception as e:
             print("error in setup, or setup not found")
+            print(traceback.format_exc())
             continue
 
     # load screen grabs

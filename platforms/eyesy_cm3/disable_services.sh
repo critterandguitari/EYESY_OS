@@ -12,7 +12,6 @@ SERVICES=(
     "keyboard-setup.service"
     "rpi-display-backlight.service"
     "glamor-test.service"
-    "splashscreen.service"
     "cron.service"
     "dphys-swapfile.service"
     "rp1-test.service"

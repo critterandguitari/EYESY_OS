@@ -91,6 +91,18 @@ enable rt. in /etc/security/limits.conf add to end:
     @music - nice -10
 
 
+don't persist logs. add Storage=volatile to /etc/systemd/journald.conf then remove old sudo rm -rf /var/log/journal
+
+Don't log nmcli commands Open the sudoers file for editing using visudo:
+
+    sudo visudo
+
+Add a rule to disable logging for music user:
+
+    Defaults:music !syslog
+
+run deploy.sh and disable_services.sh
+
 ## install software
 
     git clone https://github.com/WiringPi/WiringPi.git

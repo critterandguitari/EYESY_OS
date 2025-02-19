@@ -103,6 +103,8 @@ Add a rule to disable logging for music user:
 
 run deploy.sh and disable_services.sh
 
+copy stuff in boot/ manually, UUID in cmdline.txt might need to be adjusted.
+
 ## install software
 
     git clone https://github.com/WiringPi/WiringPi.git

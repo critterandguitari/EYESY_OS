@@ -4,10 +4,12 @@ Configuring software for CM3 based EYESY.
 
 base system: 2024-11-19-raspios-bookworm-armhf-lite.img.xz
 
-Boot up, do initial config. Make second ext4 primary partition for "/sdcard" user storage.
+Boot up, do initial config, make music user. Make second ext4 primary partition for "/sdcard" user storage.
 
     sudo apt-get update
     sudo apt-get install vim git
+
+pull down this repo so it is at /home/music/EYESY_OS
 
 ## Fixing the audio driver on EY and OG CM3 designs.
 
@@ -111,7 +113,7 @@ enable rt. in /etc/security/limits.conf add to end:
 
 ## ^ EY_v3_base.img
 
-don't persist logs. add Storage=volatile to /etc/systemd/journald.conf then remove old sudo rm -rf /var/log/journal
+Don't persist logs. add Storage=volatile to /etc/systemd/journald.conf then remove old sudo rm -rf /var/log/journal
 
 Don't log nmcli commands Open the sudoers file for editing using visudo:
 
@@ -125,4 +127,6 @@ run deploy.sh and disable_services.sh
 
 copy stuff in boot/ manually, UUID in cmdline.txt might need to be adjusted.
 
-
+sudo systemctl disable apt-daily-upgrade.timer
+sudo systemctl disable apt-daily.timer
+sudo systemctl disable fbrestore

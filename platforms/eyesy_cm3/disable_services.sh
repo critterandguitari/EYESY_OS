@@ -21,6 +21,7 @@ SERVICES=(
     "apt-daily-upgrade.service"
     "systemd-random-seed.service"
     "systemd-journal-flush"
+    "getty@tty1.service"
 )
 
 # Loop through each service to disable and mask it.

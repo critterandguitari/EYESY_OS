@@ -6,7 +6,8 @@ After=local-fs.target
 [Service]
 #ExecStart=/usr/bin/fbi -d /dev/fb0 --noverbose -a /opt/splash.png
 #ExecStart=/usr/bin/cp /dev/random /dev/fb0
-ExecStart=/usr/bin/echo "Starting..." > /dev/tty1
+#ExecStart=/usr/bin/echo "Starting..." > /dev/tty1
+ExecStart=/usr/bin/setterm --background cyan --foreground white --clear > /dev/tty1
 StandardInput=tty
 StandardOutput=tty
 

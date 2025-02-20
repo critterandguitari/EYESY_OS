@@ -22,6 +22,7 @@ SERVICES=(
     "systemd-random-seed.service"
     "systemd-journal-flush"
     "getty@tty1.service"
+    "avahi-daemon"
 )
 
 # Loop through each service to disable and mask it.

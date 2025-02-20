@@ -1,1 +1,1 @@
-console=tty1 root=PARTUUID=c74fc6f8-02 rootfstype=ext4 cfg80211.ieee80211_regdom=US dwc_otg.lpm_enable=0 fsck.mode=skip fastboot rootwait noswap loglevel=0 logo.nologo quiet fsck.repair=no vc4.tv_norm=NTSC 
+console=tty1 root=PARTUUID=c74fc6f8-02 rootfstype=ext4 cfg80211.ieee80211_regdom=US dwc_otg.lpm_enable=0 fsck.mode=skip fastboot rootwait noswap loglevel=0 logo.nologo quiet fsck.repair=no ro vc4.tv_norm=NTSC 

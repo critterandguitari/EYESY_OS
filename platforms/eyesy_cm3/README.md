@@ -127,6 +127,55 @@ run deploy.sh and disable_services.sh
 
 copy stuff in boot/ manually, UUID in cmdline.txt might need to be adjusted.
 
-sudo systemctl disable apt-daily-upgrade.timer
-sudo systemctl disable apt-daily.timer
-sudo systemctl disable fbrestore
+    sudo systemctl disable apt-daily-upgrade.timer
+    sudo systemctl disable apt-daily.timer
+    sudo systemctl disable fbrestore
+
+disable swap
+
+    sudo dphys-swapfile swapoff
+    sudo dphys-swapfile uninstall
+    sudo update-rc.d dphys-swapfile remove
+    sudo apt purge dphys-swapfile -y
+
+clean up
+
+    sudo apt-get autoremove --purge
+
+
+configure network manager for read only
+
+update /etc/NetworkManager/NetworkManager.conf and add rc-manager=file under the [main] section
+
+move files to tmp locations
+
+    sudo mv /etc/resolv.conf /var/run/resolv.conf && sudo ln -s /var/run/resolv.conf /etc/resolv.conf
+    sudo rm -rf /var/lib/dhcp && sudo ln -s /var/run /var/lib/dhcp
+    sudo rm -rf /var/lib/NetworkManager && sudo ln -s /var/run /var/lib/NetworkManager
+
+other changes for read only
+
+    sudo systemctl mask man-db.timer
+    sudo systemctl mask apt-daily.timer
+    sudo systemctl mask apt-daily-upgrade.timer
+
+add to etc/fstab
+
+    tmpfs  /tmp      tmpfs  defaults,noatime,nosuid,nodev   0  0
+    tmpfs  /var/tmp  tmpfs  defaults,noatime,nosuid,nodev   0  0
+    tmpfs  /var/log  tmpfs  defaults,noatime,nosuid,nodev,noexec  0  0
+    tmpfs  /var/spool/mail  tmpfs  defaults,noatime,nosuid,nodev,noexec,size=25m  0  0
+    tmpfs  /var/lib/logrotate  tmpfs  defaults,noatime,nosuid,nodev,noexec,size=1m,mode=0755  0  0
+    tmpfs  /var/lib/sudo  tmpfs  defaults,noatime,nosuid,nodev,noexec,size=1m,mode=0700  0  0
+
+add ro to / and /boot entries
+
+move NetworkManager connection files to /sdcard:
+
+sudo mkdir -p /sdcard/System
+sudo mv /etc/NetworkManager/system-connections /sdcard/System/system-connections
+sudo ln -s /sdcard/System/system-connections /etc/NetworkManager/system-connections
+sudo chmod 700 /sdcard/System/system-connections
+sudo chown root:root /sdcard/System/system-connections
+
+

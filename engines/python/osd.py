@@ -194,6 +194,16 @@ def render_overlay_480(screen, eyesy) :
     if eyesy.trig:
         pygame.draw.rect(screen, (255,255,0), (410, 105, 25, 25))
 
+    # errors
+    i = 0
+    for errorline in eyesy.error.splitlines() :
+        errormsg = font.render(errorline, True, eyesy.LGRAY, eyesy.RED) 
+        text_rect.x = 50
+        text_rect.y = 150 + (i * 20)
+        screen.blit(errormsg, text_rect)
+        i += 1
+
+
     '''            
     # input level 
     pygame.draw.rect(screen, eyesy.BLACK, (20, 205, 220, 30))

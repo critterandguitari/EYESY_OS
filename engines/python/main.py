@@ -137,7 +137,7 @@ try :
             eyesy.set_mode_by_index(i)
             mode = sys.modules[eyesy.mode]
         except AttributeError :
-            print("mode not found, probably has error")
+            print("mode not found, or has error")
             continue 
         try : 
             osd.loading_banner(hwscreen,"Loading " + str(eyesy.mode) )

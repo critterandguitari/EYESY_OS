@@ -29,7 +29,7 @@ class ScreenMIDISettings(Screen):
         self.menu.items.append(self.create_adjustable_menu_item("mode_cc", -1, 127,  "Mode Select CC: {value}"))
         self.menu.items.append(self.create_adjustable_menu_item("notes_change_mode", 0, 1, ""))
 
-        #self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))
+        self.menu.items.append(MenuItem('◀  Exit', self.exit_menu))
         self.menu.visible_items = 8
         self.menu.off_y = 43
 

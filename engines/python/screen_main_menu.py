@@ -14,7 +14,7 @@ class ScreenMainMenu(Screen):
             MenuItem('Audio MIDI Settings  ▶', self.goto_midi_settings),
             MenuItem('Color Palette  ▶', self.goto_palette),
             MenuItem('WiFi  ▶', self.goto_wifi),
-            MenuItem('USB Drive  ▶', self.goto_flashdrive),
+            MenuItem('System  ▶', self.goto_flashdrive),
             MenuItem('Hardware Test  ▶', self.goto_test),
             MenuItem('Logs  ▶', self.goto_applogs),
             MenuItem('◀  Exit', self.exit_menu)

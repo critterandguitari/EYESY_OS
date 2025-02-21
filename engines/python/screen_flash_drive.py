@@ -10,13 +10,14 @@ class ScreenFlashDrive(Screen):
     def __init__(self, eyesy):
         super().__init__(eyesy)
         self.state = "idle"  # "idle" or "running"
-        self.title = "Manage USB Drive"
+        self.title = "System Stuff"
         self.footer = chr(0x2680) + "     = Cancel     " + chr(0x2682) + "   = Up/Down     " + chr(0x2683) + "  = Enter"
 
         self.menu = WidgetMenu(eyesy, [
             MenuItem('Backup SD card to USB drive', self.start_backup),
             MenuItem('Eject USB drive', self.eject),
-            MenuItem('Reload', self.restart),
+            MenuItem('Forget all WiFi networks', self.forgetnets),
+            MenuItem('Restart Video', self.restart),
             MenuItem('◀  Exit', self.goto_home)
         ])
         self.menu.off_y = 43
@@ -59,8 +60,13 @@ class ScreenFlashDrive(Screen):
         self.log("Ejecting USB drive...")
         subprocess.run(["sudo", "umount", "/usbdrive"])
         self.log("Safe to remove.")
+ 
+    def forgetnets(self):
+        self.logs = []  # Clear previous logs
+        self.log("Removing stored WiFi networks...")
+        subprocess.run("sudo bash -c 'rm /sdcard/system-connections/*'", shell=True)
+        self.log("Removed WiFi networks.")
 
-   
     def log(self, message):
         """Append a message to logs and trigger a screen update."""
         self.logs.append(message)
@@ -171,6 +177,7 @@ class ScreenFlashDrive(Screen):
         }
 
         for name, src in paths.items():
+            self.log(f"Copying {name} to backup...")
             if os.path.exists(src):
                 dest = os.path.join(dest_folder, name)
                 try:

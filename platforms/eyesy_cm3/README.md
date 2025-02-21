@@ -172,10 +172,8 @@ add ro to / and /boot entries
 
 move NetworkManager connection files to /sdcard:
 
-sudo mkdir -p /sdcard/System
-sudo mv /etc/NetworkManager/system-connections /sdcard/System/system-connections
-sudo ln -s /sdcard/System/system-connections /etc/NetworkManager/system-connections
-sudo chmod 700 /sdcard/System/system-connections
-sudo chown root:root /sdcard/System/system-connections
+    sudo mv /etc/NetworkManager/system-connections /sdcard/system-connections
+    sudo ln -s /sdcard/system-connections /etc/NetworkManager/system-connections
+    sudo chown root:root /sdcard/system-connections
 
 

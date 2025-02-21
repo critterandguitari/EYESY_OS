@@ -61,6 +61,8 @@ compile the dts:
 sudo dtc -@ -I dts -O dtb -o /boot/overlays/wm8731-spi.dtbo audioinjector-wm8731-audio-spi-overlay.dts
 ```
 
+## ^ EYOG_2025_base.img
+
 ## configure stuff
 
 make stuff in /root readable

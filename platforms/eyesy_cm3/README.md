@@ -123,9 +123,11 @@ Add a rule to disable logging for music user:
 
     Defaults:music !syslog
 
-run deploy.sh and disable_services.sh
+in EYESY_OS/platforms/eyesy_cm3 run deploy.sh and disable_services.sh
 
 copy stuff in boot/ manually, UUID in cmdline.txt might need to be adjusted.
+
+disable more stuff
 
     sudo systemctl disable apt-daily-upgrade.timer
     sudo systemctl disable apt-daily.timer
@@ -141,7 +143,6 @@ disable swap
 clean up
 
     sudo apt-get autoremove --purge
-
 
 configure network manager for read only
 

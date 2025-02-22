@@ -74,6 +74,16 @@ class ScreenMIDISettings(Screen):
     
     def render(self, surface):
         self.menu.render(surface)
+        # usb midi
+        usbmidi = (self.eyesy.usb_midi_device.name if self.eyesy.usb_midi_device else "None Found")
+        message = f"USB MIDI: {usbmidi}"
+        text = self.font.render(message, True, self.eyesy.LGRAY, self.eyesy.BLACK)
+        text_rect = text.get_rect()
+        text_rect.x = 50
+        text_rect.centery = 300
+        surface.blit(text, text_rect)   
+     
+
 
     def handle_events(self):
 

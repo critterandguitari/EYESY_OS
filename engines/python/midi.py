@@ -80,12 +80,18 @@ def init():
 
     # try to get a USB midi port
     input_ports = mido.get_input_names()
-    valid_port = next((port for port in input_ports if not port.startswith(("Midi Through", "ttymidi"))), None)
-    try:
-        input_port_usb = mido.open_input(valid_port) 
-    except Exception as e:
-        print(f"Error initializing input port: {e}")
-        input_port_usb = None
+    print(input_ports)
+    valid_port = next((port for port in input_ports if not port.startswith(("Midi Through", "ttymidi", "System"))), None)
+    if valid_port != None:
+        try:
+            print(f"trying to open: {valid_port}")
+            input_port_usb = mido.open_input(valid_port) 
+        except Exception as e:
+            print(f"Error initializing midi input port: {e}")
+            input_port_usb = None
+    else :
+        print(f"USB MIDI not found")
+    
 
 def close():
     global input_port

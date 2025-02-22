@@ -168,7 +168,7 @@ def render_overlay_480(screen, eyesy) :
     text_rect.x = 20
     text_rect.centery = 80
     screen.blit(text, text_rect)   
-  
+ 
     # version
     message = f"v{eyesy.VERSION}"
     text =          font.render(message, True, eyesy.LGRAY, eyesy.BLACK)
@@ -176,7 +176,7 @@ def render_overlay_480(screen, eyesy) :
     text_rect.x = 380
     text_rect.centery = 80
     screen.blit(text, text_rect)   
-
+    
     # knobs
     draw_knob_slider_480(screen, eyesy, 20, 105, 0)
     draw_knob_slider_480(screen, eyesy, 33, 105, 1)

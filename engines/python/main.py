@@ -71,9 +71,13 @@ try :
     osc.init(eyesy)
 
     # midi 
+    print("init midi")
     midi.init()
+    eyesy.usb_midi_device = midi.input_port_usb
+    print(eyesy.usb_midi_device) 
 
     # setup alsa sound shared resources
+    print("init audio")
     BUFFER_SIZE = 100
     shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
     shared_buffer_r = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value

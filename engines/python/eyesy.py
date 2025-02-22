@@ -153,6 +153,7 @@ class Eyesy:
         self.frame_count = 0
         self.font = None
         self.running_from_usb = False
+        self.usb_midi_device = None
 
         # menu stuff
         self.current_screen = None

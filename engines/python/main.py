@@ -260,13 +260,15 @@ while 1:
                 eyesy.audio_peak = peak.value
                 eyesy.audio_peak_r = peak_r.value
         else:
-            undulate_p += .005
-            undulate = ((math.sin(undulate_p * 2 * math.pi) + 1) * 2) + .5
-            for i,v in enumerate(eyesy.audio_in):
-                eyesy.audio_in[i] = int(math.sin((i / 100) * 2 * math.pi * undulate) * 25000)
-                eyesy.audio_in_r[i] = eyesy.audio_in[i]
-            eyesy.audio_peak = 25000 # also set peak value
-            eyesy.audio_peak_r = 25000 # also set peak value
+            # dont do simulated sound in menu mode cause it interferes with test screen
+            if not eyesy.menu_mode :
+                undulate_p += .005
+                undulate = ((math.sin(undulate_p * 2 * math.pi) + 1) * 2) + .5
+                for i,v in enumerate(eyesy.audio_in):
+                    eyesy.audio_in[i] = int(math.sin((i / 100) * 2 * math.pi * undulate) * 25000)
+                    eyesy.audio_in_r[i] = eyesy.audio_in[i]
+                eyesy.audio_peak = 25000 # also set peak value
+                eyesy.audio_peak_r = 25000 # also set peak value
         
         # set the mode on which to call draw
         try : 

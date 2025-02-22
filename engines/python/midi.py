@@ -27,11 +27,12 @@ def _handle_control_change(eyesy, message):
     if (message.channel + 1) == eyesy.config["midi_channel"]:
         num = message.control
         val = message.value
-        if message.control == eyesy.config["knob1_cc"] : eyesy.knob_hardware[0] = val / 127.
-        if message.control == eyesy.config["knob2_cc"] : eyesy.knob_hardware[1] = val / 127.
-        if message.control == eyesy.config["knob3_cc"] : eyesy.knob_hardware[2] = val / 127.
-        if message.control == eyesy.config["knob4_cc"] : eyesy.knob_hardware[3] = val / 127.
-        if message.control == eyesy.config["knob5_cc"] : eyesy.knob_hardware[4] = val / 127.
+        if not eyesy.menu_mode : # don't update knobs in menu mode (interferes with test)
+            if message.control == eyesy.config["knob1_cc"] : eyesy.knob_hardware[0] = val / 127.
+            if message.control == eyesy.config["knob2_cc"] : eyesy.knob_hardware[1] = val / 127.
+            if message.control == eyesy.config["knob3_cc"] : eyesy.knob_hardware[2] = val / 127.
+            if message.control == eyesy.config["knob4_cc"] : eyesy.knob_hardware[3] = val / 127.
+            if message.control == eyesy.config["knob5_cc"] : eyesy.knob_hardware[4] = val / 127.
         if message.control == eyesy.config["auto_clear_cc"] : 
             if val > 64 :
                 eyesy.auto_clear = True

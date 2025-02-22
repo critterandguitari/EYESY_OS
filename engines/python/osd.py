@@ -58,6 +58,15 @@ def draw_vu_480(screen, eyesy, offx, offy):
         if i < 15 : pygame.draw.rect(screen, color, (x + 1, offy + 1, 5, 6))
 
 
+def draw_midi(screen, eyesy, offx, offy):
+    for i in range(0, 33):
+        pygame.draw.line(screen, eyesy.LGRAY, [(i*6)+offx, offy], [(i*6)+offx, 24+offy], 1)
+    for i in range(0, 5):
+        pygame.draw.line(screen, eyesy.LGRAY, [offx, (i*6)+offy], [offx + 192, (i*6)+offy], 1)
+    for i in range(0,128):
+        if (eyesy.midi_notes[i] > 0):
+            pygame.draw.rect(screen, eyesy.LGRAY, (offx + 6 * (i % 32), offy + 6 * int(i / 32), 6, 6))
+ 
 def draw_gain_bar(screen, eyesy, offx, offy):
     color = eyesy.LGRAY
     pygame.draw.line(screen, color, [offx, offy], [offx + 118, offy], 1)
@@ -175,17 +184,7 @@ def render_overlay_480(screen, eyesy) :
     draw_knob_slider_480(screen, eyesy, 59, 105, 3)
     draw_knob_slider_480(screen, eyesy, 73, 105, 4)
 
-    # midi notes
-    offx = 89
-    offy = 105
-    for i in range(0, 33):
-        pygame.draw.line(screen, eyesy.LGRAY, [(i*6)+offx, offy], [(i*6)+offx, 24+offy], 1)
-    for i in range(0, 5):
-        pygame.draw.line(screen, eyesy.LGRAY, [offx, (i*6)+offy], [offx + 192, (i*6)+offy], 1)
-    for i in range(0,128):
-        if (eyesy.midi_notes[i] > 0):
-            pygame.draw.rect(screen, eyesy.LGRAY, (offx + 6 * (i % 32), offy + 6 * int(i / 32), 6, 6))
-    
+    draw_midi(screen,eyesy,89,105)
     draw_gain_bar(screen, eyesy, 286, 105)
     draw_vu_480(screen, eyesy, 286, 113)
        

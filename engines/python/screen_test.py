@@ -1,6 +1,7 @@
 from screen import Screen
 import pygame
 import subprocess
+import osd
 
 def wifi_connected():
     try:
@@ -48,12 +49,14 @@ class ScreenTest(Screen):
         self.wifi_good = False
         self.midi_good = False
         self.audio_good = False
+        self.audio_good_r = False
     
 
     def before(self):
         self.wifi_good = wifi_connected()
         self.midi_good = False
         self.audio_good = False
+        self.audio_good_r = False
         
         self.highlighted_controls = set()
         self.button_press_counts = {
@@ -88,11 +91,11 @@ class ScreenTest(Screen):
         }
 
         knob_map = {
-            "knob0": events.knob1,
-            "knob1": events.knob2,
-            "knob2": events.knob3,
-            "knob3": events.knob4,
-            "knob4": events.knob5
+            "knob0": events.knob_hardware[0],
+            "knob1": events.knob_hardware[1],
+            "knob2": events.knob_hardware[2],
+            "knob3": events.knob_hardware[3],
+            "knob4": events.knob_hardware[4]
         }
 
         # Handle button presses
@@ -120,9 +123,12 @@ class ScreenTest(Screen):
 
     def check_audio_midi(self):
         if not self.audio_good :
-            if self.eyesy.audio_peak > 5000: self.audio_good = True
+            if self.eyesy.audio_peak > 20000: self.audio_good = True
+        if not self.audio_good_r :
+            if self.eyesy.audio_peak_r > 20000: self.audio_good_r = True
         if not self.midi_good:
-            if self.eyesy.midi_notes[60] > 0: self.midi_good = True
+            if  self.eyesy.midi_notes[60] > 0 and self.eyesy.midi_notes[62] > 0 and self.eyesy.midi_notes[64] > 0 : 
+                self.midi_good = True
 
     def render(self, surface):
 
@@ -137,7 +143,7 @@ class ScreenTest(Screen):
             rendered_text = self.eyesy.font.render(message, True, self.eyesy.RED)
         surface.blit(rendered_text, msg_xy)
 
-        msg_xy = (32, 120)
+        msg_xy = (32, 110)
         if self.midi_good :
             message = "MIDI In Connection Pass" 
             rendered_text = self.eyesy.font.render(message, True, self.eyesy.GREEN)
@@ -146,15 +152,26 @@ class ScreenTest(Screen):
             rendered_text = self.eyesy.font.render(message, True, self.eyesy.RED)
         surface.blit(rendered_text, msg_xy)
         
-        msg_xy = (32, 150)
+        msg_xy = (32, 130)
         if self.audio_good :
-            message = "Audio In Connection Pass" 
+            message = "Audio In L Connection Pass" 
             rendered_text = self.eyesy.font.render(message, True, self.eyesy.GREEN)
         else :
-            message = "Audio In Connection Problem" 
+            message = "Audio In L Connection Problem" 
             rendered_text = self.eyesy.font.render(message, True, self.eyesy.RED)
         surface.blit(rendered_text, msg_xy)
 
+        msg_xy = (32, 150)
+        if self.audio_good_r :
+            message = "Audio In R Connection Pass" 
+            rendered_text = self.eyesy.font.render(message, True, self.eyesy.GREEN)
+        else :
+            message = "Audio In R Connection Problem" 
+            rendered_text = self.eyesy.font.render(message, True, self.eyesy.RED)
+        surface.blit(rendered_text, msg_xy)
+
+        osd.draw_midi(surface, self.eyesy, 350, 110)
+        osd.draw_vu_480(surface, self.eyesy, 350, 150)
         self.draw_controls(surface, self.highlighted_controls)
 
     def draw_controls(self, surface, highlighted):

@@ -26,7 +26,7 @@ class ScreenFlashDrive(Screen):
         self.logs = []
 
     def before(self):
-        self.menu.selected_index = 3
+        self.menu.selected_index = 4
         self.logs = []
         self.ensure_usb_mounted()
         pass

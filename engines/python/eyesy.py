@@ -205,6 +205,15 @@ class Eyesy:
     
         self.clear_flags()
 
+    def ensure_directories(self):
+        paths = [self.GRABS_PATH, self.MODES_PATH, self.SCENES_PATH, self.SYSTEM_PATH]
+        for path in paths:
+            if not os.path.exists(path):
+                os.makedirs(path, exist_ok=True)
+                print(f"Created directory: {path}")
+            else:
+                print(f"Exists: {path}")
+
     def load_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
         if not(os.path.isdir(self.SYSTEM_PATH)) :

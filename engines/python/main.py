@@ -63,7 +63,9 @@ try :
             print("no modes found on USB drive, using internal")
     else:
         print("no USB found, using internal")
-    
+   
+    eyesy.ensure_directories()
+
     # load config
     eyesy.load_config_file()
 

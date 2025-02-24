@@ -214,6 +214,34 @@ class Eyesy:
             else:
                 print(f"Exists: {path}")
 
+    def load_palettes(self):
+        grads = os.path.join(self.SYSTEM_PATH, "gradients.json")
+        if not os.path.exists(grads):
+            print(f"File not found: {grads}, using default palettes.")
+            return default_palettes
+
+        try:
+            with open(grads, "r") as file:
+                data = json.load(file)
+
+            if isinstance(data, list) and all(
+                isinstance(entry, dict) and
+                "name" in entry and isinstance(entry["name"], str) and
+                all(k in entry and isinstance(entry[k], list) and len(entry[k]) == 3 and all(isinstance(v, (int, float)) for v in entry[k])
+                    for k in ["a", "b", "c", "d"])
+                for entry in data
+            ):
+                print(f"Loaded palettes from {grads}")
+                self.palettes = data
+                return 
+            else:
+                print(f"Invalid structure in {grads}, using default palettes.")
+
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error loading {grads}: {e}, using default palettes.")
+
+        self.palettes = color_palettes.abcd_palettes
+
     def load_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
         if not(os.path.isdir(self.SYSTEM_PATH)) :

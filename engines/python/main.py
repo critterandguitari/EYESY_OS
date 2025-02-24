@@ -69,6 +69,9 @@ try :
     # load config
     eyesy.load_config_file()
 
+    # load palettes
+    eyesy.load_palettes()
+
     # setup osc and callbacks
     osc.init(eyesy)
 

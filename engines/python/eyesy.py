@@ -422,10 +422,10 @@ class Eyesy:
     # save a screenshot
     def screengrab(self):
         filenum = 0
-        imagepath = self.GRABS_PATH + str(filenum) + ".bmp"
+        imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
         while os.path.isfile(imagepath):
             filenum += 1
-            imagepath = self.GRABS_PATH + str(filenum) + ".bmp"
+            imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
         pygame.image.save( self.screen ,imagepath)
         print("grabbed " + imagepath)
 

@@ -218,7 +218,8 @@ class Eyesy:
         grads = os.path.join(self.SYSTEM_PATH, "gradients.json")
         if not os.path.exists(grads):
             print(f"File not found: {grads}, using default palettes.")
-            return default_palettes
+            self.palettes = color_palettes.abcd_palettes
+            return 
 
         try:
             with open(grads, "r") as file:

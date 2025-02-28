@@ -1,6 +1,6 @@
 [Unit]
 Description=EYESY Setup Service
-After=network.target
+After=local-fs.target
 
 [Service]
 Type=oneshot
@@ -9,5 +9,5 @@ RemainAfterExit=yes
 User=root
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=sysinit.target
 

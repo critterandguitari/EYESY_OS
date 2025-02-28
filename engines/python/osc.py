@@ -39,6 +39,11 @@ def reload_callback(path, args):
     global eyesy
     print("reloading: " + str(eyesy.mode))
     eyesy.reload_mode()
+ 
+def screengrab_callback(path, args):
+    global eyesy
+    print("screen grab message")
+    eyesy.screengrab_flag = True
 
 def knobs_callback(path, args):
     global eyesy
@@ -71,6 +76,7 @@ def init (eyesy_object) :
     osc_server.add_method("/knobs", 'iiiiii', knobs_callback)
     osc_server.add_method("/key", 'ii', keys_callback)
     osc_server.add_method("/reload", 'i', reload_callback)
+    osc_server.add_method("/screengrab", 'i', screengrab_callback)
     osc_server.add_method("/set", 's', set_callback)
     osc_server.add_method("/new", 's', new_callback)
     osc_server.add_method(None, None, fallback)

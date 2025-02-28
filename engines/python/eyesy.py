@@ -18,7 +18,7 @@ import config
 class Eyesy:
 
     def __init__(self):
-        self.VERSION = "3beta10"
+        self.VERSION = "3.0"
         # config stuff 
         self.GRABS_PATH = "/sdcard/Grabs/"
         self.MODES_PATH = "/sdcard/Modes/"
@@ -451,10 +451,10 @@ class Eyesy:
     # save a screenshot
     def screengrab(self):
         filenum = 0
-        imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
+        imagepath = self.GRABS_PATH + str(filenum) + ".png"
         while os.path.isfile(imagepath):
             filenum += 1
-            imagepath = self.GRABS_PATH + str(filenum) + ".jpg"
+            imagepath = self.GRABS_PATH + str(filenum) + ".png"
         pygame.image.save( self.screen ,imagepath)
         print("grabbed " + imagepath)
 

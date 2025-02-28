@@ -1,6 +1,7 @@
 [Unit]
 Description=EYESY Hardware Interface CM3
 After=eyesysetup.service
+After=local-fs.target
 
 [Service]
 Type=simple
@@ -17,5 +18,5 @@ Restart=on-failure
 RestartSec=2
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=sysinit.target
 

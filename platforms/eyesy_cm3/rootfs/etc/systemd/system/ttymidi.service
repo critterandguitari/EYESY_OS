@@ -1,6 +1,7 @@
 [Unit]
 Description=Start ttymidi
 After=eyesysetup.service
+After=local-fs.target
 
 [Service]
 Type=simple
@@ -13,9 +14,8 @@ Group=music
 ExecStart=/usr/local/bin/ttymidi -s /dev/ttyAMA0 -b 38400 
 
 # Restart on failure if needed
-#Restart=on-failure
-#RestartSec=5
+Restart=on-failure
+RestartSec=5
 
 [Install]
-WantedBy=multi-user.target
-
+WantedBy=sysinit.target

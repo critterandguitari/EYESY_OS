@@ -450,6 +450,10 @@ class Eyesy:
 
     # save a screenshot
     def screengrab(self):
+       
+        # make scenes dir if no exist
+        os.makedirs(self.GRABS_PATH, exist_ok=True)
+
         filenum = 0
         imagepath = self.GRABS_PATH + str(filenum) + ".png"
         while os.path.isfile(imagepath):

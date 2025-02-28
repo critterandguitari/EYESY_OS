@@ -356,6 +356,7 @@ while 1:
         eyesy.clear_flags()
          
     except Exception as e:   
+        eyesy.clear_flags() # don't keep doing things
         eyesy.error = traceback.format_exc()
         print("problem in main loop")
         print(eyesy.error)

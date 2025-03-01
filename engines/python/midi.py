@@ -13,7 +13,7 @@ def _handle_note(eyesy, message):
         val = message.velocity
         if val > 0 :
             eyesy.midi_notes[num] = 1
-            # 1 is trigger source for note, 2 for either
+            # 1 is trigger source for note, 2 for notes or audio
             if eyesy.config["trigger_source"] == 1 or eyesy.config["trigger_source"] == 2: eyesy.trig = True 
             # select mode from note 
             if eyesy.config["notes_change_mode"] == 1:

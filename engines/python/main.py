@@ -87,14 +87,13 @@ try :
     shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
     shared_buffer_r = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
     write_index = Value('i', 0)     # Write index for the buffer
-    atrig = Value('i', 0)           # audio trigger
     gain = Value('f', 0)
     peak = Value('f', 0)
     peak_r = Value('f', 0)
     lock = Lock()
 
     # Start the audio processing in a separate process
-    audio_process = Process(target=sound.audio_processing, args=(shared_buffer, shared_buffer_r, write_index, atrig, gain, peak, peak_r, lock))
+    audio_process = Process(target=sound.audio_processing, args=(shared_buffer, shared_buffer_r, write_index, gain, peak, peak_r, lock))
     audio_process.start()
 
     # init pygame, this has to happen after sound is setup
@@ -253,18 +252,17 @@ while 1:
 
         # get sound and trigger, unless trigger button is being pressed, then do the simulated sound
         if not eyesy.key10_status:
-            tmptrig = False
             with lock:
                 eyesy.audio_in[:] = shared_buffer[:]
                 eyesy.audio_in_r[:] = shared_buffer_r[:]
                 g = eyesy.config["audio_gain"]
                 gain.value = float((g * g * 50) + 1)  # map audio, make it big
                 # update audio trig and peak 
-                tmptrig = atrig.value
-                # trigger source 0 = notes, 2 = both
-                if (eyesy.config["trigger_source"] == 0 or eyesy.config["trigger_source"] == 2) and tmptrig: eyesy.trig = True
                 eyesy.audio_peak = peak.value
                 eyesy.audio_peak_r = peak_r.value
+                # trigger source 0 = audio, 2 = audio or notes
+                if (eyesy.config["trigger_source"] == 0 or eyesy.config["trigger_source"] == 2): 
+                    if (eyesy.audio_peak > 20000 or eyesy.audio_peak_r > 20000) : eyesy.trig = True
         else:
             # dont do simulated sound in menu mode cause it interferes with test screen
             if not eyesy.menu_mode :

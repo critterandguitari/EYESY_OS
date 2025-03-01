@@ -77,7 +77,7 @@ def audio_processing(shared_buffer, shared_buffer_r, write_index, atrig, gain, p
                         avg_sample_r *= gain.value
 
                         # Check for trigger
-                        atrig_val = 1 if avg_sample > 5000 else 0
+                        atrig_val = 1 if (avg_sample > 20000 or avg_sample_r > 20000) else 0
 
                         # Clamp value to avoid overflow
                         avg_sample = max(-32768, min(32767, avg_sample))
@@ -94,7 +94,7 @@ def audio_processing(shared_buffer, shared_buffer_r, write_index, atrig, gain, p
                             shared_buffer[write_index.value] = avg_sample
                             shared_buffer_r[write_index.value] = avg_sample_r
                             write_index.value = (write_index.value + 1) % BUFFER_SIZE
-                            atrig.value = atrig_val  # Safe to update here
+                            atrig.value = atrig_val  
 
                             # Update peak once per buffer cycle
                             if write_index.value == 0:

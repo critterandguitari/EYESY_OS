@@ -3,7 +3,7 @@ import os
 from screen import Screen
 from widget_menu import WidgetMenu, MenuItem
 
-def wha(): print("wha")
+def wha(): pass
 
 class ScreenMIDIPCMapping(Screen):
 

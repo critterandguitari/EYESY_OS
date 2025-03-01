@@ -261,7 +261,8 @@ while 1:
                 gain.value = float((g * g * 50) + 1)  # map audio, make it big
                 # update audio trig and peak 
                 tmptrig = atrig.value
-                if eyesy.config["trigger_source"] == 0 and tmptrig: eyesy.trig = True
+                # trigger source 0 = notes, 2 = both
+                if (eyesy.config["trigger_source"] == 0 or eyesy.config["trigger_source"] == 2) and tmptrig: eyesy.trig = True
                 eyesy.audio_peak = peak.value
                 eyesy.audio_peak_r = peak_r.value
         else:

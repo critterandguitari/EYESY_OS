@@ -848,28 +848,6 @@ $(function () {
         console.log('oops');
     });    
     
-    $.get(appBaseURL + '/wifi_get_ap', function(data) {
-	ap = JSON.parse(data);
-	$('#wifi-ap-name').val(ap.name)
-	$('#wifi-ap-pw').val(ap.pw)
-    })
- 
-    $.get(appBaseURL + '/wifi_get_net', function(data) {
-	ap = JSON.parse(data);
-	$('#wifi-net-name').val(ap.name)
-	$('#wifi-net-pw').val(ap.pw)
-    })
-
-    $.get(appBaseURL + '/compvid_get_format', function(data) {
-	compvid = JSON.parse(data);
-	if (compvid.format == "ntsc") {
-            $('input:radio[name=compvid]')[0].checked = true;
-	}
-	if (compvid.format == "pal") {
-	    $('input:radio[name=compvid]')[1].checked = true;
-	}
-    })
-
 
 });
 

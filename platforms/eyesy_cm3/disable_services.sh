@@ -23,6 +23,7 @@ SERVICES=(
     "systemd-journal-flush"
     "getty@tty1.service"
     "avahi-daemon"
+    "ssh.service"
 )
 
 # Loop through each service to disable and mask it.

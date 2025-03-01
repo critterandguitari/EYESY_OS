@@ -42,19 +42,66 @@
     height: calc(100% - 4px);
 }
 
-#right-col {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 20px); /* Ensure it fills the viewport */
-    margin-left: 250px;
-}
 
 #modees {
 }
-#editor-container {
-    flex: 2.2 1 0%; /* Grow factor of 3 */
+
+/* Right column fills the viewport (with some margin) */
+#right-col {
     display: flex;
     flex-direction: column;
+    height: calc(100vh - 20px);
+    margin-left: 250px;
+}
+
+/* Title bar at the top */
+#title-bar {
+    background-color: #222;
+    height: 28px;         /* Fixed height */
+    padding: 4px;
+    overflow-x: auto;
+    white-space: nowrap;
+    flex: 0 0 auto;       /* Do not allow it to grow/shrink */
+}
+
+/* Console container at the bottom - you might want a fixed height */
+#vconsole-container {
+    flex: 0 0 200px;      /* For example, a fixed height of 100px */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-color: #222;
+    margin-top: 10px;  /* 10px gap above the console */
+}
+
+/* Editor container fills the remaining space */
+#editor-container {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;     /* Prevent overflow from children */
+    min-height: 0;        /* Crucial for flex layouts */
+}
+
+/* The two children of editor-container */
+#editor, #image-container {
+    flex: 1 1 auto;       /* Each takes available space */
+    overflow: auto;
+    min-height: 0;        /* Allow them to shrink */
+}
+
+/* Image container: center image and constrain dimensions */
+#image-container {
+    text-align: center;
+}
+
+/* Constrain the image size so it fits within its container */
+#image-container img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 #settings-container { 
@@ -62,16 +109,14 @@
     height: 75%;
 display:none;
 }
+
 #settings {
     padding: 8px;
         overflow:auto;
         height: calc(100% - 30px); 
 }
 
-#editor {
-    overflow:auto;
-    height: calc(100% - 10px); 
-}
+
 pre {font-family:"Lucida Console", Monaco, monospace;}
 body {
     height: calc(100vh - 20px); 
@@ -177,14 +222,6 @@ body {
         overflow: auto;
         height: calc(100% - 285px);
     }
-
-#title-bar {
-    background-color: #222;
-    height: 28px;
-    padding: 4px;
-    overflow-x: auto;
-    white-space: nowrap;
-}
 
 #tabs-container {
     height: 100%;
@@ -340,13 +377,6 @@ body.dialog .modal-dialog { display: block;}
     padding-left: 4px;
 }
 
-#vconsole-container {
-    flex: 1 1 0%;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto; /* Correct property for vertical scrolling */
-    background-color: #222;
-}
 
 #vconsole {
     padding-left: 4px;
@@ -362,17 +392,4 @@ body.dialog .modal-dialog { display: block;}
 .icon-button.small-icon .material-icons {
     font-size: 18px; 
 }
-
-#image-container {
-    overflow: auto;
-    height: calc(100% - 10px);
-    text-align: center; /* Center the image */
-}
-
-#image-container img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain; /* Ensure the image fits within the container */
-}
-
 

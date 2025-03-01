@@ -180,3 +180,25 @@ move NetworkManager connection files to /sdcard:
     sudo chown root:root /sdcard/system-connections
 
 ## ^ EY_v3_base_ro.img
+
+git pull changes, run deploy.sh, disable_services.sh.
+
+remove Grabs, Scenes, System and let system create them with defaults.
+
+    sudo mount -o remount,rw /
+    git config --global user.email "..."
+    git config --global user.name "..."
+    cd ~
+    rm .viminfo
+    cat /dev/null > ~/.bash_history && history -c
+
+run fsck from another machine. 
+    
+    sudo fsck /dev/mmcblk0p1
+    sudo fsck /dev/mmcblk0p2
+    sudo fsck /dev/mmcblk0p3
+    sudo dd if=/dev/mmcblk0 of=EYESY_v3.0_rc1.img bs=1M count=7360
+    zip EYESY_v3.0_rc1.img.zip EYESY_v3.0_rc1.img
+
+## ^ EYESY_v3.0_rc1.img
+

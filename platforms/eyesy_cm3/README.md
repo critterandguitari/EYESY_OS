@@ -102,6 +102,7 @@ enable rt. in /etc/security/limits.conf add to end:
     ./build debian
     mv debian-template/wiringpi_3.14_armhf.deb .
     sudo chmod o+r ./wiringpi_3.14_armhf.deb
+    sudo chmod 644 ./wiringpi_3.14_armhf.deb
     sudo apt install ./wiringpi_3.14_armhf.deb
 
     sudo apt-get install libasound2-dev liblo-dev liblo-tools libjack-dev libsdl2-dev iptables python3-pip python3-liblo libsdl2-ttf-dev libsdl2-image-dev

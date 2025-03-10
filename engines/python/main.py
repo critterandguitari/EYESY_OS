@@ -75,6 +75,27 @@ try :
     # setup osc and callbacks
     osc.init(eyesy)
 
+    # midi 
+    print("init midi")
+    midi.init()
+    eyesy.usb_midi_device = midi.input_port_usb
+    print(eyesy.usb_midi_device) 
+
+    # setup alsa sound shared resources
+    print("init audio")
+    BUFFER_SIZE = 100
+    shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
+    shared_buffer_r = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
+    write_index = Value('i', 0)     # Write index for the buffer
+    gain = Value('f', 0)
+    peak = Value('f', 0)
+    peak_r = Value('f', 0)
+    lock = Lock()
+
+    # Start the audio processing in a separate process
+    audio_process = Process(target=sound.audio_processing, args=(shared_buffer, shared_buffer_r, write_index, gain, peak, peak_r, lock))
+    audio_process.start()
+
     # init pygame, this has to happen after sound is setup
     # but before the graphics stuff below
     pygame.init()
@@ -101,28 +122,6 @@ try :
     # eyesy gets a refrence to screen so it can save screen grabs 
     eyesy.screen = mode_screen#hwscreen
     print(str(eyesy.screen) + " " +  str(hwscreen))
-
-    # midi 
-    print("init midi")
-    midi.init()
-    eyesy.usb_midi_device = midi.input_port_usb
-    print(eyesy.usb_midi_device) 
-
-    # setup alsa sound shared resources
-    print("init audio")
-    BUFFER_SIZE = 100
-    shared_buffer = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
-    shared_buffer_r = Array(c_float, BUFFER_SIZE, lock=True)  # Circular buffer, size + 1, last entry for trigger value
-    write_index = Value('i', 0)     # Write index for the buffer
-    gain = Value('f', 0)
-    peak = Value('f', 0)
-    peak_r = Value('f', 0)
-    lock = Lock()
-
-    # Start the audio processing in a separate process
-    audio_process = Process(target=sound.audio_processing, args=(shared_buffer, shared_buffer_r, write_index, gain, peak, peak_r, lock))
-    audio_process.start()
-
 
     # load modes, post banner if none found
     if not (eyesy.load_modes()) :

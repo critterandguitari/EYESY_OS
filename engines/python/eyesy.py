@@ -850,28 +850,35 @@ class Eyesy:
         color = (max(0, min(1,color[0])) * 255, max(0, min(1,color[1])) * 255, max(0, min(1,color[2])) * 255)
         return color
 
-
     def color_picker( self, val ):
-        # first slot legacy color pickers
-        #if not self.palettes_user_defined :
-        if self.fg_palette == 0 : return self.color_picker_original(val)
-        return self.get_color_from_phase(val, self.fg_palette)
-        #else:
+        if not self.palettes_user_defined :
+            # first slot legacy color pickers
+            if self.fg_palette == 0 : return self.color_picker_original(val)
+            return self.get_color_from_phase(val, self.fg_palette)
+        else:
+            return self.get_color_from_phase(val, self.fg_palette)
 
     # sets bg_color
     def color_picker_bg( self, val):
-        # first slot legacy color pickers
-        if self.bg_palette == 0 : 
-            self.bg_color = self.color_picker_bg_original(val)          
+        if not self.palettes_user_defined :
+            # first slot legacy color pickers
+            if self.bg_palette == 0 : 
+                self.bg_color = self.color_picker_bg_original(val)          
+                return self.bg_color
+            self.bg_color = self.get_color_from_phase(val, self.bg_palette)
             return self.bg_color
-        self.bg_color = self.get_color_from_phase(val, self.bg_palette)
-        return self.bg_color
+        else : 
+            self.bg_color = self.get_color_from_phase(val, self.bg_palette)
+            return self.bg_color
 
     # returns but doen'st sent bg_color
     def color_picker_bg_preview( self, val):
-        # first slot legacy color pickers
-        if self.bg_palette == 0 : return self.color_picker_bg_original(val)          
-        return self.get_color_from_phase(val, self.bg_palette)
+        if not self.palettes_user_defined :
+            # first slot legacy color pickers
+            if self.bg_palette == 0 : return self.color_picker_bg_original(val)          
+            return self.get_color_from_phase(val, self.bg_palette)
+        else:
+            return self.get_color_from_phase(val, self.bg_palette)
 
     # legacy color picker used for first palette slot 
     def color_picker_original( self, val ):

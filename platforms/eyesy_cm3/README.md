@@ -101,12 +101,17 @@ enable rt. in /etc/security/limits.conf add to end:
     cd WiringPi
     ./build debian
     mv debian-template/wiringpi_3.14_armhf.deb .
-    sudo chmod 644 ./wiringpi_3.14_armhf.deb
+    sudo chmod o+r ./wiringpi_3.14_armhf.deb
     sudo apt install ./wiringpi_3.14_armhf.deb
 
-    sudo apt-get install libasound2-dev liblo-dev liblo-tools libjack-dev libsdl2-dev iptables python3-pip python3-liblo libsdl2-ttf-dev libsdl2-image-dev libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libsdl2-net-dev libsdl2-gfx-dev python3-pygame python3-mido python3-psutil
+    sudo apt-get install libasound2-dev liblo-dev liblo-tools libjack-dev libsdl2-dev iptables python3-pip python3-liblo libsdl2-ttf-dev libsdl2-image-dev
 
-    pip install flask flask_sock python-rtmidi==1.5.8 pyalsaaudio --break-system-packages
+    sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libsdl2-net-dev libsdl2-gfx-dev
+
+    pip install flask flask_sock --break-system-packages
+    pip install psutil --break-system-package
+    pip install python-rtmidi==1.5.8  --break-system-packages
+    pip install pygame mido pyalsaaudio --break-system-packages
 
 ## ^ EY_v3_base.img
 

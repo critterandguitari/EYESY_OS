@@ -22,9 +22,14 @@ class WidgetApplogs():
                 text=True,
             )
             if result.returncode == 0:
-                # Clean up each line by removing "[numbers]"
+                # Clean up each line by removing "[numbers]" and alsa underrun 
                 raw_logs = result.stdout.strip().split("\n")
-                self.logs = [re.sub(r"\[\d+(\.\d+)?\]", "", line).strip() for line in raw_logs]
+                self.logs = [
+                    re.sub(r"\[\d+(\.\d+)?\]", "", line).strip()
+                    for line in raw_logs
+                    if "(snd_pcm_recover) underrun occurred" not in line
+                ]
+
             else:
                 self.logs = ["Error fetching logs: " + result.stderr.strip()]
         except FileNotFoundError:

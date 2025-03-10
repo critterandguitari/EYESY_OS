@@ -24,8 +24,12 @@ def background_thread(ws):
     with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
         try:
             for line in iter(p.stdout.readline, b''):
+                decoded_line = line.decode()
+                if "(snd_pcm_recover) underrun occurred" in decoded_line:
+                    continue  # Skip lines with ALSA underrun errors
+                
                 try:
-                    ws.send(line.decode())  # Send output over WebSocket
+                    ws.send(decoded_line)  # Send filtered output over WebSocket
                 except:
                     print("WebSocket disconnected. Stopping journalctl...")
                     break  # Exit the loop when the WebSocket is closed

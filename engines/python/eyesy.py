@@ -191,6 +191,7 @@ class Eyesy:
         self.bg_palette = 0
         self.color_lfo_inc = 0
         self.color_lfo_index = 0
+        self.palettes_user_defined = False
 
         # knob sequencer stuff
         self.knob_seq = []
@@ -215,7 +216,7 @@ class Eyesy:
                 print(f"Exists: {path}")
 
     def load_palettes(self):
-        grads = os.path.join(self.SYSTEM_PATH, "gradients.json")
+        grads = os.path.join(self.SYSTEM_PATH, "palettes.json")
         if not os.path.exists(grads):
             print(f"File not found: {grads}, using default palettes.")
             self.palettes = color_palettes.abcd_palettes
@@ -225,23 +226,29 @@ class Eyesy:
             with open(grads, "r") as file:
                 data = json.load(file)
 
-            if isinstance(data, list) and all(
+            if (isinstance(data, list) and len(data) > 0 and all(
                 isinstance(entry, dict) and
                 "name" in entry and isinstance(entry["name"], str) and
-                all(k in entry and isinstance(entry[k], list) and len(entry[k]) == 3 and all(isinstance(v, (int, float)) for v in entry[k])
+                all(k in entry and isinstance(entry[k], list) and len(entry[k]) == 3 and 
+                    all(isinstance(v, (int, float)) for v in entry[k])
                     for k in ["a", "b", "c", "d"])
                 for entry in data
-            ):
+            )):
                 print(f"Loaded palettes from {grads}")
+                print(data)
                 self.palettes = data
+                self.palettes_user_defined = True
                 return 
             else:
-                print(f"Invalid structure in {grads}, using default palettes.")
+                print(f"Invalid structure or empty list in {grads}, using default palettes.")
 
         except (json.JSONDecodeError, IOError) as e:
             print(f"Error loading {grads}: {e}, using default palettes.")
 
         self.palettes = color_palettes.abcd_palettes
+
+
+
 
     def load_config_file(self) :
         config_file = self.SYSTEM_PATH + "config.json"
@@ -700,8 +707,8 @@ class Eyesy:
             if not (0 <= float(data["knob5"]) <= 1): print(f"knob5 invalid in {folder_path}"); return None
             if not isinstance(data["auto_clear"], bool): print(f"auto_clear invalid in {folder_path}"); return None
             if not isinstance(data["mode"], str): print(f"mode invalid in {folder_path}"); return None
-            if not (0 <= int(data["bg_palette"]) < len(self.palettes)): print(f"bg_palette invalid in {folder_path}"); return None
-            if not (0 <= int(data["fg_palette"]) < len(self.palettes)): print(f"fg_palette invalid in {folder_path}"); return None
+            if not (0 <= int(data["bg_palette"])): print(f"bg_palette invalid in {folder_path}"); return None
+            if not (0 <= int(data["fg_palette"])): print(f"fg_palette invalid in {folder_path}"); return None
         except Exception as e:
             print(f"Validation error in {folder_path}: {e}")
             return None
@@ -787,6 +794,13 @@ class Eyesy:
             self.auto_clear = scene["auto_clear"]
             self.bg_palette = scene["bg_palette"]
             self.fg_palette = scene["fg_palette"]
+
+            # make sure scenes pallete in range
+            if self.fg_palette < 0 : self.fg_palette = 0
+            if self.fg_palette >= len(self.palettes) : self.fg_palette = 0
+            if self.bg_palette < 0 : self.bg_palette = 0
+            if self.bg_palette >= len(self.palettes) : self.bg_palette = 0
+
             self.set_mode_by_name(scene["mode"])
             # play back knob file if we have one, otherwise stop the seq if running
             if self.knob_seq_load(self.SCENES_PATH + scene["name"]):
@@ -821,6 +835,7 @@ class Eyesy:
         t = c
 
         ci = palette_index
+        ci = ci % len(self.palettes)
         a = self.palettes[ci]["a"]
         b = self.palettes[ci]["b"]
         c = self.palettes[ci]["c"]
@@ -837,10 +852,11 @@ class Eyesy:
 
 
     def color_picker( self, val ):
-
         # first slot legacy color pickers
+        #if not self.palettes_user_defined :
         if self.fg_palette == 0 : return self.color_picker_original(val)
         return self.get_color_from_phase(val, self.fg_palette)
+        #else:
 
     # sets bg_color
     def color_picker_bg( self, val):

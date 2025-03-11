@@ -202,3 +202,32 @@ run fsck from another machine.
 
 ## ^ EYESY_v3.0_rc1.img
 
+update
+
+    sudo mount -o remount,rw /
+    cd ~/EYESY_OS
+    git pull
+
+install modes 
+   
+    cd 
+    git clone https://github.com/critterandguitari/EYESY_Modes_OSv3
+    rm -fr /sdcard/Modes/*
+    cp -r EYESY_Modes_OSv3/* /sdcard/Modes/
+
+remove config
+
+    rm -fr /sdcard/Scenes
+    rm -fr /sdcard/System
+    rm -fr /sdcard/Grabs
+
+clean up
+
+    sudo mount -o remount,rw /
+    git config --global user.email "..."
+    git config --global user.name "..."
+    cd ~
+    rm .viminfo
+    cat /dev/null > ~/.bash_history && history -c
+
+## ^ EYESY_v3.0_rc2.img

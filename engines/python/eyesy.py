@@ -50,7 +50,7 @@ class Eyesy:
         self.TRIGGER_SOURCES = ["Audio", "MIDI Note", "Audio or MIDI Note", "MIDI Clock 16th Note", "MIDI Clock 8th Note", "MIDI Clock 1/4 Note", "MIDI Clock Whole Note"]
 
         self.DEFAULT_CONFIG = {
-            "video_resolution": 0,
+            "video_resolution": 3,
             "audio_gain": .25,
             "trigger_source":0,
             "fg_palette": 0,

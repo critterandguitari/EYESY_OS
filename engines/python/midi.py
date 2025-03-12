@@ -93,14 +93,16 @@ def init():
     else :
         print(f"USB MIDI not found")
     
-
 def close():
-    global input_port
-    try:
-        if input_port:
-            input_port.close()
-    except Exception as e:
-        print(f"Error closing input port: {e}")
+    global input_port, input_port_usb
+
+    for port, name in [(input_port, "ttymidi"), (input_port_usb, "USB MIDI")]:
+        if port:
+            try:
+                print(f"Closing {name} input port.")
+                port.close()
+            except Exception as e:
+                print(f"Error closing {name} input port: {e}")
 
 def recv(eyesy, input_port):
     if not input_port:

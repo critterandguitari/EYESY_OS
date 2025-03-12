@@ -35,8 +35,11 @@ def exitexit(code):
         audio_process.join()       # Ensure the process has fully terminated
     print("closing audio")
     audio_process.close()  # Now it's safe to close the process
+    print("closing midi")
     midi.close()
+    print("closing osc")
     osc.close()
+    print("exiting...")
     sys.exit(code)
 
 print("starting...")

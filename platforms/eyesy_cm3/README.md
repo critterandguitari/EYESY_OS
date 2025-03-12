@@ -231,3 +231,14 @@ clean up
     cat /dev/null > ~/.bash_history && history -c
 
 ## ^ EYESY_v3.0_rc2.img
+
+    sudo /etc/systemd/system.conf
+    
+add 
+
+    DefaultTimeoutStopSec=5s
+
+    systemctl daemon-reload
+
+
+

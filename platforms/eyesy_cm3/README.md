@@ -239,6 +239,6 @@ add
     DefaultTimeoutStopSec=5s
 
     systemctl daemon-reload
-
-
+    
+    pull and deploy OS and Modes
 

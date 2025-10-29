@@ -11,7 +11,7 @@ def _handle_note(eyesy, message):
     if (message.channel + 1) == eyesy.config["midi_channel"]:
         num = message.note 
         val = message.velocity
-        if val > 0 :
+        if val > 0 and message.type == "note_on":
             eyesy.midi_notes[num] = 1
             # 1 is trigger source for note, 2 for notes or audio
             if eyesy.config["trigger_source"] == 1 or eyesy.config["trigger_source"] == 2: eyesy.trig = True 

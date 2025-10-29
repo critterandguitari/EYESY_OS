@@ -20,13 +20,41 @@ def get_tv_norm():
 
 def set_tv_norm(mode):
     # Replace the existing vc4.tv_norm= value with a new mode in cmdline.txt.
+    # /boot/firmware is mounted read-only by default, so we need to remount it
     try:
+        # Remount /boot/firmware as read-write
+        print("Remounting /boot/firmware as read-write...")
+        subprocess.run(
+            ["sudo", "mount", "/boot/firmware", "-o", "remount,rw"],
+            check=True
+        )
+        
+        # Make the change
+        print(f"Setting TV norm to {mode}...")
         subprocess.run(
             f"sudo sed -i 's/{TV_NORM_PREFIX}\\S\\+/{TV_NORM_PREFIX}{mode}/' {CMDLINE_PATH}",
             shell=True, check=True
         )
+        
+        # Remount /boot/firmware as read-only
+        print("Remounting /boot/firmware as read-only...")
+        subprocess.run(
+            ["sudo", "mount", "/boot/firmware", "-o", "remount,ro"],
+            check=True
+        )
+        
+        print(f"Successfully set TV norm to {mode}")
+        
     except subprocess.CalledProcessError as e:
         print(f"Error modifying {CMDLINE_PATH}: {e}")
+        # Try to remount as read-only even if there was an error
+        try:
+            subprocess.run(
+                ["sudo", "mount", "/boot/firmware", "-o", "remount,ro"],
+                check=True
+            )
+        except:
+            pass
 
 
 class ScreenVideoSettings(Screen):
@@ -140,4 +168,3 @@ class ScreenVideoSettings(Screen):
 
     def goto_home(self):
         self.eyesy.switch_menu_screen("home")
-

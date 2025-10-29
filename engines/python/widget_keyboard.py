@@ -18,6 +18,7 @@ class WidgetKeyboard():
             ['a','b','c','d','e','f','g','h','i','j'],
             ['k','l','m','n','o','p','q','r','s','t'],
             ['u','v','w','x','y','z',';',',','.','/'],
+            ['-','=','[',']','\\','\'','"','`','~','|'],  # NEW ROW: special characters
             ['^','_','<'],
             ['Cancel','Connect']
         ]
@@ -26,6 +27,7 @@ class WidgetKeyboard():
             ['A','B','C','D','E','F','G','H','I','J'],
             ['K','L','M','N','O','P','Q','R','S','T'],
             ['U','V','W','X','Y','Z',':','<','>','?'],
+            ['-','=','[',']','\\','\'','"','`','~','|'],  # NEW ROW: same special characters
             ['^','_','<'],
             ['Cancel','Connect']
         ]
@@ -33,11 +35,11 @@ class WidgetKeyboard():
         self.flat_keys_lower = [key for row in self.lower_keys for key in row]
         self.flat_keys_upper = [key for row in self.upper_keys for key in row]
 
-        # Total keys: 4 rows x 10 keys = 40 + 1 row x 3 keys = 43
+        # Total keys: 5 rows x 10 keys = 50 + 1 row x 3 keys = 53 + 1 row x 2 keys = 55
         self.total_keys = len(self.flat_keys_lower)
         # Dimensions
-        self.rows = len(self.lower_keys)  # 5
-        # The top 4 rows have 10 columns each, the last row has 3
+        self.rows = len(self.lower_keys)  # 7
+        # The top 5 rows have 10 columns each
         self.cols_top = 10
         self.cols_bottom = 3
 
@@ -70,8 +72,8 @@ class WidgetKeyboard():
 
         index = 0
         for row_idx, row in enumerate(keys):
-            if row_idx < 4:
-                # Top four rows: 10 keys each
+            if row_idx < 5:
+                # Top five rows: 10 keys each
                 key_width = total_width // self.cols_top
                 key_height = total_height // self.rows
                 for col_idx, key in enumerate(row):
@@ -86,8 +88,8 @@ class WidgetKeyboard():
                     text_rect = text_surf.get_rect(center=rect.center)
                     surface.blit(text_surf, text_rect)
                     index += 1
-            elif row_idx == 4:
-                # Bottom row: 3 keys each taking one-third of the width
+            elif row_idx == 5:
+                # Row 5: 3 keys (Shift, Space, Backspace)
                 key_width = total_width // self.cols_bottom
                 key_height = total_height // self.rows
                 for col_idx, key in enumerate(row):
@@ -101,8 +103,8 @@ class WidgetKeyboard():
                     text_rect = text_surf.get_rect(center=rect.center)
                     surface.blit(text_surf, text_rect)
                     index += 1
-            elif row_idx == 5:
-                # Bottom row: 3 keys each taking one-third of the width
+            elif row_idx == 6:
+                # Bottom row: 2 keys (Cancel, Connect)
                 key_width = total_width // 2
                 key_height = total_height // self.rows
                 for col_idx, key in enumerate(row):
@@ -167,28 +169,28 @@ class WidgetKeyboard():
             if self.row_index > 0 :
                 self.row_index -= 1
                 # correct column when moving to new row with dif len
-                if self.row_index == 3:
-                    self.col_index = int(self.col_index * (10/3))
                 if self.row_index == 4:
+                    self.col_index = int(self.col_index * (10/3))
+                if self.row_index == 5:
                     self.col_index = int(self.col_index * (3/2))
 
         if eyesy.key7_press:
-            if self.row_index < 5 :
+            if self.row_index < 6 :
                 self.row_index += 1 
                 # correct column when moving to new row with dif len
-                if self.row_index == 4 :
-                    self.col_index = int(self.col_index / (10/3))
                 if self.row_index == 5 :
+                    self.col_index = int(self.col_index / (10/3))
+                if self.row_index == 6 :
                     self.col_index = int(self.col_index / (3/2))
 
         # get index from row col index
         # handle last 2 rows separately
-        if self.row_index < 4:
+        if self.row_index < 5:
             self.selected_index = self.col_index + self.row_index * 10
-        elif self.row_index == 4 :
-            self.selected_index = 40 + self.col_index
-        elif self.row_index == 5 : 
-            self.selected_index = 43 + self.col_index
+        elif self.row_index == 5 :
+            self.selected_index = 50 + self.col_index
+        elif self.row_index == 6 : 
+            self.selected_index = 53 + self.col_index
         
         # for using knob for navigation
         # self.selected_index = int(self.eyesy.knob1 * (len(self.flat_keys_lower) - 1))
@@ -198,19 +200,19 @@ class WidgetKeyboard():
             selected_key = self.get_key(self.selected_index)
             if selected_key:
                 lower_key = selected_key.lower()
-                # Index 40: shift
-                if self.selected_index == 40:
+                # Index 50: shift
+                if self.selected_index == 50:
                     self.shift = not self.shift
-                # Index 41: space ('_')
-                elif self.selected_index == 41:
+                # Index 51: space ('_')
+                elif self.selected_index == 51:
                     self.text_box_text += ' '
-                # Index 42: backspace ('<')
-                elif self.selected_index == 42:
+                # Index 52: backspace ('<')
+                elif self.selected_index == 52:
                     if len(self.text_box_text) > 0:
                         self.text_box_text = self.text_box_text[:-1]
-                elif self.selected_index == 43:
+                elif self.selected_index == 53:
                     self.cancel_callback()
-                elif self.selected_index == 44:
+                elif self.selected_index == 54:
                     self.connect_callback(self.text_box_text)
                 else:
                     # Append the selected key character
@@ -242,4 +244,3 @@ class WidgetKeyboard():
     def goto_home(self):
         pass
         # self.eyesy.current_screen = self.eyesy.menu_screens["info"]
-

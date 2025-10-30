@@ -18,7 +18,7 @@ import config
 class Eyesy:
 
     def __init__(self):
-        self.VERSION = "3.0"
+        self.VERSION = "3.1"
         # config stuff 
         self.GRABS_PATH = "/sdcard/Grabs/"
         self.MODES_PATH = "/sdcard/Modes/"

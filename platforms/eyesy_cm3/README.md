@@ -243,3 +243,20 @@ add
     pull and deploy OS and Modes
 
 ## ^ EYESY_v3.0.img
+
+update
+
+    git pull
+
+no deploy as only python was changed.
+clean up
+
+    cat /dev/null > ~/.bash_history && history -c
+
+shutdown, and copy it
+
+    dd if=/dev/mmcblk0 of=EYESY_v3.1.img bs=1M count=7360
+    zip EYESY_v3.1.img.zip EYESY_v3.1.img
+
+## ^ EYESY_v3.1.img
+
